@@ -676,10 +676,12 @@ function initializeCalculator() {
     const monthlyResult = document.getElementById("monthlyResult");
     const quarterResult = document.getElementById("quarterResult");
     const totalResult = document.getElementById("totalResult");
+    const semiannualResult = document.getElementById("semiannualResult");
+    const annualResult = document.getElementById("annualResult");
     const growthSummary = document.getElementById("growthSummary");
     const presetButtons = document.querySelectorAll(".preset-button");
 
-    if (!amountInput || !investedResult || !monthlyResult || !quarterResult || !totalResult || !growthSummary) {
+    if (!amountInput || !investedResult || !monthlyResult || !quarterResult || !totalResult || !semiannualResult || !annualResult || !growthSummary) {
         return;
     }
 
@@ -714,6 +716,8 @@ function initializeCalculator() {
         const monthly = amount * 0.04;
         const quarter = amount * 0.12;
         const total = amount + quarter;
+        const semiannualTotal = amount * 1.24;
+        const annualTotal = amount * 1.48;
 
         syncPresetState(amount);
 
@@ -734,8 +738,16 @@ function initializeCalculator() {
             duration: 980,
             formatter: (value) => arsFormatter.format(Math.round(value))
         });
+        animateValue(semiannualResult, semiannualTotal, {
+            duration: 1080,
+            formatter: (value) => arsFormatter.format(Math.round(value))
+        });
+        animateValue(annualResult, annualTotal, {
+            duration: 1180,
+            formatter: (value) => arsFormatter.format(Math.round(value))
+        });
 
-        growthSummary.textContent = `Invertis ${arsFormatter.format(amount)}. La ganancia mensual proyectada es ${arsFormatter.format(Math.round(monthly))}, a 90 dias seria ${arsFormatter.format(Math.round(quarter))} y el capital total estimado alcanzaria ${arsFormatter.format(Math.round(total))}.`;
+        growthSummary.textContent = `Invertis ${arsFormatter.format(amount)}. La ganancia mensual proyectada es ${arsFormatter.format(Math.round(monthly))}, a 90 dias seria ${arsFormatter.format(Math.round(quarter))}, a 6 meses el capital total estimado alcanzaria ${arsFormatter.format(Math.round(semiannualTotal))} y a 12 meses ${arsFormatter.format(Math.round(annualTotal))}.`;
     }
 
     amountInput.addEventListener("input", () => {
