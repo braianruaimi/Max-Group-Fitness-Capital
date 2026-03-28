@@ -475,6 +475,7 @@ h3 {
 .thesis-card p,
 .quote,
 .testimonial-meta span,
+.institutional-copy,
 .highlight-line,
 .contact-note,
 .faq-answer p {
@@ -503,6 +504,26 @@ h3 {
 
 .quote {
     font-size: 1.02rem;
+}
+
+.institutional-label {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 14px;
+    padding: 7px 11px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.05);
+    color: #dce5ff;
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.institutional-copy {
+    margin-top: 14px;
+    line-height: 1.75;
 }
 
 .testimonial-meta {
