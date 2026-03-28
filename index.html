@@ -241,9 +241,9 @@
                     <label for="investmentAmount">Monto a invertir</label>
                     <div class="input-shell">
                         <span>ARS</span>
-                        <input id="investmentAmount" name="investmentAmount" type="number" min="2500000" step="50000" value="2500000">
+                        <input id="investmentAmount" name="investmentAmount" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="2.500.000" aria-describedby="investmentAmountHint">
                     </div>
-                    <p class="input-hint">Monto minimo sugerido: ARS 2.500.000</p>
+                    <p class="input-hint" id="investmentAmountHint">Monto minimo sugerido: ARS 2.500.000. Podes escribir valores grandes sin limite de puntos.</p>
                 </article>
                 <article class="glass calculator-results reveal" data-delay="160">
                     <div class="result-card">

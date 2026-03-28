@@ -4,6 +4,10 @@ const arsFormatter = new Intl.NumberFormat("es-AR", {
     maximumFractionDigits: 0
 });
 
+const integerFormatter = new Intl.NumberFormat("es-AR", {
+    maximumFractionDigits: 0
+});
+
 const easeOutCubic = (progress) => 1 - Math.pow(1 - progress, 3);
 
 function animateValue(element, targetValue, options = {}) {
@@ -198,8 +202,18 @@ function initializeCalculator() {
         return;
     }
 
+    function parseAmount(rawValue) {
+        const digits = rawValue.replace(/\D/g, "");
+        return Number(digits || 0);
+    }
+
+    function formatAmount(rawValue) {
+        const amount = parseAmount(rawValue);
+        return amount > 0 ? integerFormatter.format(amount) : "";
+    }
+
     function updateCalculator() {
-        const amount = Math.max(Number(amountInput.value) || 0, 0);
+        const amount = Math.max(parseAmount(amountInput.value), 0);
         const monthly = amount * 0.04;
         const quarter = amount * 0.12;
         const total = amount + quarter;
@@ -218,7 +232,16 @@ function initializeCalculator() {
         });
     }
 
-    amountInput.addEventListener("input", updateCalculator);
+    amountInput.addEventListener("input", () => {
+        amountInput.value = formatAmount(amountInput.value);
+        updateCalculator();
+    });
+
+    amountInput.addEventListener("blur", () => {
+        amountInput.value = formatAmount(amountInput.value);
+    });
+
+    amountInput.value = formatAmount(amountInput.value);
     updateCalculator();
 }
 
