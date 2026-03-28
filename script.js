@@ -95,14 +95,15 @@ function initializeCharts() {
         return;
     }
 
-    Chart.defaults.color = "#aeb9df";
+    Chart.defaults.color = "#b8c4ea";
     Chart.defaults.font.family = "Inter";
     Chart.defaults.borderColor = "rgba(255, 255, 255, 0.08)";
 
     const growthContext = growthCanvas.getContext("2d");
     const growthGradient = growthContext.createLinearGradient(0, 0, 0, 320);
-    growthGradient.addColorStop(0, "rgba(137, 82, 255, 0.45)");
-    growthGradient.addColorStop(1, "rgba(137, 82, 255, 0.02)");
+    growthGradient.addColorStop(0, "rgba(16, 213, 255, 0.4)");
+    growthGradient.addColorStop(0.45, "rgba(123, 44, 255, 0.24)");
+    growthGradient.addColorStop(1, "rgba(123, 44, 255, 0.02)");
 
     new Chart(growthContext, {
         type: "line",
@@ -111,7 +112,7 @@ function initializeCharts() {
             datasets: [{
                 label: "Crecimiento proyectado",
                 data: [18, 24, 31, 38, 44, 49, 57, 63, 68, 74, 81, 89],
-                borderColor: "#4fd3ff",
+                borderColor: "#10d5ff",
                 backgroundColor: growthGradient,
                 fill: true,
                 borderWidth: 3,
@@ -128,8 +129,8 @@ function initializeCharts() {
                     display: false
                 },
                 tooltip: {
-                    backgroundColor: "rgba(8, 12, 27, 0.92)",
-                    borderColor: "rgba(137, 82, 255, 0.35)",
+                    backgroundColor: "rgba(4, 8, 19, 0.94)",
+                    borderColor: "rgba(16, 213, 255, 0.32)",
                     borderWidth: 1,
                     titleColor: "#ffffff",
                     bodyColor: "#d5deff",
@@ -162,7 +163,7 @@ function initializeCharts() {
             labels: ["Ateneo Gym", "Mujeres Gym", "Nueva sede", "Suplementos"],
             datasets: [{
                 data: [38, 24, 21, 17],
-                backgroundColor: ["#8952ff", "#2cb7ff", "#37f2d2", "#f472ff"],
+                backgroundColor: ["#7b2cff", "#10d5ff", "#2affc8", "#ff3fd1"],
                 borderWidth: 0,
                 hoverOffset: 6
             }]
@@ -181,8 +182,8 @@ function initializeCharts() {
                     }
                 },
                 tooltip: {
-                    backgroundColor: "rgba(8, 12, 27, 0.92)",
-                    borderColor: "rgba(137, 82, 255, 0.35)",
+                    backgroundColor: "rgba(4, 8, 19, 0.94)",
+                    borderColor: "rgba(123, 44, 255, 0.35)",
                     borderWidth: 1,
                     titleColor: "#ffffff",
                     bodyColor: "#d5deff"
@@ -197,6 +198,7 @@ function initializeCalculator() {
     const monthlyResult = document.getElementById("monthlyResult");
     const quarterResult = document.getElementById("quarterResult");
     const totalResult = document.getElementById("totalResult");
+    const presetButtons = document.querySelectorAll(".preset-button");
 
     if (!amountInput || !monthlyResult || !quarterResult || !totalResult) {
         return;
@@ -209,7 +211,14 @@ function initializeCalculator() {
 
     function formatAmount(rawValue) {
         const amount = parseAmount(rawValue);
-        return amount > 0 ? integerFormatter.format(amount) : "";
+        return amount > 0 ? `ARS ${integerFormatter.format(amount)}` : "ARS ";
+    }
+
+    function syncPresetState(amount) {
+        presetButtons.forEach((button) => {
+            const presetAmount = Number(button.dataset.amount || 0);
+            button.classList.toggle("is-active", presetAmount === amount);
+        });
     }
 
     function updateCalculator() {
@@ -217,6 +226,8 @@ function initializeCalculator() {
         const monthly = amount * 0.04;
         const quarter = amount * 0.12;
         const total = amount + quarter;
+
+        syncPresetState(amount);
 
         animateValue(monthlyResult, monthly, {
             duration: 700,
@@ -239,6 +250,15 @@ function initializeCalculator() {
 
     amountInput.addEventListener("blur", () => {
         amountInput.value = formatAmount(amountInput.value);
+    });
+
+    presetButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+            const presetAmount = Number(button.dataset.amount || 0);
+            amountInput.value = formatAmount(String(presetAmount));
+            updateCalculator();
+            amountInput.focus();
+        });
     });
 
     amountInput.value = formatAmount(amountInput.value);

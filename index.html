@@ -240,8 +240,13 @@
                 <article class="glass calculator-form reveal" data-delay="80">
                     <label for="investmentAmount">Monto a invertir</label>
                     <div class="input-shell">
-                        <span>ARS</span>
                         <input id="investmentAmount" name="investmentAmount" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="2.500.000" aria-describedby="investmentAmountHint">
+                    </div>
+                    <div class="preset-grid" aria-label="Montos sugeridos">
+                        <button class="preset-button" type="button" data-amount="2500000">ARS 2.5M</button>
+                        <button class="preset-button" type="button" data-amount="5000000">ARS 5M</button>
+                        <button class="preset-button" type="button" data-amount="10000000">ARS 10M</button>
+                        <button class="preset-button" type="button" data-amount="25000000">ARS 25M</button>
                     </div>
                     <p class="input-hint" id="investmentAmountHint">Monto minimo sugerido: ARS 2.500.000. Podes escribir valores grandes sin limite de puntos.</p>
                 </article>
