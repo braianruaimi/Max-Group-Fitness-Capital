@@ -20,6 +20,7 @@
         <div class="grid-overlay" data-bg-speed="0.18"></div>
         <div class="scanlines"></div>
     </div>
+    <div class="cursor-glow" aria-hidden="true"></div>
 
     <header class="topbar">
         <a class="brand" href="#hero">
@@ -174,7 +175,7 @@
                             <span class="card-overline">Growth</span>
                             <h3>Proyeccion de crecimiento</h3>
                         </div>
-                        <span class="card-chip">12 meses</span>
+                        <span class="card-chip" id="dashboardStatusChip">12 meses</span>
                     </div>
                     <canvas id="growthChart" aria-label="Grafico de crecimiento proyectado" role="img"></canvas>
                 </article>
@@ -186,6 +187,31 @@
                         </div>
                     </div>
                     <canvas id="distributionChart" aria-label="Grafico de distribucion del negocio" role="img"></canvas>
+                    <div class="dashboard-terminal" aria-live="polite">
+                        <div class="terminal-header">
+                            <div class="terminal-dots" aria-hidden="true">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="terminal-title">Capital flow monitor</span>
+                            <span class="terminal-badge" id="terminalMode">syncing</span>
+                        </div>
+                        <div class="terminal-stream" id="terminalStream">
+                            <div class="terminal-line">
+                                <span>booting allocation monitor</span>
+                                <strong>online</strong>
+                            </div>
+                            <div class="terminal-line">
+                                <span>loading occupancy baseline</span>
+                                <strong>84%</strong>
+                            </div>
+                            <div class="terminal-line">
+                                <span>mapping unit contribution</span>
+                                <strong>stable</strong>
+                            </div>
+                        </div>
+                    </div>
                     <div class="dashboard-counters">
                         <div class="counter-block">
                             <strong data-counter="84" data-suffix="%">0%</strong>

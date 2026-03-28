@@ -314,15 +314,23 @@ function initializeBackgroundParallax() {
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const hasFinePointer = window.matchMedia("(pointer: fine)").matches;
 
-    if (!backgroundLayers.length || prefersReducedMotion || !hasFinePointer) {
+    if (!backgroundLayers.length || prefersReducedMotion) {
         return;
     }
 
+    let pointerX = 0;
+    let pointerY = 0;
+    let scrollDepth = 0;
     let targetX = 0;
     let targetY = 0;
     let currentX = 0;
     let currentY = 0;
     let frameId = null;
+
+    function updateTargets() {
+        targetX = pointerX;
+        targetY = pointerY + scrollDepth;
+    }
 
     function renderBackgroundParallax() {
         currentX += (targetX - currentX) * 0.08;
@@ -350,20 +358,151 @@ function initializeBackgroundParallax() {
         frameId = requestAnimationFrame(renderBackgroundParallax);
     }
 
+    function handleScroll() {
+        const maxScroll = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
+        const progress = window.scrollY / maxScroll;
+        scrollDepth = (progress - 0.5) * 30;
+        updateTargets();
+        requestBackgroundFrame();
+    }
+
+    if (hasFinePointer) {
+        window.addEventListener("pointermove", (event) => {
+            const offsetX = event.clientX / window.innerWidth - 0.5;
+            const offsetY = event.clientY / window.innerHeight - 0.5;
+
+            pointerX = offsetX * 34;
+            pointerY = offsetY * 26;
+            updateTargets();
+            requestBackgroundFrame();
+        });
+
+        window.addEventListener("pointerleave", () => {
+            pointerX = 0;
+            pointerY = 0;
+            updateTargets();
+            requestBackgroundFrame();
+        });
+    }
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+}
+
+function initializeCursorGlow() {
+    const cursorGlow = document.querySelector(".cursor-glow");
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const hasFinePointer = window.matchMedia("(pointer: fine)").matches;
+
+    if (!cursorGlow || prefersReducedMotion || !hasFinePointer) {
+        return;
+    }
+
+    document.body.classList.add("has-cursor-glow");
+
+    const interactiveSelector = "a, button, input, select, textarea, .tilt-card, .button, .card-chip, .faq-question";
+
     window.addEventListener("pointermove", (event) => {
-        const offsetX = event.clientX / window.innerWidth - 0.5;
-        const offsetY = event.clientY / window.innerHeight - 0.5;
-
-        targetX = offsetX * 34;
-        targetY = offsetY * 26;
-        requestBackgroundFrame();
+        cursorGlow.classList.add("is-visible");
+        cursorGlow.style.transform = `translate3d(${event.clientX}px, ${event.clientY}px, 0) translate3d(-50%, -50%, 0)`;
     });
 
-    window.addEventListener("pointerleave", () => {
-        targetX = 0;
-        targetY = 0;
-        requestBackgroundFrame();
+    document.addEventListener("pointerover", (event) => {
+        const target = event.target;
+        if (!(target instanceof Element)) {
+            return;
+        }
+
+        cursorGlow.classList.toggle("is-active", Boolean(target.closest(interactiveSelector)));
     });
+
+    document.addEventListener("pointerleave", () => {
+        cursorGlow.classList.remove("is-visible", "is-active");
+    });
+}
+
+function initializeDashboardLiveFeed() {
+    const dashboardSection = document.getElementById("dashboard");
+    const stream = document.getElementById("terminalStream");
+    const statusChip = document.getElementById("dashboardStatusChip");
+    const terminalMode = document.getElementById("terminalMode");
+    const counterBlocks = dashboardSection?.querySelectorAll(".counter-block") || [];
+
+    if (!dashboardSection || !stream || !statusChip || !terminalMode || !counterBlocks.length) {
+        return;
+    }
+
+    const chipStates = ["12 meses", "capital live", "tracking", "sync online"];
+    const modeStates = ["syncing", "live", "verified", "active"];
+    const feedEntries = [
+        ["updating occupancy capture", "84%"],
+        ["routing capital to expansion", "queued"],
+        ["refreshing unit contribution", "stable"],
+        ["monitoring monthly yield", "+4.0%"],
+        ["checking supplements velocity", "rising"],
+        ["validating holding threshold", "90 dias"],
+        ["recomputing blended growth", "+31%"],
+        ["syncing investor dashboard", "online"]
+    ];
+
+    let intervalId = null;
+    let entryIndex = 0;
+    let statusIndex = 0;
+
+    function pushFeedLine() {
+        const [label, value] = feedEntries[entryIndex % feedEntries.length];
+        const line = document.createElement("div");
+        line.className = "terminal-line is-fresh";
+        line.innerHTML = `<span>${label}</span><strong>${value}</strong>`;
+
+        stream.prepend(line);
+
+        while (stream.children.length > 4) {
+            stream.removeChild(stream.lastElementChild);
+        }
+
+        window.setTimeout(() => {
+            line.classList.remove("is-fresh");
+        }, 260);
+
+        statusIndex += 1;
+        statusChip.textContent = chipStates[statusIndex % chipStates.length];
+        terminalMode.textContent = modeStates[statusIndex % modeStates.length];
+        statusChip.classList.add("is-live");
+
+        const activeBlock = counterBlocks[entryIndex % counterBlocks.length];
+        counterBlocks.forEach((block) => block.classList.remove("is-ping"));
+        activeBlock.classList.add("is-ping");
+
+        window.setTimeout(() => {
+            activeBlock.classList.remove("is-ping");
+        }, 900);
+
+        entryIndex += 1;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                if (intervalId !== null) {
+                    return;
+                }
+
+                pushFeedLine();
+                intervalId = window.setInterval(pushFeedLine, 2100);
+                return;
+            }
+
+            if (intervalId !== null) {
+                window.clearInterval(intervalId);
+                intervalId = null;
+            }
+        });
+    }, {
+        threshold: 0.45
+    });
+
+    observer.observe(dashboardSection);
 }
 
 function initializeHeroParallax() {
@@ -685,6 +824,8 @@ document.addEventListener("DOMContentLoaded", () => {
     initializeCounters();
     initializeCharts();
     initializeBackgroundParallax();
+    initializeCursorGlow();
+    initializeDashboardLiveFeed();
     initializeCalculator();
     initializeHeroParallax();
     initializeTiltCards();
