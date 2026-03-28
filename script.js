@@ -10,6 +10,14 @@ const integerFormatter = new Intl.NumberFormat("es-AR", {
 
 const easeOutCubic = (progress) => 1 - Math.pow(1 - progress, 3);
 
+function animateCounterElement(element, duration = 1400) {
+    const targetValue = Number(element.dataset.counter);
+    const prefix = element.dataset.prefix || "";
+    const suffix = element.dataset.suffix || "";
+
+    animateValue(element, targetValue, { prefix, suffix, decimals: 0, duration });
+}
+
 function animateValue(element, targetValue, options = {}) {
     const {
         prefix = "",
@@ -74,10 +82,12 @@ function initializeCounters() {
             }
 
             const element = entry.target;
-            const targetValue = Number(element.dataset.counter);
-            const prefix = element.dataset.prefix || "";
-            const suffix = element.dataset.suffix || "";
-            animateValue(element, targetValue, { prefix, suffix, decimals: 0, duration: 1400 });
+            if (element.closest(".dashboard-counters")) {
+                counterObserver.unobserve(element);
+                return;
+            }
+
+            animateCounterElement(element, 1400);
             counterObserver.unobserve(element);
         });
     }, {
@@ -93,8 +103,19 @@ function initializeCharts() {
     const dashboardSection = document.getElementById("dashboard");
     const growthCard = document.querySelector(".dashboard-chart");
     const distributionCard = document.querySelector(".dashboard-side");
+    const dashboardCounters = dashboardSection?.querySelectorAll(".dashboard-counters [data-counter]") || [];
 
-    if (!growthCanvas || !distributionCanvas || !dashboardSection || typeof Chart === "undefined") {
+    if (!dashboardSection || !growthCanvas || !distributionCanvas) {
+        return;
+    }
+
+    if (typeof Chart === "undefined") {
+        dashboardSection.classList.add("is-live");
+        dashboardCounters.forEach((counterElement, index) => {
+            window.setTimeout(() => {
+                animateCounterElement(counterElement, 1200);
+            }, 140 + index * 120);
+        });
         return;
     }
 
@@ -119,6 +140,15 @@ function initializeCharts() {
         if (growthCard) {
             growthCard.classList.add("charts-live");
         }
+
+        window.setTimeout(() => {
+            dashboardSection.classList.add("is-live");
+            dashboardCounters.forEach((counterElement, index) => {
+                window.setTimeout(() => {
+                    animateCounterElement(counterElement, 1250);
+                }, index * 120);
+            });
+        }, 300);
 
         new Chart(growthContext, {
             type: "line",
@@ -238,6 +268,63 @@ function initializeCharts() {
     chartObserver.observe(dashboardSection);
 }
 
+function initializeBackgroundParallax() {
+    const backgroundLayers = document.querySelectorAll("[data-bg-speed]");
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const hasFinePointer = window.matchMedia("(pointer: fine)").matches;
+
+    if (!backgroundLayers.length || prefersReducedMotion || !hasFinePointer) {
+        return;
+    }
+
+    let targetX = 0;
+    let targetY = 0;
+    let currentX = 0;
+    let currentY = 0;
+    let frameId = null;
+
+    function renderBackgroundParallax() {
+        currentX += (targetX - currentX) * 0.08;
+        currentY += (targetY - currentY) * 0.08;
+
+        backgroundLayers.forEach((layer) => {
+            const speed = Number(layer.dataset.bgSpeed || 0);
+            layer.style.setProperty("--bg-shift-x", `${(currentX * speed).toFixed(2)}px`);
+            layer.style.setProperty("--bg-shift-y", `${(currentY * speed * 0.75).toFixed(2)}px`);
+        });
+
+        if (Math.abs(targetX - currentX) > 0.1 || Math.abs(targetY - currentY) > 0.1) {
+            frameId = requestAnimationFrame(renderBackgroundParallax);
+            return;
+        }
+
+        frameId = null;
+    }
+
+    function requestBackgroundFrame() {
+        if (frameId !== null) {
+            return;
+        }
+
+        frameId = requestAnimationFrame(renderBackgroundParallax);
+    }
+
+    window.addEventListener("pointermove", (event) => {
+        const offsetX = event.clientX / window.innerWidth - 0.5;
+        const offsetY = event.clientY / window.innerHeight - 0.5;
+
+        targetX = offsetX * 34;
+        targetY = offsetY * 26;
+        requestBackgroundFrame();
+    });
+
+    window.addEventListener("pointerleave", () => {
+        targetX = 0;
+        targetY = 0;
+        requestBackgroundFrame();
+    });
+}
+
 function initializeHeroParallax() {
     const heroSection = document.querySelector(".hero");
 
@@ -320,6 +407,9 @@ function initializeTiltCards() {
         let targetOpacity = 0;
         let currentOpacity = 0;
         const strength = Number(card.dataset.tiltStrength || 12);
+        const lift = Number(card.dataset.tiltLift || 4);
+
+        card.style.setProperty("--tilt-lift", `${lift}px`);
 
         function renderTilt() {
             currentRotateX += (targetRotateX - currentRotateX) * 0.14;
@@ -539,6 +629,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initializeRevealAnimations();
     initializeCounters();
     initializeCharts();
+    initializeBackgroundParallax();
     initializeCalculator();
     initializeHeroParallax();
     initializeTiltCards();
