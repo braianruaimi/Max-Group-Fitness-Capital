@@ -239,10 +239,70 @@ function initializeSmoothLinks() {
     });
 }
 
+function initializeFaq() {
+    const faqItems = document.querySelectorAll(".faq-item");
+
+    faqItems.forEach((item) => {
+        const button = item.querySelector(".faq-question");
+
+        if (!button) {
+            return;
+        }
+
+        button.addEventListener("click", () => {
+            const isOpen = item.classList.contains("is-open");
+
+            faqItems.forEach((entry) => {
+                entry.classList.remove("is-open");
+                const trigger = entry.querySelector(".faq-question");
+                if (trigger) {
+                    trigger.setAttribute("aria-expanded", "false");
+                }
+            });
+
+            if (!isOpen) {
+                item.classList.add("is-open");
+                button.setAttribute("aria-expanded", "true");
+            }
+        });
+    });
+}
+
+function initializeLeadForm() {
+    const leadForm = document.getElementById("leadForm");
+
+    if (!leadForm) {
+        return;
+    }
+
+    leadForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        const name = document.getElementById("leadName")?.value.trim() || "Sin nombre";
+        const capital = Number(document.getElementById("leadCapital")?.value || 0);
+        const profile = document.getElementById("leadProfile")?.value || "Inversor individual";
+        const message = document.getElementById("leadMessage")?.value.trim() || "Quiero recibir mas informacion sobre la propuesta.";
+
+        const formattedCapital = capital > 0 ? arsFormatter.format(capital) : "No especificado";
+        const whatsappMessage = [
+            "Hola, quiero consultar por Max Group Fitness Capital.",
+            `Nombre: ${name}`,
+            `Perfil: ${profile}`,
+            `Capital estimado: ${formattedCapital}`,
+            `Mensaje: ${message}`
+        ].join("\n");
+
+        const whatsappUrl = `https://wa.me/5492215047962?text=${encodeURIComponent(whatsappMessage)}`;
+        window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+    });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     initializeRevealAnimations();
     initializeCounters();
     initializeCharts();
     initializeCalculator();
     initializeSmoothLinks();
+    initializeFaq();
+    initializeLeadForm();
 });
