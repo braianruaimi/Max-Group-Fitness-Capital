@@ -233,6 +233,8 @@ input {
     align-items: center;
     min-height: calc(100vh - 110px);
     padding-top: 56px;
+    --hero-parallax-x: 0px;
+    --hero-parallax-y: 0px;
 }
 
 .eyebrow {
@@ -354,6 +356,12 @@ h3 {
 
 .hero-copy {
     position: relative;
+    transform-style: preserve-3d;
+    transition: transform 180ms ease-out;
+}
+
+.hero-copy.is-visible {
+    transform: translate3d(calc(var(--hero-parallax-x) * -0.32), calc(var(--hero-parallax-y) * -0.24), 0);
 }
 
 .hero-copy::after {
@@ -455,6 +463,15 @@ h3 {
 .hero-visual {
     position: relative;
     min-height: 560px;
+    transform-style: preserve-3d;
+    transition: transform 220ms ease-out;
+}
+
+.hero-visual.is-visible {
+    transform:
+        translate3d(calc(var(--hero-parallax-x) * 0.42), calc(var(--hero-parallax-y) * 0.34), 0)
+        rotateX(calc(var(--hero-parallax-y) * -0.05deg))
+        rotateY(calc(var(--hero-parallax-x) * 0.07deg));
 }
 
 .hero-panel-main,
@@ -940,6 +957,43 @@ h3 {
 }
 
 .dashboard-chart,
+.dashboard-side {
+    position: relative;
+    overflow: hidden;
+}
+
+.dashboard-chart::after,
+.dashboard-side::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(110deg, transparent 18%, rgba(16, 213, 255, 0.16) 46%, rgba(255, 255, 255, 0.08) 50%, transparent 78%);
+    transform: translateX(-140%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.dashboard-chart canvas,
+.dashboard-side canvas {
+    opacity: 0;
+    transform: translateY(22px) scale(0.96);
+    filter: blur(6px);
+    transition: opacity 700ms ease, transform 700ms ease, filter 700ms ease;
+}
+
+.dashboard-chart.charts-live canvas,
+.dashboard-side.charts-live canvas {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+}
+
+.dashboard-chart.charts-live::after,
+.dashboard-side.charts-live::after {
+    animation: chartSweep 1.35s ease forwards;
+}
+
+.dashboard-chart,
 .dashboard-side,
 .calculator-form,
 .calculator-results {
@@ -1260,6 +1314,22 @@ canvas {
     }
 }
 
+@keyframes chartSweep {
+    0% {
+        opacity: 0;
+        transform: translateX(-140%);
+    }
+
+    16% {
+        opacity: 0.9;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(150%);
+    }
+}
+
 @keyframes auroraDrift {
     0%,
     100% {
@@ -1332,6 +1402,11 @@ canvas {
 
     .hero {
         padding-top: 30px;
+    }
+
+    .hero-copy.is-visible,
+    .hero-visual.is-visible {
+        transform: none;
     }
 
     .grid-overlay {

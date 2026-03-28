@@ -90,106 +90,211 @@ function initializeCounters() {
 function initializeCharts() {
     const growthCanvas = document.getElementById("growthChart");
     const distributionCanvas = document.getElementById("distributionChart");
+    const dashboardSection = document.getElementById("dashboard");
+    const growthCard = document.querySelector(".dashboard-chart");
+    const distributionCard = document.querySelector(".dashboard-side");
 
-    if (!growthCanvas || !distributionCanvas || typeof Chart === "undefined") {
+    if (!growthCanvas || !distributionCanvas || !dashboardSection || typeof Chart === "undefined") {
         return;
     }
 
-    Chart.defaults.color = "#b8c4ea";
-    Chart.defaults.font.family = "Inter";
-    Chart.defaults.borderColor = "rgba(255, 255, 255, 0.08)";
+    let chartsInitialized = false;
 
-    const growthContext = growthCanvas.getContext("2d");
-    const growthGradient = growthContext.createLinearGradient(0, 0, 0, 320);
-    growthGradient.addColorStop(0, "rgba(16, 213, 255, 0.4)");
-    growthGradient.addColorStop(0.45, "rgba(123, 44, 255, 0.24)");
-    growthGradient.addColorStop(1, "rgba(123, 44, 255, 0.02)");
+    function createCharts() {
+        if (chartsInitialized) {
+            return;
+        }
 
-    new Chart(growthContext, {
-        type: "line",
-        data: {
-            labels: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
-            datasets: [{
-                label: "Crecimiento proyectado",
-                data: [18, 24, 31, 38, 44, 49, 57, 63, 68, 74, 81, 89],
-                borderColor: "#10d5ff",
-                backgroundColor: growthGradient,
-                fill: true,
-                borderWidth: 3,
-                tension: 0.35,
-                pointRadius: 0,
-                pointHoverRadius: 5,
-                pointHoverBackgroundColor: "#ffffff"
-            }]
-        },
-        options: {
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false
-                },
-                tooltip: {
-                    backgroundColor: "rgba(4, 8, 19, 0.94)",
-                    borderColor: "rgba(16, 213, 255, 0.32)",
-                    borderWidth: 1,
-                    titleColor: "#ffffff",
-                    bodyColor: "#d5deff",
-                    displayColors: false
-                }
+        chartsInitialized = true;
+        Chart.defaults.color = "#b8c4ea";
+        Chart.defaults.font.family = "Inter";
+        Chart.defaults.borderColor = "rgba(255, 255, 255, 0.08)";
+
+        const growthContext = growthCanvas.getContext("2d");
+        const growthGradient = growthContext.createLinearGradient(0, 0, 0, 320);
+        growthGradient.addColorStop(0, "rgba(16, 213, 255, 0.4)");
+        growthGradient.addColorStop(0.45, "rgba(123, 44, 255, 0.24)");
+        growthGradient.addColorStop(1, "rgba(123, 44, 255, 0.02)");
+
+        if (growthCard) {
+            growthCard.classList.add("charts-live");
+        }
+
+        new Chart(growthContext, {
+            type: "line",
+            data: {
+                labels: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+                datasets: [{
+                    label: "Crecimiento proyectado",
+                    data: [18, 24, 31, 38, 44, 49, 57, 63, 68, 74, 81, 89],
+                    borderColor: "#10d5ff",
+                    backgroundColor: growthGradient,
+                    fill: true,
+                    borderWidth: 3,
+                    tension: 0.35,
+                    pointRadius: 0,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: "#ffffff"
+                }]
             },
-            scales: {
-                y: {
-                    grid: {
-                        color: "rgba(255, 255, 255, 0.06)"
+            options: {
+                maintainAspectRatio: false,
+                animation: {
+                    duration: 1800,
+                    easing: "easeOutQuart"
+                },
+                plugins: {
+                    legend: {
+                        display: false
                     },
-                    ticks: {
-                        callback(value) {
-                            return `${value}%`;
+                    tooltip: {
+                        backgroundColor: "rgba(4, 8, 19, 0.94)",
+                        borderColor: "rgba(16, 213, 255, 0.32)",
+                        borderWidth: 1,
+                        titleColor: "#ffffff",
+                        bodyColor: "#d5deff",
+                        displayColors: false
+                    }
+                },
+                scales: {
+                    y: {
+                        grid: {
+                            color: "rgba(255, 255, 255, 0.06)"
+                        },
+                        ticks: {
+                            callback(value) {
+                                return `${value}%`;
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
                         }
                     }
-                },
-                x: {
-                    grid: {
-                        display: false
-                    }
                 }
             }
-        }
+        });
+
+        window.setTimeout(() => {
+            if (distributionCard) {
+                distributionCard.classList.add("charts-live");
+            }
+
+            new Chart(distributionCanvas.getContext("2d"), {
+                type: "doughnut",
+                data: {
+                    labels: ["Ateneo Gym", "Mujeres Gym", "Nueva sede", "Suplementos"],
+                    datasets: [{
+                        data: [38, 24, 21, 17],
+                        backgroundColor: ["#7b2cff", "#10d5ff", "#2affc8", "#ff3fd1"],
+                        borderWidth: 0,
+                        hoverOffset: 6
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    cutout: "72%",
+                    animation: {
+                        duration: 1650,
+                        easing: "easeOutQuart"
+                    },
+                    plugins: {
+                        legend: {
+                            position: "bottom",
+                            labels: {
+                                color: "#d5deff",
+                                usePointStyle: true,
+                                pointStyle: "circle",
+                                padding: 18
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: "rgba(4, 8, 19, 0.94)",
+                            borderColor: "rgba(123, 44, 255, 0.35)",
+                            borderWidth: 1,
+                            titleColor: "#ffffff",
+                            bodyColor: "#d5deff"
+                        }
+                    }
+                }
+            });
+        }, 220);
+    }
+
+    const chartObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (!entry.isIntersecting) {
+                return;
+            }
+
+            createCharts();
+            chartObserver.unobserve(entry.target);
+        });
+    }, {
+        threshold: 0.35
     });
 
-    new Chart(distributionCanvas.getContext("2d"), {
-        type: "doughnut",
-        data: {
-            labels: ["Ateneo Gym", "Mujeres Gym", "Nueva sede", "Suplementos"],
-            datasets: [{
-                data: [38, 24, 21, 17],
-                backgroundColor: ["#7b2cff", "#10d5ff", "#2affc8", "#ff3fd1"],
-                borderWidth: 0,
-                hoverOffset: 6
-            }]
-        },
-        options: {
-            maintainAspectRatio: false,
-            cutout: "72%",
-            plugins: {
-                legend: {
-                    position: "bottom",
-                    labels: {
-                        color: "#d5deff",
-                        usePointStyle: true,
-                        pointStyle: "circle",
-                        padding: 18
-                    }
-                },
-                tooltip: {
-                    backgroundColor: "rgba(4, 8, 19, 0.94)",
-                    borderColor: "rgba(123, 44, 255, 0.35)",
-                    borderWidth: 1,
-                    titleColor: "#ffffff",
-                    bodyColor: "#d5deff"
-                }
-            }
+    chartObserver.observe(dashboardSection);
+}
+
+function initializeHeroParallax() {
+    const heroSection = document.querySelector(".hero");
+
+    if (!heroSection) {
+        return;
+    }
+
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const hasFinePointer = window.matchMedia("(pointer: fine)").matches;
+
+    if (prefersReducedMotion || !hasFinePointer) {
+        return;
+    }
+
+    let currentX = 0;
+    let currentY = 0;
+    let targetX = 0;
+    let targetY = 0;
+    let animationFrameId = null;
+
+    function renderParallax() {
+        currentX += (targetX - currentX) * 0.08;
+        currentY += (targetY - currentY) * 0.08;
+
+        heroSection.style.setProperty("--hero-parallax-x", `${currentX.toFixed(2)}px`);
+        heroSection.style.setProperty("--hero-parallax-y", `${currentY.toFixed(2)}px`);
+
+        if (Math.abs(targetX - currentX) > 0.1 || Math.abs(targetY - currentY) > 0.1) {
+            animationFrameId = requestAnimationFrame(renderParallax);
+            return;
         }
+
+        animationFrameId = null;
+    }
+
+    function requestParallaxFrame() {
+        if (animationFrameId !== null) {
+            return;
+        }
+
+        animationFrameId = requestAnimationFrame(renderParallax);
+    }
+
+    heroSection.addEventListener("pointermove", (event) => {
+        const rect = heroSection.getBoundingClientRect();
+        const offsetX = (event.clientX - rect.left) / rect.width - 0.5;
+        const offsetY = (event.clientY - rect.top) / rect.height - 0.5;
+
+        targetX = offsetX * 26;
+        targetY = offsetY * 20;
+        requestParallaxFrame();
+    });
+
+    heroSection.addEventListener("pointerleave", () => {
+        targetX = 0;
+        targetY = 0;
+        requestParallaxFrame();
     });
 }
 
@@ -345,6 +450,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initializeCounters();
     initializeCharts();
     initializeCalculator();
+    initializeHeroParallax();
     initializeSmoothLinks();
     initializeFaq();
     initializeLeadForm();
