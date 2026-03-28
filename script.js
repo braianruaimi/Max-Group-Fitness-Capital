@@ -677,11 +677,13 @@ function initializeCalculator() {
     const quarterResult = document.getElementById("quarterResult");
     const totalResult = document.getElementById("totalResult");
     const semiannualResult = document.getElementById("semiannualResult");
+    const semiannualGainResult = document.getElementById("semiannualGainResult");
     const annualResult = document.getElementById("annualResult");
+    const annualGainResult = document.getElementById("annualGainResult");
     const growthSummary = document.getElementById("growthSummary");
     const presetButtons = document.querySelectorAll(".preset-button");
 
-    if (!amountInput || !investedResult || !monthlyResult || !quarterResult || !totalResult || !semiannualResult || !annualResult || !growthSummary) {
+    if (!amountInput || !investedResult || !monthlyResult || !quarterResult || !totalResult || !semiannualResult || !semiannualGainResult || !annualResult || !annualGainResult || !growthSummary) {
         return;
     }
 
@@ -717,7 +719,9 @@ function initializeCalculator() {
         const quarter = amount * 0.12;
         const total = amount + quarter;
         const semiannualTotal = amount * 1.24;
+        const semiannualGain = semiannualTotal - amount;
         const annualTotal = amount * 1.48;
+        const annualGain = annualTotal - amount;
 
         syncPresetState(amount);
 
@@ -742,12 +746,20 @@ function initializeCalculator() {
             duration: 1080,
             formatter: (value) => arsFormatter.format(Math.round(value))
         });
+        animateValue(semiannualGainResult, semiannualGain, {
+            duration: 1120,
+            formatter: (value) => arsFormatter.format(Math.round(value))
+        });
         animateValue(annualResult, annualTotal, {
             duration: 1180,
             formatter: (value) => arsFormatter.format(Math.round(value))
         });
+        animateValue(annualGainResult, annualGain, {
+            duration: 1220,
+            formatter: (value) => arsFormatter.format(Math.round(value))
+        });
 
-        growthSummary.textContent = `Invertis ${arsFormatter.format(amount)}. La ganancia mensual proyectada es ${arsFormatter.format(Math.round(monthly))}, a 90 dias seria ${arsFormatter.format(Math.round(quarter))}, a 6 meses el capital total estimado alcanzaria ${arsFormatter.format(Math.round(semiannualTotal))} y a 12 meses ${arsFormatter.format(Math.round(annualTotal))}.`;
+        growthSummary.textContent = `Invertis ${arsFormatter.format(amount)}. La ganancia mensual proyectada es ${arsFormatter.format(Math.round(monthly))}, a 90 dias seria ${arsFormatter.format(Math.round(quarter))}, a 6 meses la ganancia neta estimada seria ${arsFormatter.format(Math.round(semiannualGain))} con un capital total de ${arsFormatter.format(Math.round(semiannualTotal))}, y a 12 meses la ganancia neta estimada seria ${arsFormatter.format(Math.round(annualGain))} con un capital total de ${arsFormatter.format(Math.round(annualTotal))}.`;
     }
 
     amountInput.addEventListener("input", () => {
