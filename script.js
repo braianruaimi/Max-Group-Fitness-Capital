@@ -672,12 +672,14 @@ function initializeTiltCards() {
 
 function initializeCalculator() {
     const amountInput = document.getElementById("investmentAmount");
+    const investedResult = document.getElementById("investedResult");
     const monthlyResult = document.getElementById("monthlyResult");
     const quarterResult = document.getElementById("quarterResult");
     const totalResult = document.getElementById("totalResult");
+    const growthSummary = document.getElementById("growthSummary");
     const presetButtons = document.querySelectorAll(".preset-button");
 
-    if (!amountInput || !monthlyResult || !quarterResult || !totalResult) {
+    if (!amountInput || !investedResult || !monthlyResult || !quarterResult || !totalResult || !growthSummary) {
         return;
     }
 
@@ -698,13 +700,27 @@ function initializeCalculator() {
         });
     }
 
-    function updateCalculator() {
-        const amount = Math.max(parseAmount(amountInput.value), 0);
+    function setCalculatorAmount(amount) {
+        const safeAmount = Math.max(Number(amount) || 0, 0);
+        amountInput.value = formatAmount(String(safeAmount));
+        amountInput.dataset.rawAmount = String(safeAmount);
+        updateCalculator(safeAmount);
+    }
+
+    function updateCalculator(forcedAmount) {
+        const amount = typeof forcedAmount === "number"
+            ? Math.max(forcedAmount, 0)
+            : Math.max(parseAmount(amountInput.value), 0);
         const monthly = amount * 0.04;
         const quarter = amount * 0.12;
         const total = amount + quarter;
 
         syncPresetState(amount);
+
+        animateValue(investedResult, amount, {
+            duration: 620,
+            formatter: (value) => arsFormatter.format(Math.round(value))
+        });
 
         animateValue(monthlyResult, monthly, {
             duration: 700,
@@ -718,11 +734,15 @@ function initializeCalculator() {
             duration: 980,
             formatter: (value) => arsFormatter.format(Math.round(value))
         });
+
+        growthSummary.textContent = `Invertis ${arsFormatter.format(amount)}. La ganancia mensual proyectada es ${arsFormatter.format(Math.round(monthly))}, a 90 dias seria ${arsFormatter.format(Math.round(quarter))} y el capital total estimado alcanzaria ${arsFormatter.format(Math.round(total))}.`;
     }
 
     amountInput.addEventListener("input", () => {
+        const amount = parseAmount(amountInput.value);
         amountInput.value = formatAmount(amountInput.value);
-        updateCalculator();
+        amountInput.dataset.rawAmount = String(amount);
+        updateCalculator(amount);
     });
 
     amountInput.addEventListener("blur", () => {
@@ -732,14 +752,12 @@ function initializeCalculator() {
     presetButtons.forEach((button) => {
         button.addEventListener("click", () => {
             const presetAmount = Number(button.dataset.amount || 0);
-            amountInput.value = formatAmount(String(presetAmount));
-            updateCalculator();
+            setCalculatorAmount(presetAmount);
             amountInput.focus();
         });
     });
 
-    amountInput.value = formatAmount(amountInput.value);
-    updateCalculator();
+    setCalculatorAmount(parseAmount(amountInput.value));
 }
 
 function initializeSmoothLinks() {
