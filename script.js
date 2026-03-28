@@ -73,6 +73,47 @@ function initializeRevealAnimations() {
     revealElements.forEach((element) => observer.observe(element));
 }
 
+function initializeSectionTransitions() {
+    const sections = document.querySelectorAll("main .section");
+
+    if (!sections.length) {
+        return;
+    }
+
+    const sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            entry.target.classList.toggle("is-active", entry.isIntersecting && entry.intersectionRatio > 0.35);
+        });
+    }, {
+        threshold: [0.2, 0.35, 0.55]
+    });
+
+    sections.forEach((section) => sectionObserver.observe(section));
+}
+
+function initializeHeroCinematic() {
+    const heroSection = document.querySelector(".hero");
+
+    if (!heroSection) {
+        return;
+    }
+
+    const heroObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (!entry.isIntersecting) {
+                return;
+            }
+
+            heroSection.classList.add("is-live");
+            heroObserver.unobserve(entry.target);
+        });
+    }, {
+        threshold: 0.45
+    });
+
+    heroObserver.observe(heroSection);
+}
+
 function initializeCounters() {
     const counterElements = document.querySelectorAll("[data-counter]");
     const counterObserver = new IntersectionObserver((entries) => {
@@ -408,6 +449,7 @@ function initializeTiltCards() {
         let currentOpacity = 0;
         const strength = Number(card.dataset.tiltStrength || 12);
         const lift = Number(card.dataset.tiltLift || 4);
+        const tiltLayers = card.querySelectorAll("[data-tilt-layer]");
 
         card.style.setProperty("--tilt-lift", `${lift}px`);
 
@@ -424,6 +466,14 @@ function initializeTiltCards() {
             card.style.setProperty("--glare-y", `${currentGlareY.toFixed(2)}%`);
             card.style.setProperty("--glare-opacity", `${currentOpacity.toFixed(3)}`);
 
+            tiltLayers.forEach((layer) => {
+                const depth = Number(layer.dataset.tiltLayer || 0.12);
+                const layerX = currentRotateY * depth * 1.2;
+                const layerY = currentRotateX * depth * -1.2;
+                const layerZ = depth * 28;
+                layer.style.transform = `translate3d(${layerX.toFixed(2)}px, ${layerY.toFixed(2)}px, ${layerZ.toFixed(2)}px)`;
+            });
+
             if (
                 Math.abs(targetRotateX - currentRotateX) > 0.05 ||
                 Math.abs(targetRotateY - currentRotateY) > 0.05 ||
@@ -437,6 +487,9 @@ function initializeTiltCards() {
 
             if (targetOpacity <= 0.01) {
                 card.classList.remove("is-tilting");
+                tiltLayers.forEach((layer) => {
+                    layer.style.transform = "translate3d(0px, 0px, 0px)";
+                });
             }
 
             frameId = null;
@@ -627,6 +680,8 @@ function initializeLeadForm() {
 
 document.addEventListener("DOMContentLoaded", () => {
     initializeRevealAnimations();
+    initializeSectionTransitions();
+    initializeHeroCinematic();
     initializeCounters();
     initializeCharts();
     initializeBackgroundParallax();
