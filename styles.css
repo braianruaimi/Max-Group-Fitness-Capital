@@ -446,14 +446,16 @@ h3 {
 }
 
 .thesis-grid,
-.testimonial-grid {
+.testimonial-grid,
+.capital-structure-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 18px;
 }
 
 .thesis-card,
-.testimonial-card {
+.testimonial-card,
+.structure-card {
     padding: 24px;
     border-radius: var(--radius-lg);
 }
@@ -533,6 +535,21 @@ h3 {
 .testimonial-meta strong {
     display: block;
     margin-bottom: 6px;
+}
+
+.structure-list {
+    margin: 16px 0 0;
+    padding-left: 18px;
+    color: var(--muted);
+    line-height: 1.9;
+}
+
+.structure-list li + li {
+    margin-top: 6px;
+}
+
+.structure-list-ordered {
+    padding-left: 20px;
 }
 
 .faq-contact-layout {
