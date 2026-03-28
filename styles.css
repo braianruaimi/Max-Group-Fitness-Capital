@@ -434,6 +434,34 @@ h3 {
     border-color: rgba(123, 44, 255, 0.24);
 }
 
+.tilt-card {
+    position: relative;
+    transform-style: preserve-3d;
+    will-change: transform;
+    transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+    --tilt-x: 0deg;
+    --tilt-y: 0deg;
+    --glare-x: 50%;
+    --glare-y: 50%;
+    --glare-opacity: 0;
+}
+
+.tilt-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(circle at var(--glare-x) var(--glare-y), rgba(255, 255, 255, 0.16), rgba(16, 213, 255, 0.1) 18%, transparent 52%);
+    opacity: var(--glare-opacity);
+    transition: opacity 220ms ease;
+    pointer-events: none;
+}
+
+.tilt-card.is-tilting {
+    transform: perspective(1200px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) translateY(-4px);
+    box-shadow: 0 22px 50px rgba(0, 0, 0, 0.42), 0 0 18px rgba(16, 213, 255, 0.08);
+}
+
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -905,6 +933,12 @@ h3 {
     transform: translateY(-8px);
     border-color: rgba(137, 82, 255, 0.42);
     box-shadow: 0 28px 60px rgba(10, 13, 30, 0.52);
+}
+
+.ecosystem-card.is-tilting {
+    transform: perspective(1200px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) translateY(-8px);
+    border-color: rgba(16, 213, 255, 0.32);
+    box-shadow: 0 30px 60px rgba(10, 13, 30, 0.56), 0 0 18px rgba(16, 213, 255, 0.08);
 }
 
 .card-icon {
@@ -1406,6 +1440,11 @@ canvas {
 
     .hero-copy.is-visible,
     .hero-visual.is-visible {
+        transform: none;
+    }
+
+    .tilt-card.is-tilting,
+    .ecosystem-card.is-tilting {
         transform: none;
     }
 

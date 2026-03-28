@@ -298,6 +298,96 @@ function initializeHeroParallax() {
     });
 }
 
+function initializeTiltCards() {
+    const tiltCards = document.querySelectorAll(".tilt-card");
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const hasFinePointer = window.matchMedia("(pointer: fine)").matches;
+
+    if (prefersReducedMotion || !hasFinePointer) {
+        return;
+    }
+
+    tiltCards.forEach((card) => {
+        let frameId = null;
+        let targetRotateX = 0;
+        let targetRotateY = 0;
+        let currentRotateX = 0;
+        let currentRotateY = 0;
+        let targetGlareX = 50;
+        let targetGlareY = 50;
+        let currentGlareX = 50;
+        let currentGlareY = 50;
+        let targetOpacity = 0;
+        let currentOpacity = 0;
+        const strength = Number(card.dataset.tiltStrength || 12);
+
+        function renderTilt() {
+            currentRotateX += (targetRotateX - currentRotateX) * 0.14;
+            currentRotateY += (targetRotateY - currentRotateY) * 0.14;
+            currentGlareX += (targetGlareX - currentGlareX) * 0.14;
+            currentGlareY += (targetGlareY - currentGlareY) * 0.14;
+            currentOpacity += (targetOpacity - currentOpacity) * 0.16;
+
+            card.style.setProperty("--tilt-x", `${currentRotateX.toFixed(2)}deg`);
+            card.style.setProperty("--tilt-y", `${currentRotateY.toFixed(2)}deg`);
+            card.style.setProperty("--glare-x", `${currentGlareX.toFixed(2)}%`);
+            card.style.setProperty("--glare-y", `${currentGlareY.toFixed(2)}%`);
+            card.style.setProperty("--glare-opacity", `${currentOpacity.toFixed(3)}`);
+
+            if (
+                Math.abs(targetRotateX - currentRotateX) > 0.05 ||
+                Math.abs(targetRotateY - currentRotateY) > 0.05 ||
+                Math.abs(targetGlareX - currentGlareX) > 0.2 ||
+                Math.abs(targetGlareY - currentGlareY) > 0.2 ||
+                Math.abs(targetOpacity - currentOpacity) > 0.01
+            ) {
+                frameId = requestAnimationFrame(renderTilt);
+                return;
+            }
+
+            if (targetOpacity <= 0.01) {
+                card.classList.remove("is-tilting");
+            }
+
+            frameId = null;
+        }
+
+        function requestTiltFrame() {
+            if (frameId !== null) {
+                return;
+            }
+
+            frameId = requestAnimationFrame(renderTilt);
+        }
+
+        card.addEventListener("pointermove", (event) => {
+            const rect = card.getBoundingClientRect();
+            const offsetX = (event.clientX - rect.left) / rect.width;
+            const offsetY = (event.clientY - rect.top) / rect.height;
+            const centeredX = offsetX - 0.5;
+            const centeredY = offsetY - 0.5;
+
+            targetRotateX = centeredY * -strength;
+            targetRotateY = centeredX * strength;
+            targetGlareX = offsetX * 100;
+            targetGlareY = offsetY * 100;
+            targetOpacity = 1;
+
+            card.classList.add("is-tilting");
+            requestTiltFrame();
+        });
+
+        card.addEventListener("pointerleave", () => {
+            targetRotateX = 0;
+            targetRotateY = 0;
+            targetGlareX = 50;
+            targetGlareY = 50;
+            targetOpacity = 0;
+            requestTiltFrame();
+        });
+    });
+}
+
 function initializeCalculator() {
     const amountInput = document.getElementById("investmentAmount");
     const monthlyResult = document.getElementById("monthlyResult");
@@ -451,6 +541,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initializeCharts();
     initializeCalculator();
     initializeHeroParallax();
+    initializeTiltCards();
     initializeSmoothLinks();
     initializeFaq();
     initializeLeadForm();
