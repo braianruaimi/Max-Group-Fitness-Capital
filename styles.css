@@ -912,6 +912,18 @@ h3 {
     line-height: 1.78;
 }
 
+.investor-proof-note {
+    max-width: 980px;
+    margin: -6px auto 20px;
+    padding: 14px 18px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.7;
+}
+
 .blindada-icon {
     display: inline-flex;
     align-items: center;
