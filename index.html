@@ -33,7 +33,7 @@
             <a href="#calculator">Calculadora</a>
             <a href="#contact">Contacto</a>
         </nav>
-        <a class="button button-ghost" href="https://wa.me/5492215047962?text=Quiero%20invertir%20en%20Max%20Group%20Fitness%20Capital" target="_blank" rel="noreferrer">Invertir ahora</a>
+        <a class="button button-ghost contact-trigger" href="#contact-modal">Invertir ahora</a>
     </header>
 
     <main>
@@ -44,7 +44,7 @@
                 <p class="hero-subheadline hero-intro-item intro-3">Propuesta de inversion sobre una operacion fitness activa, con base operativa en La Plata, multiples unidades de negocio, diversificacion comercial y retorno mensual proyectado.</p>
                 <div class="hero-actions hero-intro-item intro-4">
                     <a class="button button-primary scroll-link" href="#calculator">Simular inversion</a>
-                    <a class="button button-secondary" href="https://wa.me/5492215047962?text=Quiero%20invertir%20en%20Max%20Group%20Fitness%20Capital" target="_blank" rel="noreferrer">Invertir ahora</a>
+                    <a class="button button-secondary contact-trigger" href="#contact-modal">Invertir ahora</a>
                 </div>
                 <div class="stats-grid hero-intro-item intro-5">
                     <article class="stat-card glass reveal" data-delay="100">
@@ -256,6 +256,42 @@
                         </div>
                     </div>
                 </article>
+            </div>
+        </section>
+
+        <section class="section valuation-section">
+            <div class="glass valuation-panel reveal">
+                <div class="section-heading align-left compact-heading">
+                    <span class="eyebrow">Enterprise value</span>
+                    <h2>Valuacion consolidada estimada: USD 350.000</h2>
+                    <p>La valuacion consolidada actual del ecosistema, contemplando todas las marcas y su operacion conjunta, se presenta en USD 350.000 con una curva de crecimiento que registra subidas, ajustes tacticos y recuperacion sostenida.</p>
+                </div>
+                <div class="valuation-layout">
+                    <div class="valuation-copy">
+                        <div class="valuation-chip-row">
+                            <span class="card-chip">USD 350.000</span>
+                            <span class="card-chip">4 marcas integradas</span>
+                            <span class="card-chip">crecimiento consolidado</span>
+                        </div>
+                        <div class="valuation-metrics">
+                            <div class="valuation-metric">
+                                <span>Base anual</span>
+                                <strong>USD 230.000</strong>
+                            </div>
+                            <div class="valuation-metric">
+                                <span>Peak operativo</span>
+                                <strong>USD 350.000</strong>
+                            </div>
+                            <div class="valuation-metric">
+                                <span>Traccion actual</span>
+                                <strong>+52%</strong>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="valuation-chart-shell">
+                        <canvas id="valuationChart" aria-label="Grafico de valuacion consolidada" role="img"></canvas>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -472,34 +508,22 @@
                     <div class="section-heading align-left compact-heading">
                         <span class="eyebrow">Contacto</span>
                         <h2>Recibi la propuesta y seguí por WhatsApp</h2>
-                        <p>Completa estos datos y armamos un mensaje inicial listo para consulta directa con el equipo de Max Group Fitness Capital.</p>
+                        <p>Abri el formulario de inversion, carga tus datos y el sistema te arma el mensaje completo por WhatsApp con monto, plazo y retorno estimado.</p>
                     </div>
-                    <form id="leadForm" class="lead-form">
-                        <div class="form-grid">
-                            <label class="field">
-                                <span>Nombre</span>
-                                <input id="leadName" name="leadName" type="text" placeholder="Tu nombre" required>
-                            </label>
-                            <label class="field">
-                                <span>Monto estimado</span>
-                                <input id="leadCapital" name="leadCapital" type="number" min="2500000" step="50000" placeholder="2500000">
-                            </label>
+                    <div class="contact-launch-panel">
+                        <div class="valuation-metrics contact-launch-metrics">
+                            <div class="valuation-metric">
+                                <span>Campos requeridos</span>
+                                <strong>6 datos + plazo</strong>
+                            </div>
+                            <div class="valuation-metric">
+                                <span>Envio</span>
+                                <strong>WhatsApp directo</strong>
+                            </div>
                         </div>
-                        <label class="field">
-                            <span>Perfil</span>
-                            <select id="leadProfile" name="leadProfile">
-                                <option value="Inversor individual">Inversor individual</option>
-                                <option value="Socio estrategico">Socio estrategico</option>
-                                <option value="Capital para expansion">Capital para expansion</option>
-                            </select>
-                        </label>
-                        <label class="field">
-                            <span>Mensaje</span>
-                            <textarea id="leadMessage" name="leadMessage" rows="4" placeholder="Quiero conocer mas detalle sobre la estructura, condiciones y proyecciones."></textarea>
-                        </label>
-                        <button class="button button-primary" type="submit">Enviar por WhatsApp</button>
+                        <a class="button button-primary contact-trigger" href="#contact-modal">Abrir formulario de inversion</a>
                         <p class="contact-note">WhatsApp directo: +54 9 221 504 7962</p>
-                    </form>
+                    </div>
                 </article>
             </div>
         </section>
@@ -509,12 +533,81 @@
                 <span class="eyebrow">Next move</span>
                 <h2>Converti tu capital en crecimiento</h2>
                 <p>Si queres revisar la propuesta, el monto de ingreso, el horizonte minimo y la logica de crecimiento del proyecto, conversemos directo por WhatsApp.</p>
-                <a class="button button-primary" href="https://wa.me/5492215047962?text=Quiero%20recibir%20informacion%20para%20invertir%20en%20Max%20Group%20Fitness%20Capital" target="_blank" rel="noreferrer">WhatsApp</a>
+                <a class="button button-primary contact-trigger" href="#contact-modal">WhatsApp</a>
             </div>
         </section>
     </main>
 
-    <a class="whatsapp-float" href="https://wa.me/5492215047962?text=Quiero%20invertir%20en%20Max%20Group%20Fitness%20Capital" target="_blank" rel="noreferrer" aria-label="Contactar por WhatsApp">
+    <div class="contact-modal-backdrop" id="contactModalBackdrop" aria-hidden="true">
+        <div class="contact-modal glass" id="contactModal" role="dialog" aria-modal="true" aria-labelledby="contactModalTitle">
+            <button class="preview-close contact-modal-close" id="contactModalClose" type="button" aria-label="Cerrar formulario">X</button>
+            <div class="contact-modal-head">
+                <span class="eyebrow">Formulario de inversion</span>
+                <h2 id="contactModalTitle">Carga tus datos y envia la consulta por WhatsApp</h2>
+                <p>Completa tus datos, selecciona el plazo y visualiza en tiempo real el retorno estimado antes de enviar.</p>
+            </div>
+            <form id="contactModalForm" class="lead-form contact-modal-form">
+                <div class="form-grid">
+                    <label class="field">
+                        <span>Nombre y apellido</span>
+                        <input id="modalFullName" name="modalFullName" type="text" placeholder="Nombre completo" required>
+                    </label>
+                    <label class="field">
+                        <span>Domicilio</span>
+                        <input id="modalAddress" name="modalAddress" type="text" placeholder="Ciudad / domicilio" required>
+                    </label>
+                </div>
+                <div class="form-grid">
+                    <label class="field">
+                        <span>Numero de telefono</span>
+                        <input id="modalPhone" name="modalPhone" type="tel" placeholder="2215047962" required>
+                    </label>
+                    <label class="field">
+                        <span>Email</span>
+                        <input id="modalEmail" name="modalEmail" type="email" placeholder="correo@ejemplo.com" required>
+                    </label>
+                </div>
+                <div class="form-grid">
+                    <label class="field">
+                        <span>Monto a invertir</span>
+                        <input id="modalAmount" name="modalAmount" type="text" inputmode="numeric" placeholder="ARS 2.500.000" required>
+                    </label>
+                    <label class="field">
+                        <span>Plazo</span>
+                        <select id="modalTerm" name="modalTerm" required>
+                            <option value="3">3 meses</option>
+                            <option value="6">6 meses</option>
+                            <option value="12">12 meses</option>
+                        </select>
+                    </label>
+                </div>
+                <div class="contact-modal-results">
+                    <div class="result-card result-card-soft">
+                        <span>Ganancia estimada</span>
+                        <strong id="modalProjectedGain">$ 0</strong>
+                    </div>
+                    <div class="result-card highlight">
+                        <span>Capital total estimado</span>
+                        <strong id="modalProjectedTotal">$ 0</strong>
+                    </div>
+                </div>
+                <p class="calculator-summary" id="modalProjectedSummary">Selecciona monto y plazo para ver el retorno estimado.</p>
+                <button class="button button-primary" type="submit">Enviar por WhatsApp</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="success-modal-backdrop" id="successModalBackdrop" aria-hidden="true">
+        <div class="success-modal glass" id="successModal" role="dialog" aria-modal="true" aria-labelledby="successModalTitle">
+            <button class="preview-close contact-modal-close" id="successModalClose" type="button" aria-label="Cerrar confirmacion">X</button>
+            <span class="eyebrow">Operacion exitosa</span>
+            <h2 id="successModalTitle">Consulta preparada correctamente</h2>
+            <p>Tu mensaje fue generado y enviado al canal de WhatsApp para continuar la conversacion con Max Group Fitness Capital.</p>
+            <button class="button button-primary" id="successModalButton" type="button">Cerrar</button>
+        </div>
+    </div>
+
+    <a class="whatsapp-float contact-trigger" href="#contact-modal" aria-label="Contactar por WhatsApp">
         <span>WA</span>
     </a>
 

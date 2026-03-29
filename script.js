@@ -141,6 +141,7 @@ function initializeCounters() {
 function initializeCharts() {
     const growthCanvas = document.getElementById("growthChart");
     const distributionCanvas = document.getElementById("distributionChart");
+    const valuationCanvas = document.getElementById("valuationChart");
     const dashboardSection = document.getElementById("dashboard");
     const growthCard = document.querySelector(".dashboard-chart");
     const distributionCard = document.querySelector(".dashboard-side");
@@ -161,6 +162,7 @@ function initializeCharts() {
     }
 
     let chartsInitialized = false;
+    let valuationInitialized = false;
 
     function createCharts() {
         if (chartsInitialized) {
@@ -307,6 +309,99 @@ function initializeCharts() {
     });
 
     chartObserver.observe(dashboardSection);
+
+    if (valuationCanvas) {
+        const valuationSection = valuationCanvas.closest(".valuation-section");
+
+        function createValuationChart() {
+            if (valuationInitialized || typeof Chart === "undefined") {
+                return;
+            }
+
+            valuationInitialized = true;
+            const context = valuationCanvas.getContext("2d");
+            const gradient = context.createLinearGradient(0, 0, 0, 320);
+            gradient.addColorStop(0, "rgba(94, 242, 255, 0.28)");
+            gradient.addColorStop(0.55, "rgba(13, 226, 176, 0.16)");
+            gradient.addColorStop(1, "rgba(13, 226, 176, 0.02)");
+
+            new Chart(context, {
+                type: "line",
+                data: {
+                    labels: ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9"],
+                    datasets: [{
+                        label: "Valuacion consolidada",
+                        data: [230000, 248000, 239000, 268000, 287000, 276000, 309000, 332000, 350000],
+                        borderColor: "#5ef2ff",
+                        backgroundColor: gradient,
+                        fill: true,
+                        tension: 0.36,
+                        borderWidth: 3,
+                        pointRadius: 0,
+                        pointHoverRadius: 5,
+                        pointHoverBackgroundColor: "#c4fff3"
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 1600,
+                        easing: "easeOutQuart"
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: "rgba(4, 12, 20, 0.96)",
+                            borderColor: "rgba(94, 242, 255, 0.24)",
+                            borderWidth: 1,
+                            displayColors: false,
+                            callbacks: {
+                                label(context) {
+                                    return `USD ${integerFormatter.format(context.parsed.y)}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: "rgba(255, 255, 255, 0.05)"
+                            },
+                            ticks: {
+                                callback(value) {
+                                    return `USD ${integerFormatter.format(value)}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        if (valuationSection) {
+            const valuationObserver = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (!entry.isIntersecting) {
+                        return;
+                    }
+
+                    createValuationChart();
+                    valuationObserver.unobserve(entry.target);
+                });
+            }, {
+                threshold: 0.3
+            });
+
+            valuationObserver.observe(valuationSection);
+        }
+    }
 }
 
 function initializeBackgroundParallax() {
@@ -1112,6 +1207,166 @@ function initializeLeadForm() {
     });
 }
 
+function initializeContactModal() {
+    const contactTriggers = document.querySelectorAll(".contact-trigger");
+    const backdrop = document.getElementById("contactModalBackdrop");
+    const modal = document.getElementById("contactModal");
+    const closeButton = document.getElementById("contactModalClose");
+    const form = document.getElementById("contactModalForm");
+    const amountInput = document.getElementById("modalAmount");
+    const termSelect = document.getElementById("modalTerm");
+    const projectedGain = document.getElementById("modalProjectedGain");
+    const projectedTotal = document.getElementById("modalProjectedTotal");
+    const projectedSummary = document.getElementById("modalProjectedSummary");
+    const successBackdrop = document.getElementById("successModalBackdrop");
+    const successClose = document.getElementById("successModalClose");
+    const successButton = document.getElementById("successModalButton");
+    const calculatorAmountInput = document.getElementById("investmentAmount");
+
+    if (!contactTriggers.length || !backdrop || !modal || !closeButton || !form || !amountInput || !termSelect || !projectedGain || !projectedTotal || !projectedSummary || !successBackdrop || !successClose || !successButton) {
+        return;
+    }
+
+    function parseAmount(rawValue) {
+        const digits = rawValue.replace(/\D/g, "");
+        return Number(digits || 0);
+    }
+
+    function formatAmount(rawValue) {
+        const amount = parseAmount(rawValue);
+        return amount > 0 ? `ARS ${integerFormatter.format(amount)}` : "ARS ";
+    }
+
+    function calculateProjectedReturn(amount, months) {
+        const monthlyRate = 0.04;
+        const gain = amount * monthlyRate * months;
+        const total = amount + gain;
+        return { gain, total };
+    }
+
+    function syncProjection() {
+        const amount = parseAmount(amountInput.value);
+        const months = Number(termSelect.value || 3);
+        const { gain, total } = calculateProjectedReturn(amount, months);
+
+        animateValue(projectedGain, gain, {
+            duration: 620,
+            formatter: (value) => arsFormatter.format(Math.round(value))
+        });
+        animateValue(projectedTotal, total, {
+            duration: 760,
+            formatter: (value) => arsFormatter.format(Math.round(value))
+        });
+
+        projectedSummary.textContent = amount > 0
+            ? `Para ${arsFormatter.format(amount)} a ${months} meses, la ganancia estimada seria ${arsFormatter.format(Math.round(gain))} y el capital total proyectado ${arsFormatter.format(Math.round(total))}.`
+            : "Selecciona monto y plazo para ver el retorno estimado.";
+    }
+
+    function openModal(prefilledAmount = null) {
+        const sourceAmount = typeof prefilledAmount === "number" && prefilledAmount > 0
+            ? prefilledAmount
+            : parseAmount(calculatorAmountInput?.value || amountInput.value);
+
+        if (sourceAmount > 0) {
+            amountInput.value = formatAmount(String(sourceAmount));
+        } else if (!amountInput.value.trim()) {
+            amountInput.value = "ARS 2.500.000";
+        }
+
+        backdrop.classList.add("is-open");
+        backdrop.setAttribute("aria-hidden", "false");
+        document.body.classList.add("modal-open");
+        syncProjection();
+    }
+
+    function closeModal() {
+        backdrop.classList.remove("is-open");
+        backdrop.setAttribute("aria-hidden", "true");
+        document.body.classList.remove("modal-open");
+    }
+
+    function openSuccessModal() {
+        successBackdrop.classList.add("is-open");
+        successBackdrop.setAttribute("aria-hidden", "false");
+        document.body.classList.add("modal-open");
+    }
+
+    function closeSuccessModal() {
+        successBackdrop.classList.remove("is-open");
+        successBackdrop.setAttribute("aria-hidden", "true");
+        document.body.classList.remove("modal-open");
+    }
+
+    contactTriggers.forEach((trigger) => {
+        trigger.addEventListener("click", (event) => {
+            event.preventDefault();
+            openModal();
+        });
+    });
+
+    closeButton.addEventListener("click", closeModal);
+    backdrop.addEventListener("click", (event) => {
+        if (event.target === backdrop) {
+            closeModal();
+        }
+    });
+
+    successClose.addEventListener("click", closeSuccessModal);
+    successButton.addEventListener("click", closeSuccessModal);
+    successBackdrop.addEventListener("click", (event) => {
+        if (event.target === successBackdrop) {
+            closeSuccessModal();
+        }
+    });
+
+    amountInput.addEventListener("input", () => {
+        amountInput.value = formatAmount(amountInput.value);
+        syncProjection();
+    });
+
+    termSelect.addEventListener("change", syncProjection);
+
+    form.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        const fullName = document.getElementById("modalFullName")?.value.trim() || "Sin nombre";
+        const address = document.getElementById("modalAddress")?.value.trim() || "No informado";
+        const phone = document.getElementById("modalPhone")?.value.trim() || "No informado";
+        const email = document.getElementById("modalEmail")?.value.trim() || "No informado";
+        const amount = parseAmount(amountInput.value);
+        const months = Number(termSelect.value || 3);
+        const { gain, total } = calculateProjectedReturn(amount, months);
+
+        const whatsappMessage = [
+            "Hola, quiero avanzar con una consulta de inversion en Max Group Fitness Capital.",
+            `Nombre y apellido: ${fullName}`,
+            `Domicilio: ${address}`,
+            `Telefono: ${phone}`,
+            `Email: ${email}`,
+            `Monto a invertir: ${arsFormatter.format(amount)}`,
+            `Plazo seleccionado: ${months} meses`,
+            `Ganancia estimada: ${arsFormatter.format(Math.round(gain))}`,
+            `Capital total estimado: ${arsFormatter.format(Math.round(total))}`
+        ].join("\n");
+
+        const whatsappUrl = `https://wa.me/5492215047962?text=${encodeURIComponent(whatsappMessage)}`;
+        window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+        closeModal();
+        openSuccessModal();
+    });
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+            closeModal();
+            closeSuccessModal();
+        }
+    });
+
+    amountInput.value = formatAmount(calculatorAmountInput?.value || "2500000");
+    syncProjection();
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     initializeRevealAnimations();
     initializeSectionTransitions();
@@ -1123,6 +1378,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initializeDashboardLiveFeed();
     initializeEcosystemPreview();
     initializeCalculator();
+    initializeContactModal();
     initializeHeroParallax();
     initializeTiltCards();
     initializeSmoothLinks();
