@@ -36,7 +36,7 @@
             <a href="#leadership">Equipo</a>
             <a href="#contact">Contacto</a>
         </nav>
-        <a class="button button-ghost contact-trigger" href="#contact-modal">Solicitar acceso</a>
+        <a class="button button-ghost contact-trigger" data-contact-source="Topbar - Solicitar acceso" href="#contact-modal">Solicitar acceso</a>
     </header>
 
     <main>
@@ -47,7 +47,7 @@
                 <p class="hero-subheadline hero-intro-item intro-3">Capital orientado a activos tangibles, flujo operativo vigente y una estructura legal que busca convertir incertidumbre inflacionaria en posicionamiento patrimonial con respaldo visible.</p>
                 <div class="hero-actions hero-intro-item intro-4">
                     <a class="button button-primary scroll-link" href="#calculator">Calcular retorno</a>
-                    <a class="button button-secondary contact-trigger" href="#contact-modal">Solicitar propuesta</a>
+                    <a class="button button-secondary contact-trigger" data-contact-source="Hero - Solicitar propuesta" href="#contact-modal">Solicitar propuesta</a>
                 </div>
                 <div class="hero-proof hero-intro-item intro-5">
                     <span><i class="fa-solid fa-badge-check"></i> mutuo legal instrumentado</span>
@@ -819,7 +819,7 @@
                                 <strong>WhatsApp directo</strong>
                             </div>
                         </div>
-                        <a class="button button-primary contact-trigger" href="#contact-modal">Recibir propuesta por WhatsApp</a>
+                        <a class="button button-primary contact-trigger" data-contact-source="Contacto - Recibir propuesta por WhatsApp" href="#contact-modal">Recibir propuesta por WhatsApp</a>
                         <p class="contact-note">WhatsApp directo: +54 9 221 504 7962</p>
                     </div>
                 </article>
@@ -831,7 +831,7 @@
                 <span class="eyebrow">Capital defense</span>
                 <h2>No dejes tu capital mirando la inflacion desde afuera</h2>
                 <p>Si queres revisar la estructura legal, el respaldo en activos, el cupo disponible y la proyeccion de retorno, el siguiente paso es abrir el canal directo por WhatsApp.</p>
-                <a class="button button-primary contact-trigger glow-button" href="#contact-modal">Quiero evaluar el ingreso</a>
+                <a class="button button-primary contact-trigger glow-button" data-contact-source="CTA final - Quiero evaluar el ingreso" href="#contact-modal">Quiero evaluar el ingreso</a>
             </div>
         </section>
     </main>
@@ -843,6 +843,11 @@
                 <span class="eyebrow">Formulario de inversion</span>
                 <h2 id="contactModalTitle">Carga tus datos y envia la consulta por WhatsApp</h2>
                 <p>Completa tus datos, selecciona el plazo y visualiza en tiempo real el retorno estimado antes de enviar.</p>
+                <div class="contact-modal-badges">
+                    <span>Minimo ARS 2.500.000</span>
+                    <span>Respuesta guiada por WhatsApp</span>
+                    <span id="contactModalOriginBadge">Origen: acceso directo</span>
+                </div>
             </div>
             <form id="contactModalForm" class="lead-form contact-modal-form">
                 <div class="form-grid">
@@ -905,7 +910,57 @@
         </div>
     </div>
 
-    <a class="whatsapp-float contact-trigger" href="#contact-modal" aria-label="Contactar por WhatsApp">
+    <button class="metrics-float-button" id="metricsFloatButton" type="button" aria-label="Abrir panel de metricas">
+        <i class="fa-solid fa-chart-simple"></i>
+    </button>
+
+    <div class="metrics-panel glass" id="metricsPanel" aria-hidden="true">
+        <button class="preview-close metrics-panel-close" id="metricsPanelClose" type="button" aria-label="Cerrar panel de metricas">X</button>
+        <div class="metrics-panel-head">
+            <span class="eyebrow">Panel privado</span>
+            <h2>Metricas de click y view</h2>
+            <p>Acceso restringido para revisar visualizaciones, aperturas del modal y consultas enviadas.</p>
+        </div>
+        <div class="metrics-panel-lock" id="metricsPanelLock">
+            <label class="field">
+                <span>Contrasena</span>
+                <input id="metricsPassword" type="password" inputmode="numeric" placeholder="Ingresar clave" autocomplete="off">
+            </label>
+            <button class="button button-secondary" id="metricsUnlockButton" type="button">Ingresar</button>
+            <p class="metrics-panel-error" id="metricsPanelError" hidden>Contrasena incorrecta.</p>
+        </div>
+        <div class="metrics-panel-content" id="metricsPanelContent" hidden>
+            <div class="metrics-panel-grid">
+                <article class="result-card result-card-soft">
+                    <span>Views totales</span>
+                    <strong id="metricsPageViews">0</strong>
+                </article>
+                <article class="result-card result-card-soft">
+                    <span>Views de CTA</span>
+                    <strong id="metricsCtaViews">0</strong>
+                </article>
+                <article class="result-card result-card-soft">
+                    <span>Clicks en CTA</span>
+                    <strong id="metricsCtaClicks">0</strong>
+                </article>
+                <article class="result-card highlight">
+                    <span>Aperturas del modal</span>
+                    <strong id="metricsModalOpens">0</strong>
+                </article>
+                <article class="result-card result-card-soft">
+                    <span>Consultas a WhatsApp</span>
+                    <strong id="metricsWhatsappSubmissions">0</strong>
+                </article>
+                <article class="result-card result-card-soft">
+                    <span>Ultima actualizacion</span>
+                    <strong id="metricsLastUpdated">-</strong>
+                </article>
+            </div>
+            <div class="metrics-panel-breakdown" id="metricsBreakdown"></div>
+        </div>
+    </div>
+
+    <a class="whatsapp-float contact-trigger" data-contact-source="WhatsApp flotante" href="#contact-modal" aria-label="Contactar por WhatsApp">
         <span>WA</span>
     </a>
 

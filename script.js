@@ -10,6 +10,8 @@ const integerFormatter = new Intl.NumberFormat("es-AR", {
 
 const MINIMUM_INVESTMENT = 2500000;
 const FIXED_INCOME_QUARTERLY_RATE = 0.075;
+const METRICS_STORAGE_KEY = "maxGroupFitnessMetricsV1";
+const METRICS_PANEL_PASSWORD = "1234";
 
 const easeOutCubic = (progress) => 1 - Math.pow(1 - progress, 3);
 
@@ -26,6 +28,82 @@ function normalizeInvestmentAmount(rawValue) {
 function formatAmount(rawValue) {
     const amount = parseAmountValue(rawValue);
     return amount > 0 ? `ARS ${integerFormatter.format(amount)}` : "ARS ";
+}
+
+function getDefaultMetrics() {
+    return {
+        pageViews: 0,
+        modalOpens: 0,
+        whatsappSubmissions: 0,
+        triggerStats: {},
+        updatedAt: null
+    };
+}
+
+function readMetrics() {
+    try {
+        const rawMetrics = window.localStorage.getItem(METRICS_STORAGE_KEY);
+        if (!rawMetrics) {
+            return getDefaultMetrics();
+        }
+
+        return {
+            ...getDefaultMetrics(),
+            ...JSON.parse(rawMetrics)
+        };
+    } catch {
+        return getDefaultMetrics();
+    }
+}
+
+function writeMetrics(metrics) {
+    const payload = {
+        ...getDefaultMetrics(),
+        ...metrics,
+        updatedAt: new Date().toISOString()
+    };
+
+    try {
+        window.localStorage.setItem(METRICS_STORAGE_KEY, JSON.stringify(payload));
+    } catch {
+        return payload;
+    }
+
+    return payload;
+}
+
+function updateMetrics(mutator) {
+    const metrics = readMetrics();
+    mutator(metrics);
+    return writeMetrics(metrics);
+}
+
+function getMetricSourceLabel(element, fallbackLabel = "Acceso directo") {
+    return element?.dataset.contactSource || element?.getAttribute("aria-label") || element?.textContent?.trim() || fallbackLabel;
+}
+
+function incrementTriggerMetric(sourceLabel, metricKey) {
+    updateMetrics((metrics) => {
+        const metricSource = sourceLabel || "Acceso directo";
+        const currentStats = metrics.triggerStats[metricSource] || { views: 0, clicks: 0 };
+        currentStats[metricKey] += 1;
+        metrics.triggerStats[metricSource] = currentStats;
+    });
+}
+
+function formatMetricsTimestamp(timestamp) {
+    if (!timestamp) {
+        return "-";
+    }
+
+    try {
+        return new Intl.DateTimeFormat("es-AR", {
+            dateStyle: "short",
+            timeStyle: "short"
+        }).format(new Date(timestamp));
+    } catch {
+        return timestamp;
+    }
 }
 
 function animateCounterElement(element, duration = 1400) {
@@ -1240,6 +1318,8 @@ function initializeContactModal() {
     const successButton = document.getElementById("successModalButton");
     const calculatorAmountInput = document.getElementById("investmentAmount");
     const submitButton = form?.querySelector('button[type="submit"]');
+    const originBadge = document.getElementById("contactModalOriginBadge");
+    let activeSourceLabel = "Acceso directo";
 
     if (!contactTriggers.length || !backdrop || !modal || !closeButton || !form || !amountInput || !termSelect || !projectedGain || !projectedTotal || !projectedSummary || !successBackdrop || !successClose || !successButton || !submitButton) {
         return;
@@ -1276,16 +1356,23 @@ function initializeContactModal() {
             : `El monto minimo validado es ${arsFormatter.format(MINIMUM_INVESTMENT)}.`;
     }
 
-    function openModal(prefilledAmount = null) {
+    function openModal(prefilledAmount = null, sourceLabel = "Acceso directo") {
         const sourceAmount = typeof prefilledAmount === "number" && prefilledAmount > 0
             ? normalizeInvestmentAmount(prefilledAmount)
             : normalizeInvestmentAmount(calculatorAmountInput?.value || amountInput.value);
 
+        activeSourceLabel = sourceLabel;
         amountInput.value = formatAmount(String(sourceAmount));
+        if (originBadge) {
+            originBadge.textContent = `Origen: ${sourceLabel}`;
+        }
 
         backdrop.classList.add("is-open");
         backdrop.setAttribute("aria-hidden", "false");
         document.body.classList.add("modal-open");
+        updateMetrics((metrics) => {
+            metrics.modalOpens += 1;
+        });
         syncProjection();
     }
 
@@ -1308,10 +1395,31 @@ function initializeContactModal() {
     }
 
     contactTriggers.forEach((trigger) => {
+        const sourceLabel = getMetricSourceLabel(trigger);
+
         trigger.addEventListener("click", (event) => {
             event.preventDefault();
-            openModal();
+            incrementTriggerMetric(sourceLabel, "clicks");
+            openModal(null, sourceLabel);
         });
+    });
+
+    const triggerObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach((entry) => {
+            if (!entry.isIntersecting || entry.target.dataset.metricsViewed === "true") {
+                return;
+            }
+
+            entry.target.dataset.metricsViewed = "true";
+            incrementTriggerMetric(getMetricSourceLabel(entry.target), "views");
+            observer.unobserve(entry.target);
+        });
+    }, {
+        threshold: 0.55
+    });
+
+    contactTriggers.forEach((trigger) => {
+        triggerObserver.observe(trigger);
     });
 
     closeButton.addEventListener("click", closeModal);
@@ -1365,6 +1473,7 @@ function initializeContactModal() {
 
         const whatsappMessage = [
             "Hola, quiero avanzar con una consulta de inversion en Max Group Fitness Capital.",
+            `Origen de la solicitud: ${activeSourceLabel}`,
             `Nombre y apellido: ${fullName}`,
             `Domicilio: ${address}`,
             `Telefono: ${phone}`,
@@ -1376,6 +1485,9 @@ function initializeContactModal() {
         ].join("\n");
 
         const whatsappUrl = `https://wa.me/5492215047962?text=${encodeURIComponent(whatsappMessage)}`;
+        updateMetrics((metrics) => {
+            metrics.whatsappSubmissions += 1;
+        });
         window.open(whatsappUrl, "_blank", "noopener,noreferrer");
         closeModal();
         openSuccessModal();
@@ -1390,6 +1502,118 @@ function initializeContactModal() {
 
     amountInput.value = formatAmount(calculatorAmountInput?.value || "2500000");
     syncProjection();
+}
+
+function initializeMetricsPanel() {
+    const metricsButton = document.getElementById("metricsFloatButton");
+    const metricsPanel = document.getElementById("metricsPanel");
+    const closeButton = document.getElementById("metricsPanelClose");
+    const unlockButton = document.getElementById("metricsUnlockButton");
+    const passwordInput = document.getElementById("metricsPassword");
+    const errorMessage = document.getElementById("metricsPanelError");
+    const lockSection = document.getElementById("metricsPanelLock");
+    const contentSection = document.getElementById("metricsPanelContent");
+    const pageViewsElement = document.getElementById("metricsPageViews");
+    const ctaViewsElement = document.getElementById("metricsCtaViews");
+    const ctaClicksElement = document.getElementById("metricsCtaClicks");
+    const modalOpensElement = document.getElementById("metricsModalOpens");
+    const whatsappSubmissionsElement = document.getElementById("metricsWhatsappSubmissions");
+    const lastUpdatedElement = document.getElementById("metricsLastUpdated");
+    const breakdownElement = document.getElementById("metricsBreakdown");
+
+    if (!metricsButton || !metricsPanel || !closeButton || !unlockButton || !passwordInput || !errorMessage || !lockSection || !contentSection || !pageViewsElement || !ctaViewsElement || !ctaClicksElement || !modalOpensElement || !whatsappSubmissionsElement || !lastUpdatedElement || !breakdownElement) {
+        return;
+    }
+
+    let isUnlocked = false;
+
+    function renderMetrics() {
+        const metrics = readMetrics();
+        const triggerEntries = Object.entries(metrics.triggerStats || {});
+        const totalViews = triggerEntries.reduce((sum, [, stats]) => sum + (stats.views || 0), 0);
+        const totalClicks = triggerEntries.reduce((sum, [, stats]) => sum + (stats.clicks || 0), 0);
+
+        pageViewsElement.textContent = integerFormatter.format(metrics.pageViews || 0);
+        ctaViewsElement.textContent = integerFormatter.format(totalViews);
+        ctaClicksElement.textContent = integerFormatter.format(totalClicks);
+        modalOpensElement.textContent = integerFormatter.format(metrics.modalOpens || 0);
+        whatsappSubmissionsElement.textContent = integerFormatter.format(metrics.whatsappSubmissions || 0);
+        lastUpdatedElement.textContent = formatMetricsTimestamp(metrics.updatedAt);
+
+        breakdownElement.innerHTML = triggerEntries.length
+            ? triggerEntries
+                .sort((a, b) => (b[1].clicks || 0) - (a[1].clicks || 0))
+                .map(([label, stats]) => `
+                    <article class="metrics-breakdown-item">
+                        <strong>${label}</strong>
+                        <div class="metrics-breakdown-row"><span>Views</span><span>${integerFormatter.format(stats.views || 0)}</span></div>
+                        <div class="metrics-breakdown-row"><span>Clicks</span><span>${integerFormatter.format(stats.clicks || 0)}</span></div>
+                    </article>
+                `)
+                .join("")
+            : '<article class="metrics-breakdown-item"><strong>Sin datos aun</strong><div class="metrics-breakdown-row"><span>Views</span><span>0</span></div><div class="metrics-breakdown-row"><span>Clicks</span><span>0</span></div></article>';
+    }
+
+    function openPanel() {
+        metricsPanel.classList.add("is-open");
+        metricsPanel.setAttribute("aria-hidden", "false");
+        if (!isUnlocked) {
+            passwordInput.focus();
+            return;
+        }
+
+        renderMetrics();
+    }
+
+    function closePanel() {
+        metricsPanel.classList.remove("is-open");
+        metricsPanel.setAttribute("aria-hidden", "true");
+    }
+
+    function unlockPanel() {
+        const isValidPassword = passwordInput.value.trim() === METRICS_PANEL_PASSWORD;
+        errorMessage.hidden = isValidPassword;
+
+        if (!isValidPassword) {
+            return;
+        }
+
+        isUnlocked = true;
+        lockSection.hidden = true;
+        contentSection.hidden = false;
+        renderMetrics();
+    }
+
+    metricsButton.addEventListener("click", () => {
+        if (metricsPanel.classList.contains("is-open")) {
+            closePanel();
+            return;
+        }
+
+        openPanel();
+    });
+
+    closeButton.addEventListener("click", closePanel);
+    unlockButton.addEventListener("click", unlockPanel);
+    passwordInput.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            unlockPanel();
+        }
+    });
+
+    document.addEventListener("click", (event) => {
+        if (!metricsPanel.classList.contains("is-open")) {
+            return;
+        }
+
+        const target = event.target;
+        if (target.closest("#metricsPanel") || target.closest("#metricsFloatButton")) {
+            return;
+        }
+
+        closePanel();
+    });
 }
 
 function initializeInvestorProofSlider() {
@@ -1473,6 +1697,9 @@ function initializeInvestorProofSlider() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    updateMetrics((metrics) => {
+        metrics.pageViews += 1;
+    });
     initializeRevealAnimations();
     initializeSectionTransitions();
     initializeHeroCinematic();
@@ -1484,6 +1711,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initializeEcosystemPreview();
     initializeCalculator();
     initializeContactModal();
+    initializeMetricsPanel();
     initializeInvestorProofSlider();
     initializeHeroParallax();
     initializeTiltCards();
