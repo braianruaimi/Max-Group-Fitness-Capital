@@ -632,6 +632,7 @@ function initializeEcosystemPreview() {
     const previewTargetValue = document.getElementById("previewTargetValue");
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const hasFinePointer = window.matchMedia("(pointer: fine)").matches;
+    const sheetBreakpoint = window.matchMedia("(max-width: 820px)");
 
     if (!previewCards.length || !previewModal || !previewClose || !previewTitle || !previewDescription || !previewMetric || !previewCanvas || !previewBaseValue || !previewCurrentValue || !previewTargetValue) {
         return;
@@ -742,11 +743,16 @@ function initializeEcosystemPreview() {
             return;
         }
 
-        if (!hasFinePointer) {
-            previewModal.style.left = `${Math.max((window.innerWidth - previewModal.offsetWidth) / 2, 14)}px`;
-            previewModal.style.top = `${Math.max((window.innerHeight - previewModal.offsetHeight) / 2, 84)}px`;
+        if (!hasFinePointer || sheetBreakpoint.matches) {
+            previewModal.classList.add("is-sheet-mode");
+            previewModal.style.left = sheetBreakpoint.matches ? "14px" : `${Math.max((window.innerWidth - previewModal.offsetWidth) / 2, 14)}px`;
+            previewModal.style.top = "auto";
+            previewModal.style.bottom = sheetBreakpoint.matches ? "14px" : "84px";
             return;
         }
+
+        previewModal.classList.remove("is-sheet-mode");
+        previewModal.style.bottom = "auto";
 
         const rect = card.getBoundingClientRect();
         const modalWidth = previewModal.offsetWidth || 360;
@@ -783,6 +789,7 @@ function initializeEcosystemPreview() {
 
         previewModal.classList.add("is-open");
         previewModal.setAttribute("aria-hidden", "false");
+        document.body.classList.add("preview-open");
         positionModal(card);
         buildPreviewChart(points);
 
@@ -798,6 +805,7 @@ function initializeEcosystemPreview() {
 
         previewModal.classList.remove("is-open");
         previewModal.setAttribute("aria-hidden", "true");
+        document.body.classList.remove("preview-open");
         activeCard = null;
         pinnedOpen = false;
         setActiveCard(null);
