@@ -9,12 +9,7 @@ const integerFormatter = new Intl.NumberFormat("es-AR", {
 });
 
 const MINIMUM_INVESTMENT = 2500000;
-const INVESTMENT_STEP = 500000;
-const MAXIMUM_INVESTMENT = 10000000;
-const INVESTMENT_OPTIONS = Array.from(
-    { length: Math.floor((MAXIMUM_INVESTMENT - MINIMUM_INVESTMENT) / INVESTMENT_STEP) + 1 },
-    (_, index) => MINIMUM_INVESTMENT + index * INVESTMENT_STEP
-);
+const FIXED_INCOME_QUARTERLY_RATE = 0.075;
 
 const easeOutCubic = (progress) => 1 - Math.pow(1 - progress, 3);
 
@@ -25,7 +20,12 @@ function parseAmountValue(rawValue) {
 
 function normalizeInvestmentAmount(rawValue) {
     const amount = parseAmountValue(rawValue);
-    return INVESTMENT_OPTIONS.includes(amount) ? amount : MINIMUM_INVESTMENT;
+    return Math.max(amount || 0, MINIMUM_INVESTMENT);
+}
+
+function formatAmount(rawValue) {
+    const amount = parseAmountValue(rawValue);
+    return amount > 0 ? `ARS ${integerFormatter.format(amount)}` : "ARS ";
 }
 
 function animateCounterElement(element, duration = 1400) {
@@ -158,14 +158,14 @@ function initializeCounters() {
 
 function initializeCharts() {
     const growthCanvas = document.getElementById("growthChart");
-    const distributionCanvas = document.getElementById("distributionChart");
     const valuationCanvas = document.getElementById("valuationChart");
     const dashboardSection = document.getElementById("dashboard");
     const growthCard = document.querySelector(".dashboard-chart");
-    const distributionCard = document.querySelector(".dashboard-side");
+    const dashboardSide = document.querySelector(".dashboard-side");
+    const capacityBarFill = document.getElementById("capacityBarFill");
     const dashboardCounters = dashboardSection?.querySelectorAll(".dashboard-counters [data-counter]") || [];
 
-    if (!dashboardSection || !growthCanvas || !distributionCanvas) {
+    if (!dashboardSection || !growthCanvas) {
         return;
     }
 
@@ -193,13 +193,18 @@ function initializeCharts() {
         Chart.defaults.borderColor = "rgba(255, 255, 255, 0.08)";
 
         const growthContext = growthCanvas.getContext("2d");
-        const growthGradient = growthContext.createLinearGradient(0, 0, 0, 320);
-        growthGradient.addColorStop(0, "rgba(16, 213, 255, 0.4)");
-        growthGradient.addColorStop(0.45, "rgba(123, 44, 255, 0.24)");
-        growthGradient.addColorStop(1, "rgba(123, 44, 255, 0.02)");
-
         if (growthCard) {
             growthCard.classList.add("charts-live");
+        }
+
+        if (dashboardSide) {
+            dashboardSide.classList.add("charts-live");
+        }
+
+        if (capacityBarFill) {
+            window.setTimeout(() => {
+                capacityBarFill.style.width = "85%";
+            }, 260);
         }
 
         window.setTimeout(() => {
@@ -215,18 +220,52 @@ function initializeCharts() {
             type: "line",
             data: {
                 labels: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
-                datasets: [{
-                    label: "Crecimiento proyectado",
-                    data: [18, 24, 31, 38, 44, 49, 57, 63, 68, 74, 81, 89],
-                    borderColor: "#10d5ff",
-                    backgroundColor: growthGradient,
-                    fill: true,
-                    borderWidth: 3,
-                    tension: 0.35,
-                    pointRadius: 0,
-                    pointHoverRadius: 5,
-                    pointHoverBackgroundColor: "#ffffff"
-                }]
+                datasets: [
+                    {
+                        label: "Ateneo Gym",
+                        data: [18, 22, 27, 32, 38, 43, 49, 54, 60, 66, 72, 79],
+                        borderColor: "#00d4ff",
+                        backgroundColor: "rgba(0, 212, 255, 0.12)",
+                        fill: false,
+                        borderWidth: 3,
+                        tension: 0.34,
+                        pointRadius: 0,
+                        pointHoverRadius: 5
+                    },
+                    {
+                        label: "Mujeres Gym",
+                        data: [14, 18, 21, 26, 30, 35, 39, 43, 48, 52, 57, 63],
+                        borderColor: "#8a2be2",
+                        backgroundColor: "rgba(138, 43, 226, 0.12)",
+                        fill: false,
+                        borderWidth: 3,
+                        tension: 0.34,
+                        pointRadius: 0,
+                        pointHoverRadius: 5
+                    },
+                    {
+                        label: "Nueva Sede",
+                        data: [10, 14, 18, 23, 29, 36, 42, 49, 56, 64, 73, 83],
+                        borderColor: "#79ecff",
+                        backgroundColor: "rgba(121, 236, 255, 0.12)",
+                        fill: false,
+                        borderWidth: 3,
+                        tension: 0.34,
+                        pointRadius: 0,
+                        pointHoverRadius: 5
+                    },
+                    {
+                        label: "Suplementos",
+                        data: [12, 15, 19, 24, 28, 33, 37, 42, 46, 51, 56, 61],
+                        borderColor: "#d7b8ff",
+                        backgroundColor: "rgba(215, 184, 255, 0.12)",
+                        fill: false,
+                        borderWidth: 3,
+                        tension: 0.34,
+                        pointRadius: 0,
+                        pointHoverRadius: 5
+                    }
+                ]
             },
             options: {
                 maintainAspectRatio: false,
@@ -236,7 +275,14 @@ function initializeCharts() {
                 },
                 plugins: {
                     legend: {
-                        display: false
+                        display: true,
+                        position: "bottom",
+                        labels: {
+                            color: "#d5deff",
+                            usePointStyle: true,
+                            pointStyle: "circle",
+                            padding: 18
+                        }
                     },
                     tooltip: {
                         backgroundColor: "rgba(4, 8, 19, 0.94)",
@@ -266,51 +312,6 @@ function initializeCharts() {
                 }
             }
         });
-
-        window.setTimeout(() => {
-            if (distributionCard) {
-                distributionCard.classList.add("charts-live");
-            }
-
-            new Chart(distributionCanvas.getContext("2d"), {
-                type: "doughnut",
-                data: {
-                    labels: ["Ateneo Gym", "Mujeres Gym", "Nueva sede", "Suplementos"],
-                    datasets: [{
-                        data: [38, 24, 21, 17],
-                        backgroundColor: ["#7b2cff", "#10d5ff", "#2affc8", "#ff3fd1"],
-                        borderWidth: 0,
-                        hoverOffset: 6
-                    }]
-                },
-                options: {
-                    maintainAspectRatio: false,
-                    cutout: "72%",
-                    animation: {
-                        duration: 1650,
-                        easing: "easeOutQuart"
-                    },
-                    plugins: {
-                        legend: {
-                            position: "bottom",
-                            labels: {
-                                color: "#d5deff",
-                                usePointStyle: true,
-                                pointStyle: "circle",
-                                padding: 18
-                            }
-                        },
-                        tooltip: {
-                            backgroundColor: "rgba(4, 8, 19, 0.94)",
-                            borderColor: "rgba(123, 44, 255, 0.35)",
-                            borderWidth: 1,
-                            titleColor: "#ffffff",
-                            bodyColor: "#d5deff"
-                        }
-                    }
-                }
-            });
-        }, 220);
     }
 
     const chartObserver = new IntersectionObserver((entries) => {
@@ -1042,19 +1043,24 @@ function initializeCalculator() {
     const monthlyResult = document.getElementById("monthlyResult");
     const quarterResult = document.getElementById("quarterResult");
     const totalResult = document.getElementById("totalResult");
+    const fixedIncomeQuarterResult = document.getElementById("fixedIncomeQuarterResult");
+    const spreadResult = document.getElementById("spreadResult");
     const semiannualResult = document.getElementById("semiannualResult");
-    const semiannualGainResult = document.getElementById("semiannualGainResult");
     const annualResult = document.getElementById("annualResult");
     const annualGainResult = document.getElementById("annualGainResult");
     const growthSummary = document.getElementById("growthSummary");
+    const maxGroupBar = document.getElementById("maxGroupBar");
+    const fixedIncomeBar = document.getElementById("fixedIncomeBar");
+    const maxGroupBarLabel = document.getElementById("maxGroupBarLabel");
+    const fixedIncomeBarLabel = document.getElementById("fixedIncomeBarLabel");
 
-    if (!amountInput || !investedResult || !monthlyResult || !quarterResult || !totalResult || !semiannualResult || !semiannualGainResult || !annualResult || !annualGainResult || !growthSummary) {
+    if (!amountInput || !investedResult || !monthlyResult || !quarterResult || !totalResult || !fixedIncomeQuarterResult || !spreadResult || !semiannualResult || !annualResult || !annualGainResult || !growthSummary || !maxGroupBar || !fixedIncomeBar || !maxGroupBarLabel || !fixedIncomeBarLabel) {
         return;
     }
 
     function setCalculatorAmount(amount) {
         const safeAmount = normalizeInvestmentAmount(amount);
-        amountInput.value = String(safeAmount);
+        amountInput.value = formatAmount(String(safeAmount));
         updateCalculator(safeAmount);
     }
 
@@ -1064,9 +1070,10 @@ function initializeCalculator() {
             : normalizeInvestmentAmount(amountInput.value);
         const monthly = amount * 0.04;
         const quarter = amount * 0.12;
+        const fixedIncomeQuarter = amount * FIXED_INCOME_QUARTERLY_RATE;
+        const spread = quarter - fixedIncomeQuarter;
         const total = amount + quarter;
         const semiannualTotal = amount * 1.24;
-        const semiannualGain = semiannualTotal - amount;
         const annualTotal = amount * 1.48;
         const annualGain = annualTotal - amount;
 
@@ -1083,16 +1090,20 @@ function initializeCalculator() {
             duration: 820,
             formatter: (value) => arsFormatter.format(Math.round(value))
         });
+        animateValue(fixedIncomeQuarterResult, fixedIncomeQuarter, {
+            duration: 860,
+            formatter: (value) => arsFormatter.format(Math.round(value))
+        });
+        animateValue(spreadResult, spread, {
+            duration: 920,
+            formatter: (value) => arsFormatter.format(Math.round(value))
+        });
         animateValue(totalResult, total, {
             duration: 980,
             formatter: (value) => arsFormatter.format(Math.round(value))
         });
         animateValue(semiannualResult, semiannualTotal, {
             duration: 1080,
-            formatter: (value) => arsFormatter.format(Math.round(value))
-        });
-        animateValue(semiannualGainResult, semiannualGain, {
-            duration: 1120,
             formatter: (value) => arsFormatter.format(Math.round(value))
         });
         animateValue(annualResult, annualTotal, {
@@ -1104,8 +1115,24 @@ function initializeCalculator() {
             formatter: (value) => arsFormatter.format(Math.round(value))
         });
 
-        growthSummary.textContent = `Invertis ${arsFormatter.format(amount)}. La ganancia mensual proyectada es ${arsFormatter.format(Math.round(monthly))}, a 90 dias seria ${arsFormatter.format(Math.round(quarter))}, a 6 meses la ganancia neta estimada seria ${arsFormatter.format(Math.round(semiannualGain))} con un capital total de ${arsFormatter.format(Math.round(semiannualTotal))}, y a 12 meses la ganancia neta estimada seria ${arsFormatter.format(Math.round(annualGain))} con un capital total de ${arsFormatter.format(Math.round(annualTotal))}.`;
+        const fixedBarWidth = Math.min((FIXED_INCOME_QUARTERLY_RATE / 0.12) * 100, 100);
+        maxGroupBar.style.width = "100%";
+        fixedIncomeBar.style.width = `${fixedBarWidth}%`;
+        maxGroupBarLabel.textContent = "12% trimestral";
+        fixedIncomeBarLabel.textContent = `${(FIXED_INCOME_QUARTERLY_RATE * 100).toFixed(1)}% trimestral`;
+
+        growthSummary.textContent = `Con ${arsFormatter.format(amount)}, Max Group proyecta ${arsFormatter.format(Math.round(quarter))} en 90 dias frente a ${arsFormatter.format(Math.round(fixedIncomeQuarter))} de un plazo fijo tradicional. La diferencia estimada a favor es ${arsFormatter.format(Math.round(spread))}.`;
     }
+
+    amountInput.addEventListener("input", () => {
+        const amount = normalizeInvestmentAmount(amountInput.value);
+        updateCalculator(amount);
+    });
+
+    amountInput.addEventListener("blur", () => {
+        amountInput.value = formatAmount(amountInput.value);
+        updateCalculator(amountInput.value);
+    });
 
     amountInput.addEventListener("change", () => {
         setCalculatorAmount(amountInput.value);
@@ -1223,7 +1250,7 @@ function initializeContactModal() {
         const { gain, total } = calculateProjectedReturn(amount, months);
         const isValidAmount = amount >= MINIMUM_INVESTMENT;
 
-        amountInput.value = String(amount);
+        amountInput.value = formatAmount(String(amount));
         amountInput.setCustomValidity(isValidAmount ? "" : `El monto minimo es ${arsFormatter.format(MINIMUM_INVESTMENT)}.`);
         submitButton.disabled = !isValidAmount;
 
@@ -1246,7 +1273,7 @@ function initializeContactModal() {
             ? normalizeInvestmentAmount(prefilledAmount)
             : normalizeInvestmentAmount(calculatorAmountInput?.value || amountInput.value);
 
-        amountInput.value = String(sourceAmount);
+        amountInput.value = formatAmount(String(sourceAmount));
 
         backdrop.classList.add("is-open");
         backdrop.setAttribute("aria-hidden", "false");
@@ -1292,6 +1319,15 @@ function initializeContactModal() {
         if (event.target === successBackdrop) {
             closeSuccessModal();
         }
+    });
+
+    amountInput.addEventListener("input", () => {
+        syncProjection();
+    });
+
+    amountInput.addEventListener("blur", () => {
+        amountInput.value = formatAmount(amountInput.value);
+        syncProjection();
     });
 
     amountInput.addEventListener("change", () => {
