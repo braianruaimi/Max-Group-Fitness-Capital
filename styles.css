@@ -924,6 +924,62 @@ h3 {
     line-height: 1.7;
 }
 
+.investor-proof-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.investor-proof-card::before {
+    content: "";
+    position: absolute;
+    inset: auto -18% -34% auto;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(138, 43, 226, 0.16), transparent 70%);
+    pointer-events: none;
+}
+
+.investor-proof-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 16px;
+}
+
+.investor-proof-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 18px;
+    border: 1px solid rgba(0, 212, 255, 0.16);
+    background: linear-gradient(135deg, rgba(138, 43, 226, 0.22), rgba(0, 212, 255, 0.14));
+    color: #f4e9ff;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 0 20px rgba(0, 212, 255, 0.08);
+}
+
+.investor-proof-persona {
+    display: grid;
+    gap: 4px;
+}
+
+.investor-proof-persona strong {
+    color: #f5f8ff;
+    font-size: 1rem;
+    letter-spacing: -0.02em;
+}
+
+.investor-proof-persona span {
+    color: var(--muted);
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
 .blindada-icon {
     display: inline-flex;
     align-items: center;
