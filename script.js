@@ -106,6 +106,15 @@ function formatMetricsTimestamp(timestamp) {
     }
 }
 
+function sanitizeAssistantText(value) {
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+}
+
 function animateCounterElement(element, duration = 1400) {
     const targetValue = Number(element.dataset.counter);
     const prefix = element.dataset.prefix || "";
@@ -1616,6 +1625,132 @@ function initializeMetricsPanel() {
     });
 }
 
+function initializeInstallPrompt() {
+    const installButton = document.getElementById("installAppButton");
+
+    if (!installButton) {
+        return;
+    }
+
+    let deferredPrompt = null;
+
+    window.addEventListener("beforeinstallprompt", (event) => {
+        event.preventDefault();
+        deferredPrompt = event;
+        installButton.hidden = false;
+    });
+
+    window.addEventListener("appinstalled", () => {
+        deferredPrompt = null;
+        installButton.hidden = true;
+    });
+
+    installButton.addEventListener("click", async () => {
+        if (!deferredPrompt) {
+            return;
+        }
+
+        deferredPrompt.prompt();
+        await deferredPrompt.userChoice;
+        deferredPrompt = null;
+        installButton.hidden = true;
+    });
+
+    if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+            navigator.serviceWorker.register("./sw.js").catch(() => {
+                installButton.hidden = true;
+            });
+        });
+    }
+}
+
+function initializeFaqAssistant() {
+    const assistantButton = document.getElementById("assistantFloatButton");
+    const assistantPanel = document.getElementById("assistantPanel");
+    const assistantClose = document.getElementById("assistantPanelClose");
+    const assistantChat = document.getElementById("assistantChat");
+    const assistantSuggestions = document.getElementById("assistantSuggestions");
+    const faqItems = document.querySelectorAll(".faq-item");
+
+    if (!assistantButton || !assistantPanel || !assistantClose || !assistantChat || !assistantSuggestions || !faqItems.length) {
+        return;
+    }
+
+    const faqEntries = Array.from(faqItems)
+        .map((item) => {
+            const question = item.querySelector(".faq-question span")?.textContent?.trim();
+            const answer = item.querySelector(".faq-answer p")?.textContent?.trim();
+
+            if (!question || !answer) {
+                return null;
+            }
+
+            return { question, answer };
+        })
+        .filter(Boolean)
+        .slice(0, 4);
+
+    function appendMessage(role, content) {
+        const roleLabel = role === "user" ? "Vos" : "Asistente IA";
+        const roleClass = role === "user" ? "assistant-message-user" : "assistant-message-bot";
+        assistantChat.insertAdjacentHTML("beforeend", `
+            <article class="assistant-message ${roleClass}">
+                <span class="assistant-message-role">${roleLabel}</span>
+                <p>${sanitizeAssistantText(content)}</p>
+            </article>
+        `);
+        assistantChat.scrollTop = assistantChat.scrollHeight;
+    }
+
+    faqEntries.forEach((entry) => {
+        const suggestionButton = document.createElement("button");
+        suggestionButton.type = "button";
+        suggestionButton.className = "assistant-suggestion";
+        suggestionButton.textContent = entry.question;
+        suggestionButton.addEventListener("click", () => {
+            appendMessage("user", entry.question);
+            window.setTimeout(() => {
+                appendMessage("bot", entry.answer);
+            }, 180);
+        });
+        assistantSuggestions.appendChild(suggestionButton);
+    });
+
+    function openAssistant() {
+        assistantPanel.classList.add("is-open");
+        assistantPanel.setAttribute("aria-hidden", "false");
+    }
+
+    function closeAssistant() {
+        assistantPanel.classList.remove("is-open");
+        assistantPanel.setAttribute("aria-hidden", "true");
+    }
+
+    assistantButton.addEventListener("click", () => {
+        if (assistantPanel.classList.contains("is-open")) {
+            closeAssistant();
+            return;
+        }
+
+        openAssistant();
+    });
+
+    assistantClose.addEventListener("click", closeAssistant);
+    document.addEventListener("click", (event) => {
+        if (!assistantPanel.classList.contains("is-open")) {
+            return;
+        }
+
+        const target = event.target;
+        if (target.closest("#assistantPanel") || target.closest("#assistantFloatButton")) {
+            return;
+        }
+
+        closeAssistant();
+    });
+}
+
 function initializeInvestorProofSlider() {
     const slider = document.getElementById("investorProofSlider");
     const previousButton = document.getElementById("investorProofPrev");
@@ -1700,6 +1835,7 @@ document.addEventListener("DOMContentLoaded", () => {
     updateMetrics((metrics) => {
         metrics.pageViews += 1;
     });
+    initializeInstallPrompt();
     initializeRevealAnimations();
     initializeSectionTransitions();
     initializeHeroCinematic();
@@ -1712,6 +1848,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initializeCalculator();
     initializeContactModal();
     initializeMetricsPanel();
+    initializeFaqAssistant();
     initializeInvestorProofSlider();
     initializeHeroParallax();
     initializeTiltCards();

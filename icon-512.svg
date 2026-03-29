@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Max Group Fitness Capital</title>
+  <desc id="desc">Icono PWA de alta resolucion de Max Group Fitness Capital</desc>
+  <defs>
+    <linearGradient id="bg512" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8a2be2"/>
+      <stop offset="100%" stop-color="#00d4ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="116" fill="#0a0a0c"/>
+  <rect x="36" y="36" width="440" height="440" rx="92" fill="url(#bg512)" opacity="0.16"/>
+  <path d="M132 370V142h52l72 106 72-106h52v228h-54V231l-54 76h-33l-54-76v139h-53z" fill="#f5f8ff"/>
+  <circle cx="395" cy="124" r="28" fill="#79ecff"/>
+</svg>

@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Max Group Fitness Capital | Inversion en Ecosistema Fitness</title>
     <meta name="description" content="Max Group Fitness Capital presenta una propuesta de inversion blindada en activos reales del ecosistema fitness, con rentabilidad proyectada y estructura operativa activa.">
+    <meta name="theme-color" content="#0a0a0c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Max Group Fitness Capital">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" type="image/svg+xml" href="icon-192.svg">
+    <link rel="apple-touch-icon" href="icon-192.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -958,6 +965,33 @@
             </div>
             <div class="metrics-panel-breakdown" id="metricsBreakdown"></div>
         </div>
+    </div>
+
+    <button class="install-float-button" id="installAppButton" type="button" aria-label="Instalar app" hidden>
+        <i class="fa-solid fa-download"></i>
+        <span>Instalar app</span>
+    </button>
+
+    <button class="assistant-float-button" id="assistantFloatButton" type="button" aria-label="Abrir asistente de preguntas frecuentes">
+        <i class="fa-solid fa-comment-dots"></i>
+        <span>Asistente IA</span>
+    </button>
+
+    <div class="assistant-panel glass" id="assistantPanel" aria-hidden="true">
+        <button class="preview-close assistant-panel-close" id="assistantPanelClose" type="button" aria-label="Cerrar asistente">X</button>
+        <div class="assistant-panel-head">
+            <span class="eyebrow">Asistente IA</span>
+            <h2>Respuestas rapidas para preguntas frecuentes</h2>
+            <p>Elegí una pregunta predeterminada y el asistente te responde al instante con la información cargada en la landing.</p>
+        </div>
+        <div class="assistant-chat" id="assistantChat">
+            <article class="assistant-message assistant-message-bot">
+                <span class="assistant-message-role">Asistente IA</span>
+                <p>Hola. Puedo responder las preguntas frecuentes del proyecto y orientarte al formulario de propuesta.</p>
+            </article>
+        </div>
+        <div class="assistant-suggestions" id="assistantSuggestions"></div>
+        <button class="button button-secondary assistant-contact-button contact-trigger" data-contact-source="Asistente IA - Abrir propuesta" type="button">Abrir propuesta</button>
     </div>
 
     <a class="whatsapp-float contact-trigger" data-contact-source="WhatsApp flotante" href="#contact-modal" aria-label="Contactar por WhatsApp">
