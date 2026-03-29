@@ -8,7 +8,25 @@ const integerFormatter = new Intl.NumberFormat("es-AR", {
     maximumFractionDigits: 0
 });
 
+const MINIMUM_INVESTMENT = 2500000;
+const INVESTMENT_STEP = 500000;
+const MAXIMUM_INVESTMENT = 10000000;
+const INVESTMENT_OPTIONS = Array.from(
+    { length: Math.floor((MAXIMUM_INVESTMENT - MINIMUM_INVESTMENT) / INVESTMENT_STEP) + 1 },
+    (_, index) => MINIMUM_INVESTMENT + index * INVESTMENT_STEP
+);
+
 const easeOutCubic = (progress) => 1 - Math.pow(1 - progress, 3);
+
+function parseAmountValue(rawValue) {
+    const digits = String(rawValue ?? "").replace(/\D/g, "");
+    return Number(digits || 0);
+}
+
+function normalizeInvestmentAmount(rawValue) {
+    const amount = parseAmountValue(rawValue);
+    return INVESTMENT_OPTIONS.includes(amount) ? amount : MINIMUM_INVESTMENT;
+}
 
 function animateCounterElement(element, duration = 1400) {
     const targetValue = Number(element.dataset.counter);
@@ -1029,40 +1047,21 @@ function initializeCalculator() {
     const annualResult = document.getElementById("annualResult");
     const annualGainResult = document.getElementById("annualGainResult");
     const growthSummary = document.getElementById("growthSummary");
-    const presetButtons = document.querySelectorAll(".preset-button");
 
     if (!amountInput || !investedResult || !monthlyResult || !quarterResult || !totalResult || !semiannualResult || !semiannualGainResult || !annualResult || !annualGainResult || !growthSummary) {
         return;
     }
 
-    function parseAmount(rawValue) {
-        const digits = rawValue.replace(/\D/g, "");
-        return Number(digits || 0);
-    }
-
-    function formatAmount(rawValue) {
-        const amount = parseAmount(rawValue);
-        return amount > 0 ? `ARS ${integerFormatter.format(amount)}` : "ARS ";
-    }
-
-    function syncPresetState(amount) {
-        presetButtons.forEach((button) => {
-            const presetAmount = Number(button.dataset.amount || 0);
-            button.classList.toggle("is-active", presetAmount === amount);
-        });
-    }
-
     function setCalculatorAmount(amount) {
-        const safeAmount = Math.max(Number(amount) || 0, 0);
-        amountInput.value = formatAmount(String(safeAmount));
-        amountInput.dataset.rawAmount = String(safeAmount);
+        const safeAmount = normalizeInvestmentAmount(amount);
+        amountInput.value = String(safeAmount);
         updateCalculator(safeAmount);
     }
 
     function updateCalculator(forcedAmount) {
         const amount = typeof forcedAmount === "number"
-            ? Math.max(forcedAmount, 0)
-            : Math.max(parseAmount(amountInput.value), 0);
+            ? normalizeInvestmentAmount(forcedAmount)
+            : normalizeInvestmentAmount(amountInput.value);
         const monthly = amount * 0.04;
         const quarter = amount * 0.12;
         const total = amount + quarter;
@@ -1070,8 +1069,6 @@ function initializeCalculator() {
         const semiannualGain = semiannualTotal - amount;
         const annualTotal = amount * 1.48;
         const annualGain = annualTotal - amount;
-
-        syncPresetState(amount);
 
         animateValue(investedResult, amount, {
             duration: 620,
@@ -1110,26 +1107,11 @@ function initializeCalculator() {
         growthSummary.textContent = `Invertis ${arsFormatter.format(amount)}. La ganancia mensual proyectada es ${arsFormatter.format(Math.round(monthly))}, a 90 dias seria ${arsFormatter.format(Math.round(quarter))}, a 6 meses la ganancia neta estimada seria ${arsFormatter.format(Math.round(semiannualGain))} con un capital total de ${arsFormatter.format(Math.round(semiannualTotal))}, y a 12 meses la ganancia neta estimada seria ${arsFormatter.format(Math.round(annualGain))} con un capital total de ${arsFormatter.format(Math.round(annualTotal))}.`;
     }
 
-    amountInput.addEventListener("input", () => {
-        const amount = parseAmount(amountInput.value);
-        amountInput.value = formatAmount(amountInput.value);
-        amountInput.dataset.rawAmount = String(amount);
-        updateCalculator(amount);
+    amountInput.addEventListener("change", () => {
+        setCalculatorAmount(amountInput.value);
     });
 
-    amountInput.addEventListener("blur", () => {
-        amountInput.value = formatAmount(amountInput.value);
-    });
-
-    presetButtons.forEach((button) => {
-        button.addEventListener("click", () => {
-            const presetAmount = Number(button.dataset.amount || 0);
-            setCalculatorAmount(presetAmount);
-            amountInput.focus();
-        });
-    });
-
-    setCalculatorAmount(parseAmount(amountInput.value));
+    setCalculatorAmount(amountInput.value);
 }
 
 function initializeSmoothLinks() {
@@ -1222,19 +1204,10 @@ function initializeContactModal() {
     const successClose = document.getElementById("successModalClose");
     const successButton = document.getElementById("successModalButton");
     const calculatorAmountInput = document.getElementById("investmentAmount");
+    const submitButton = form?.querySelector('button[type="submit"]');
 
-    if (!contactTriggers.length || !backdrop || !modal || !closeButton || !form || !amountInput || !termSelect || !projectedGain || !projectedTotal || !projectedSummary || !successBackdrop || !successClose || !successButton) {
+    if (!contactTriggers.length || !backdrop || !modal || !closeButton || !form || !amountInput || !termSelect || !projectedGain || !projectedTotal || !projectedSummary || !successBackdrop || !successClose || !successButton || !submitButton) {
         return;
-    }
-
-    function parseAmount(rawValue) {
-        const digits = rawValue.replace(/\D/g, "");
-        return Number(digits || 0);
-    }
-
-    function formatAmount(rawValue) {
-        const amount = parseAmount(rawValue);
-        return amount > 0 ? `ARS ${integerFormatter.format(amount)}` : "ARS ";
     }
 
     function calculateProjectedReturn(amount, months) {
@@ -1245,9 +1218,14 @@ function initializeContactModal() {
     }
 
     function syncProjection() {
-        const amount = parseAmount(amountInput.value);
+        const amount = normalizeInvestmentAmount(amountInput.value);
         const months = Number(termSelect.value || 3);
         const { gain, total } = calculateProjectedReturn(amount, months);
+        const isValidAmount = amount >= MINIMUM_INVESTMENT;
+
+        amountInput.value = String(amount);
+        amountInput.setCustomValidity(isValidAmount ? "" : `El monto minimo es ${arsFormatter.format(MINIMUM_INVESTMENT)}.`);
+        submitButton.disabled = !isValidAmount;
 
         animateValue(projectedGain, gain, {
             duration: 620,
@@ -1258,21 +1236,17 @@ function initializeContactModal() {
             formatter: (value) => arsFormatter.format(Math.round(value))
         });
 
-        projectedSummary.textContent = amount > 0
+        projectedSummary.textContent = isValidAmount
             ? `Para ${arsFormatter.format(amount)} a ${months} meses, la ganancia estimada seria ${arsFormatter.format(Math.round(gain))} y el capital total proyectado ${arsFormatter.format(Math.round(total))}.`
-            : "Selecciona monto y plazo para ver el retorno estimado.";
+            : `El monto minimo validado es ${arsFormatter.format(MINIMUM_INVESTMENT)}.`;
     }
 
     function openModal(prefilledAmount = null) {
         const sourceAmount = typeof prefilledAmount === "number" && prefilledAmount > 0
-            ? prefilledAmount
-            : parseAmount(calculatorAmountInput?.value || amountInput.value);
+            ? normalizeInvestmentAmount(prefilledAmount)
+            : normalizeInvestmentAmount(calculatorAmountInput?.value || amountInput.value);
 
-        if (sourceAmount > 0) {
-            amountInput.value = formatAmount(String(sourceAmount));
-        } else if (!amountInput.value.trim()) {
-            amountInput.value = "ARS 2.500.000";
-        }
+        amountInput.value = String(sourceAmount);
 
         backdrop.classList.add("is-open");
         backdrop.setAttribute("aria-hidden", "false");
@@ -1320,8 +1294,7 @@ function initializeContactModal() {
         }
     });
 
-    amountInput.addEventListener("input", () => {
-        amountInput.value = formatAmount(amountInput.value);
+    amountInput.addEventListener("change", () => {
         syncProjection();
     });
 
@@ -1334,9 +1307,17 @@ function initializeContactModal() {
         const address = document.getElementById("modalAddress")?.value.trim() || "No informado";
         const phone = document.getElementById("modalPhone")?.value.trim() || "No informado";
         const email = document.getElementById("modalEmail")?.value.trim() || "No informado";
-        const amount = parseAmount(amountInput.value);
+        const amount = normalizeInvestmentAmount(amountInput.value);
         const months = Number(termSelect.value || 3);
         const { gain, total } = calculateProjectedReturn(amount, months);
+
+        if (amount < MINIMUM_INVESTMENT) {
+            amountInput.setCustomValidity(`El monto minimo es ${arsFormatter.format(MINIMUM_INVESTMENT)}.`);
+            amountInput.reportValidity();
+            return;
+        }
+
+        amountInput.setCustomValidity("");
 
         const whatsappMessage = [
             "Hola, quiero avanzar con una consulta de inversion en Max Group Fitness Capital.",

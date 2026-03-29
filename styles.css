@@ -1668,6 +1668,7 @@ canvas {
 }
 
 .input-shell {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 12px;
@@ -1679,7 +1680,21 @@ canvas {
     box-shadow: inset 0 0 0 1px rgba(16, 213, 255, 0.05);
 }
 
-.input-shell input {
+.input-shell::after {
+    content: "";
+    position: absolute;
+    right: 18px;
+    top: 50%;
+    width: 11px;
+    height: 11px;
+    border-right: 2px solid rgba(196, 255, 243, 0.88);
+    border-bottom: 2px solid rgba(196, 255, 243, 0.88);
+    transform: translateY(-65%) rotate(45deg);
+    pointer-events: none;
+}
+
+.input-shell input,
+.input-shell select {
     width: 100%;
     border: 0;
     outline: none;
@@ -1690,34 +1705,15 @@ canvas {
     letter-spacing: 0.02em;
 }
 
+.input-shell select {
+    appearance: none;
+    padding-right: 28px;
+    cursor: pointer;
+}
+
 .input-shell:focus-within {
     border-color: rgba(16, 213, 255, 0.46);
     box-shadow: 0 0 0 4px rgba(16, 213, 255, 0.08), 0 0 24px rgba(16, 213, 255, 0.12);
-}
-
-.preset-grid {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 10px;
-    margin-top: 14px;
-}
-
-.preset-button {
-    min-height: 42px;
-    border: 1px solid rgba(120, 146, 255, 0.18);
-    border-radius: 14px;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
-    color: #dbe6ff;
-    cursor: pointer;
-    transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease, color 180ms ease;
-}
-
-.preset-button:hover,
-.preset-button.is-active {
-    transform: translateY(-1px);
-    border-color: rgba(16, 213, 255, 0.42);
-    color: #ffffff;
-    box-shadow: 0 0 14px rgba(16, 213, 255, 0.16), 0 10px 24px rgba(0, 0, 0, 0.28);
 }
 
 .input-hint {
@@ -2144,7 +2140,6 @@ body.modal-open {
     .testimonial-grid,
     .capital-structure-grid,
     .faq-contact-layout,
-    .preset-grid,
     .terms-grid,
     .trust-bar,
     .dashboard-counters,
@@ -2182,7 +2177,6 @@ body.modal-open {
     .valuation-metrics,
     .contact-modal-results,
     .stats-grid,
-    .preset-grid,
     .form-grid {
         grid-template-columns: 1fr;
     }
