@@ -513,10 +513,13 @@ function initializeEcosystemPreview() {
     const previewDescription = document.getElementById("previewDescription");
     const previewMetric = document.getElementById("previewMetric");
     const previewCanvas = document.getElementById("previewGrowthChart");
+    const previewBaseValue = document.getElementById("previewBaseValue");
+    const previewCurrentValue = document.getElementById("previewCurrentValue");
+    const previewTargetValue = document.getElementById("previewTargetValue");
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const hasFinePointer = window.matchMedia("(pointer: fine)").matches;
 
-    if (!previewCards.length || !previewModal || !previewClose || !previewTitle || !previewDescription || !previewMetric || !previewCanvas) {
+    if (!previewCards.length || !previewModal || !previewClose || !previewTitle || !previewDescription || !previewMetric || !previewCanvas || !previewBaseValue || !previewCurrentValue || !previewTargetValue) {
         return;
     }
 
@@ -524,6 +527,12 @@ function initializeEcosystemPreview() {
     let hoverTimeoutId = null;
     let previewChart = null;
     let pinnedOpen = false;
+
+    function setActiveCard(card) {
+        previewCards.forEach((entry) => {
+            entry.classList.toggle("is-active", entry === card);
+        });
+    }
 
     function buildPreviewChart(points) {
         if (typeof Chart === "undefined") {
@@ -540,6 +549,8 @@ function initializeEcosystemPreview() {
         gradient.addColorStop(0.55, "rgba(13, 226, 176, 0.16)");
         gradient.addColorStop(1, "rgba(13, 226, 176, 0.02)");
 
+        const highlightedIndexes = new Set([0, Math.floor((points.length - 1) / 2), points.length - 1]);
+
         previewChart = new Chart(context, {
             type: "line",
             data: {
@@ -551,9 +562,17 @@ function initializeEcosystemPreview() {
                     fill: true,
                     tension: 0.34,
                     borderWidth: 2.5,
-                    pointRadius: 0,
-                    pointHoverRadius: 3,
-                    pointHoverBackgroundColor: "#b8ffe9"
+                    pointRadius(context) {
+                        return highlightedIndexes.has(context.dataIndex) ? 4 : 0;
+                    },
+                    pointHoverRadius: 5,
+                    pointBackgroundColor(context) {
+                        return highlightedIndexes.has(context.dataIndex) ? "#b8ffe9" : "#5ef2ff";
+                    },
+                    pointBorderColor: "#031118",
+                    pointBorderWidth(context) {
+                        return highlightedIndexes.has(context.dataIndex) ? 2 : 0;
+                    }
                 }]
             },
             options: {
@@ -643,10 +662,19 @@ function initializeEcosystemPreview() {
             .map((point) => Number(point.trim()))
             .filter((point) => !Number.isNaN(point));
 
+        const middlePoint = points[Math.floor((points.length - 1) / 2)] || 0;
+        previewBaseValue.textContent = `${points[0] || 0}%`;
+        previewCurrentValue.textContent = `${middlePoint}%`;
+        previewTargetValue.textContent = `${points[points.length - 1] || 0}%`;
+
         previewModal.classList.add("is-open");
         previewModal.setAttribute("aria-hidden", "false");
         positionModal(card);
         buildPreviewChart(points);
+
+        if (shouldPin) {
+            setActiveCard(card);
+        }
     }
 
     function closePreview(force = false) {
@@ -658,6 +686,7 @@ function initializeEcosystemPreview() {
         previewModal.setAttribute("aria-hidden", "true");
         activeCard = null;
         pinnedOpen = false;
+        setActiveCard(null);
     }
 
     function scheduleClose() {
