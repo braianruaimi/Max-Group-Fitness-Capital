@@ -505,6 +505,230 @@ function initializeDashboardLiveFeed() {
     observer.observe(dashboardSection);
 }
 
+function initializeEcosystemPreview() {
+    const previewCards = document.querySelectorAll(".preview-card");
+    const previewModal = document.getElementById("previewModal");
+    const previewClose = document.getElementById("previewClose");
+    const previewTitle = document.getElementById("previewTitle");
+    const previewDescription = document.getElementById("previewDescription");
+    const previewMetric = document.getElementById("previewMetric");
+    const previewCanvas = document.getElementById("previewGrowthChart");
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const hasFinePointer = window.matchMedia("(pointer: fine)").matches;
+
+    if (!previewCards.length || !previewModal || !previewClose || !previewTitle || !previewDescription || !previewMetric || !previewCanvas) {
+        return;
+    }
+
+    let activeCard = null;
+    let hoverTimeoutId = null;
+    let previewChart = null;
+    let pinnedOpen = false;
+
+    function buildPreviewChart(points) {
+        if (typeof Chart === "undefined") {
+            return;
+        }
+
+        if (previewChart) {
+            previewChart.destroy();
+        }
+
+        const context = previewCanvas.getContext("2d");
+        const gradient = context.createLinearGradient(0, 0, 0, 200);
+        gradient.addColorStop(0, "rgba(94, 242, 255, 0.34)");
+        gradient.addColorStop(0.55, "rgba(13, 226, 176, 0.16)");
+        gradient.addColorStop(1, "rgba(13, 226, 176, 0.02)");
+
+        previewChart = new Chart(context, {
+            type: "line",
+            data: {
+                labels: points.map((_, index) => `T${index + 1}`),
+                datasets: [{
+                    data: points,
+                    borderColor: "#5ef2ff",
+                    backgroundColor: gradient,
+                    fill: true,
+                    tension: 0.34,
+                    borderWidth: 2.5,
+                    pointRadius: 0,
+                    pointHoverRadius: 3,
+                    pointHoverBackgroundColor: "#b8ffe9"
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: {
+                    duration: prefersReducedMotion ? 0 : 720,
+                    easing: "easeOutQuart"
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: "rgba(4, 12, 20, 0.96)",
+                        borderColor: "rgba(94, 242, 255, 0.28)",
+                        borderWidth: 1,
+                        displayColors: false,
+                        callbacks: {
+                            label(context) {
+                                return `${context.parsed.y}% crecimiento`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: "#97aec3"
+                        }
+                    },
+                    y: {
+                        grid: {
+                            color: "rgba(255, 255, 255, 0.05)"
+                        },
+                        ticks: {
+                            color: "#97aec3",
+                            callback(value) {
+                                return `${value}%`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    function positionModal(card) {
+        if (!card) {
+            return;
+        }
+
+        if (!hasFinePointer) {
+            previewModal.style.left = `${Math.max((window.innerWidth - previewModal.offsetWidth) / 2, 14)}px`;
+            previewModal.style.top = `${Math.max((window.innerHeight - previewModal.offsetHeight) / 2, 84)}px`;
+            return;
+        }
+
+        const rect = card.getBoundingClientRect();
+        const modalWidth = previewModal.offsetWidth || 360;
+        const modalHeight = previewModal.offsetHeight || 320;
+        const left = Math.min(Math.max(rect.right + 18, 14), window.innerWidth - modalWidth - 14);
+        const top = Math.min(Math.max(rect.top, 84), window.innerHeight - modalHeight - 14);
+
+        previewModal.style.left = `${left}px`;
+        previewModal.style.top = `${top}px`;
+    }
+
+    function openPreview(card, shouldPin = false) {
+        if (hoverTimeoutId !== null) {
+            window.clearTimeout(hoverTimeoutId);
+            hoverTimeoutId = null;
+        }
+
+        activeCard = card;
+        pinnedOpen = shouldPin;
+
+        previewTitle.textContent = card.dataset.previewName || "Unidad";
+        previewDescription.textContent = card.dataset.previewDescription || "Detalle ampliado: al breve.";
+        previewMetric.textContent = card.dataset.previewMetric || "+0%";
+
+        const points = (card.dataset.previewPoints || "10,15,18,22,27,31,36")
+            .split(",")
+            .map((point) => Number(point.trim()))
+            .filter((point) => !Number.isNaN(point));
+
+        previewModal.classList.add("is-open");
+        previewModal.setAttribute("aria-hidden", "false");
+        positionModal(card);
+        buildPreviewChart(points);
+    }
+
+    function closePreview(force = false) {
+        if (!force && pinnedOpen) {
+            return;
+        }
+
+        previewModal.classList.remove("is-open");
+        previewModal.setAttribute("aria-hidden", "true");
+        activeCard = null;
+        pinnedOpen = false;
+    }
+
+    function scheduleClose() {
+        if (hoverTimeoutId !== null) {
+            window.clearTimeout(hoverTimeoutId);
+        }
+
+        hoverTimeoutId = window.setTimeout(() => {
+            closePreview(false);
+        }, 140);
+    }
+
+    previewCards.forEach((card) => {
+        if (hasFinePointer) {
+            card.addEventListener("pointerenter", () => {
+                openPreview(card, false);
+            });
+
+            card.addEventListener("pointerleave", () => {
+                scheduleClose();
+            });
+        }
+
+        card.addEventListener("click", () => {
+            openPreview(card, true);
+        });
+    });
+
+    previewModal.addEventListener("pointerenter", () => {
+        if (hoverTimeoutId !== null) {
+            window.clearTimeout(hoverTimeoutId);
+            hoverTimeoutId = null;
+        }
+    });
+
+    previewModal.addEventListener("pointerleave", () => {
+        if (!pinnedOpen) {
+            scheduleClose();
+        }
+    });
+
+    previewClose.addEventListener("click", () => {
+        closePreview(true);
+    });
+
+    document.addEventListener("click", (event) => {
+        const target = event.target;
+        if (!(target instanceof Element)) {
+            return;
+        }
+
+        if (target.closest(".preview-card") || target.closest("#previewModal")) {
+            return;
+        }
+
+        closePreview(true);
+    });
+
+    window.addEventListener("resize", () => {
+        if (activeCard && previewModal.classList.contains("is-open")) {
+            positionModal(activeCard);
+        }
+    });
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+            closePreview(true);
+        }
+    });
+}
+
 function initializeHeroParallax() {
     const heroSection = document.querySelector(".hero");
 
@@ -868,6 +1092,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initializeBackgroundParallax();
     initializeCursorGlow();
     initializeDashboardLiveFeed();
+    initializeEcosystemPreview();
     initializeCalculator();
     initializeHeroParallax();
     initializeTiltCards();
