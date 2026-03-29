@@ -551,8 +551,20 @@
                 <p>Estos bloques funcionan como ejemplos editables de comunicacion. No representan personas reales hasta que reemplaces cada texto por testimonios verificados con nombre y ocupacion.</p>
             </div>
             <p class="investor-proof-note reveal">Cada tarjeta esta marcada como `Ejemplo de copy`, `Nombre pendiente` y `Testimonio a validar` para evitar que se interprete como prueba social real antes de tiempo.</p>
-            <div class="investor-proof-grid">
-                <article class="glass investor-proof-card reveal" data-delay="60">
+            <div class="investor-proof-slider-shell reveal">
+                <div class="investor-proof-slider-bar">
+                    <p class="investor-proof-slider-hint">En mobile, desliza o usa las flechas para recorrer los perfiles.</p>
+                    <div class="investor-proof-slider-controls" aria-label="Controles del carrusel de perfiles de inversor">
+                        <button class="investor-proof-slider-button" id="investorProofPrev" type="button" aria-label="Ver perfil anterior">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </button>
+                        <button class="investor-proof-slider-button" id="investorProofNext" type="button" aria-label="Ver siguiente perfil">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="investor-proof-grid" id="investorProofSlider">
+                    <article class="glass investor-proof-card reveal" data-delay="60">
                     <div class="investor-proof-head">
                         <div class="investor-proof-avatar">PC</div>
                         <div class="investor-proof-persona">
@@ -567,8 +579,8 @@
                         <strong>Empresario</strong>
                         <span>Perfil inversor orientado a preservacion de capital</span>
                     </div>
-                </article>
-                <article class="glass investor-proof-card reveal" data-delay="140">
+                    </article>
+                    <article class="glass investor-proof-card reveal" data-delay="140">
                     <div class="investor-proof-head">
                         <div class="investor-proof-avatar">PP</div>
                         <div class="investor-proof-persona">
@@ -583,8 +595,8 @@
                         <strong>Comerciante</strong>
                         <span>Perfil patrimonial de lectura tangible</span>
                     </div>
-                </article>
-                <article class="glass investor-proof-card reveal" data-delay="220">
+                    </article>
+                    <article class="glass investor-proof-card reveal" data-delay="220">
                     <div class="investor-proof-head">
                         <div class="investor-proof-avatar">PR</div>
                         <div class="investor-proof-persona">
@@ -599,8 +611,8 @@
                         <strong>Profesional independiente</strong>
                         <span>Perfil orientado a claridad contractual</span>
                     </div>
-                </article>
-                <article class="glass investor-proof-card reveal" data-delay="300">
+                    </article>
+                    <article class="glass investor-proof-card reveal" data-delay="300">
                     <div class="investor-proof-head">
                         <div class="investor-proof-avatar">PA</div>
                         <div class="investor-proof-persona">
@@ -615,8 +627,8 @@
                         <strong>Inversor privado</strong>
                         <span>Perfil enfocado en seguimiento y control</span>
                     </div>
-                </article>
-                <article class="glass investor-proof-card reveal" data-delay="380">
+                    </article>
+                    <article class="glass investor-proof-card reveal" data-delay="380">
                     <div class="investor-proof-head">
                         <div class="investor-proof-avatar">PE</div>
                         <div class="investor-proof-persona">
@@ -631,8 +643,8 @@
                         <strong>Consultor</strong>
                         <span>Perfil empresa con mirada patrimonial</span>
                     </div>
-                </article>
-                <article class="glass investor-proof-card reveal" data-delay="460">
+                    </article>
+                    <article class="glass investor-proof-card reveal" data-delay="460">
                     <div class="investor-proof-head">
                         <div class="investor-proof-avatar">PX</div>
                         <div class="investor-proof-persona">
@@ -647,8 +659,8 @@
                         <strong>Ejecutivo</strong>
                         <span>Perfil orientado a orden y escalabilidad</span>
                     </div>
-                </article>
-                <article class="glass investor-proof-card reveal" data-delay="540">
+                    </article>
+                    <article class="glass investor-proof-card reveal" data-delay="540">
                     <div class="investor-proof-head">
                         <div class="investor-proof-avatar">PC</div>
                         <div class="investor-proof-persona">
@@ -663,7 +675,9 @@
                         <strong>Perfil corporativo</strong>
                         <span>Mirada institucional y de seguimiento operativo</span>
                     </div>
-                </article>
+                    </article>
+                </div>
+                <div class="investor-proof-dots" id="investorProofDots" aria-label="Indicadores del carrusel"></div>
             </div>
         </section>
 

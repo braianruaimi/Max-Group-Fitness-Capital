@@ -1392,6 +1392,86 @@ function initializeContactModal() {
     syncProjection();
 }
 
+function initializeInvestorProofSlider() {
+    const slider = document.getElementById("investorProofSlider");
+    const previousButton = document.getElementById("investorProofPrev");
+    const nextButton = document.getElementById("investorProofNext");
+    const dotsContainer = document.getElementById("investorProofDots");
+
+    if (!slider || !previousButton || !nextButton || !dotsContainer) {
+        return;
+    }
+
+    const slides = Array.from(slider.querySelectorAll(".investor-proof-card"));
+    const mobileQuery = window.matchMedia("(max-width: 820px)");
+
+    if (!slides.length) {
+        return;
+    }
+
+    const dots = slides.map((_, index) => {
+        const dot = document.createElement("button");
+        dot.type = "button";
+        dot.className = "investor-proof-dot";
+        dot.setAttribute("aria-label", `Ir al perfil ${index + 1}`);
+        dot.addEventListener("click", () => {
+            scrollToIndex(index);
+        });
+        dotsContainer.appendChild(dot);
+        return dot;
+    });
+
+    function getCurrentIndex() {
+        let activeIndex = 0;
+        let smallestDistance = Number.POSITIVE_INFINITY;
+
+        slides.forEach((slide, index) => {
+            const distance = Math.abs(slide.offsetLeft - slider.scrollLeft);
+            if (distance < smallestDistance) {
+                smallestDistance = distance;
+                activeIndex = index;
+            }
+        });
+
+        return activeIndex;
+    }
+
+    function updateControls() {
+        const currentIndex = getCurrentIndex();
+        const isMobile = mobileQuery.matches;
+
+        previousButton.disabled = !isMobile || currentIndex === 0;
+        nextButton.disabled = !isMobile || currentIndex === slides.length - 1;
+
+        dots.forEach((dot, index) => {
+            const isActive = index === currentIndex;
+            dot.classList.toggle("is-active", isActive);
+            dot.setAttribute("aria-current", isActive ? "true" : "false");
+        });
+    }
+
+    function scrollToIndex(index) {
+        const boundedIndex = Math.max(0, Math.min(index, slides.length - 1));
+        slider.scrollTo({
+            left: slides[boundedIndex].offsetLeft,
+            behavior: "smooth"
+        });
+    }
+
+    previousButton.addEventListener("click", () => {
+        scrollToIndex(getCurrentIndex() - 1);
+    });
+
+    nextButton.addEventListener("click", () => {
+        scrollToIndex(getCurrentIndex() + 1);
+    });
+
+    slider.addEventListener("scroll", updateControls, { passive: true });
+    window.addEventListener("resize", updateControls);
+    mobileQuery.addEventListener("change", updateControls);
+    updateControls();
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     initializeRevealAnimations();
     initializeSectionTransitions();
@@ -1404,6 +1484,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initializeEcosystemPreview();
     initializeCalculator();
     initializeContactModal();
+    initializeInvestorProofSlider();
     initializeHeroParallax();
     initializeTiltCards();
     initializeSmoothLinks();
