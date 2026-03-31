@@ -4,6 +4,12 @@ const arsFormatter = new Intl.NumberFormat("es-AR", {
     maximumFractionDigits: 0
 });
 
+const usdFormatter = new Intl.NumberFormat("es-AR", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0
+});
+
 const integerFormatter = new Intl.NumberFormat("es-AR", {
     maximumFractionDigits: 0
 });
@@ -12,12 +18,121 @@ const MINIMUM_INVESTMENT = 2500000;
 const FIXED_INCOME_QUARTERLY_RATE = 0.075;
 const METRICS_STORAGE_KEY = "maxGroupFitnessMetricsV1";
 const METRICS_PANEL_PASSWORD = "1234";
+const EXCHANGE_RATE_ARS = 1390;
+const ROUND_AVAILABLE_RATIO = 0.15;
+const ROUND_TOTAL_CAP_ARS = 100000000;
+let activeCurrency = "ARS";
 
 const easeOutCubic = (progress) => 1 - Math.pow(1 - progress, 3);
 
 function parseAmountValue(rawValue) {
     const digits = String(rawValue ?? "").replace(/\D/g, "");
     return Number(digits || 0);
+}
+
+function getSafeCurrency(currency) {
+    return ["ARS", "USD", "USDT"].includes(currency) ? currency : "ARS";
+}
+
+function setActiveCurrency(currency) {
+    const nextCurrency = getSafeCurrency(currency);
+
+    if (activeCurrency === nextCurrency) {
+        return;
+    }
+
+    activeCurrency = nextCurrency;
+    document.dispatchEvent(new CustomEvent("maxgroupcurrencychange", {
+        detail: { currency: activeCurrency }
+    }));
+}
+
+function convertArsToDisplayAmount(amountArs, currency = activeCurrency) {
+    const safeCurrency = getSafeCurrency(currency);
+    return safeCurrency === "ARS" ? amountArs : amountArs / EXCHANGE_RATE_ARS;
+}
+
+function convertDisplayAmountToArs(amount, currency = activeCurrency) {
+    const safeCurrency = getSafeCurrency(currency);
+    return safeCurrency === "ARS" ? amount : amount * EXCHANGE_RATE_ARS;
+}
+
+function formatCurrencyValue(amountArs, currency = activeCurrency) {
+    const safeCurrency = getSafeCurrency(currency);
+    const displayValue = Math.round(convertArsToDisplayAmount(amountArs, safeCurrency));
+
+    if (safeCurrency === "ARS") {
+        return arsFormatter.format(displayValue);
+    }
+
+    if (safeCurrency === "USD") {
+        return usdFormatter.format(displayValue);
+    }
+
+    return `USDT ${integerFormatter.format(displayValue)}`;
+}
+
+function formatCurrencyInputValue(amountArs, currency = activeCurrency) {
+    const safeCurrency = getSafeCurrency(currency);
+    const displayValue = Math.round(convertArsToDisplayAmount(amountArs, safeCurrency));
+    return `${safeCurrency} ${integerFormatter.format(displayValue)}`;
+}
+
+function normalizeArsAmount(amountArs) {
+    return Math.max(Number(amountArs) || 0, MINIMUM_INVESTMENT);
+}
+
+function parseInputAmountToArs(rawValue, currency = activeCurrency) {
+    const displayAmount = parseAmountValue(rawValue);
+    return normalizeArsAmount(convertDisplayAmountToArs(displayAmount, currency));
+}
+
+function formatMinimumHint(currency = activeCurrency) {
+    return formatCurrencyValue(MINIMUM_INVESTMENT, currency);
+}
+
+function updateCurrencyBoundText(currency = activeCurrency) {
+    const safeCurrency = getSafeCurrency(currency);
+    const calculatorSelect = document.getElementById("currencySelect");
+    const modalSelect = document.getElementById("modalCurrencySelect");
+    const minimumTermValue = document.getElementById("minimumTermValue");
+    const minimumHighlightValue = document.getElementById("minimumHighlightValue");
+    const amountHint = document.getElementById("investmentAmountHint");
+    const contactModalMinimumBadge = document.getElementById("contactModalMinimumBadge");
+    const capitalPrivateMinimumValue = document.getElementById("capitalPrivateMinimumValue");
+    const modalAmount = document.getElementById("modalAmount");
+
+    if (calculatorSelect && calculatorSelect.value !== safeCurrency) {
+        calculatorSelect.value = safeCurrency;
+    }
+
+    if (modalSelect && modalSelect.value !== safeCurrency) {
+        modalSelect.value = safeCurrency;
+    }
+
+    if (minimumTermValue) {
+        minimumTermValue.textContent = formatMinimumHint(safeCurrency);
+    }
+
+    if (minimumHighlightValue) {
+        minimumHighlightValue.textContent = `Ingreso minimo: ${formatMinimumHint(safeCurrency)} con holding minimo de 90 dias.`;
+    }
+
+    if (amountHint) {
+        amountHint.textContent = `Monto minimo validado: ${formatMinimumHint(safeCurrency)}. El simulador proyecta 4% mensual y 12% trimestral.`;
+    }
+
+    if (contactModalMinimumBadge) {
+        contactModalMinimumBadge.textContent = `Minimo ${formatMinimumHint(safeCurrency)}`;
+    }
+
+    if (capitalPrivateMinimumValue) {
+        capitalPrivateMinimumValue.textContent = formatMinimumHint(safeCurrency);
+    }
+
+    if (modalAmount) {
+        modalAmount.placeholder = formatCurrencyInputValue(MINIMUM_INVESTMENT, safeCurrency);
+    }
 }
 
 function normalizeInvestmentAmount(rawValue) {
@@ -1143,6 +1258,7 @@ function initializeTiltCards() {
 
 function initializeCalculator() {
     const amountInput = document.getElementById("investmentAmount");
+    const currencySelect = document.getElementById("currencySelect");
     const investedResult = document.getElementById("investedResult");
     const monthlyResult = document.getElementById("monthlyResult");
     const quarterResult = document.getElementById("quarterResult");
@@ -1157,21 +1273,31 @@ function initializeCalculator() {
     const fixedIncomeBar = document.getElementById("fixedIncomeBar");
     const maxGroupBarLabel = document.getElementById("maxGroupBarLabel");
     const fixedIncomeBarLabel = document.getElementById("fixedIncomeBarLabel");
+    const capitalInputGrowthBar = document.getElementById("capitalInputGrowthBar");
+    const capitalOutputGrowthBar = document.getElementById("capitalOutputGrowthBar");
+    const capitalInputGrowthLabel = document.getElementById("capitalInputGrowthLabel");
+    const capitalOutputGrowthLabel = document.getElementById("capitalOutputGrowthLabel");
+    const roundAvailabilityBar = document.getElementById("roundAvailabilityBar");
+    const roundAvailabilityValue = document.getElementById("roundAvailabilityValue");
 
-    if (!amountInput || !investedResult || !monthlyResult || !quarterResult || !totalResult || !fixedIncomeQuarterResult || !spreadResult || !semiannualResult || !annualResult || !annualGainResult || !growthSummary || !maxGroupBar || !fixedIncomeBar || !maxGroupBarLabel || !fixedIncomeBarLabel) {
+    if (!amountInput || !currencySelect || !investedResult || !monthlyResult || !quarterResult || !totalResult || !fixedIncomeQuarterResult || !spreadResult || !semiannualResult || !annualResult || !annualGainResult || !growthSummary || !maxGroupBar || !fixedIncomeBar || !maxGroupBarLabel || !fixedIncomeBarLabel || !capitalInputGrowthBar || !capitalOutputGrowthBar || !capitalInputGrowthLabel || !capitalOutputGrowthLabel || !roundAvailabilityBar || !roundAvailabilityValue) {
         return;
     }
 
-    function setCalculatorAmount(amount) {
-        const safeAmount = normalizeInvestmentAmount(amount);
-        amountInput.value = formatAmount(String(safeAmount));
+    let currentAmountArs = normalizeArsAmount(MINIMUM_INVESTMENT);
+    const roundAvailableArs = ROUND_TOTAL_CAP_ARS * ROUND_AVAILABLE_RATIO;
+
+    function setCalculatorAmount(amountArs) {
+        const safeAmount = normalizeArsAmount(amountArs);
+        currentAmountArs = safeAmount;
+        amountInput.value = formatCurrencyInputValue(safeAmount, activeCurrency);
         updateCalculator(safeAmount);
     }
 
     function updateCalculator(forcedAmount) {
         const amount = typeof forcedAmount === "number"
-            ? normalizeInvestmentAmount(forcedAmount)
-            : normalizeInvestmentAmount(amountInput.value);
+            ? normalizeArsAmount(forcedAmount)
+            : parseInputAmountToArs(amountInput.value, activeCurrency);
         const monthly = amount * 0.04;
         const quarter = amount * 0.12;
         const fixedIncomeQuarter = amount * FIXED_INCOME_QUARTERLY_RATE;
@@ -1180,43 +1306,48 @@ function initializeCalculator() {
         const semiannualTotal = amount * 1.24;
         const annualTotal = amount * 1.48;
         const annualGain = annualTotal - amount;
+        const inputRoundShare = Math.min((amount / roundAvailableArs) * 100, 100);
+        const outputRoundShare = Math.min((total / roundAvailableArs) * 100, 100);
+
+        currentAmountArs = amount;
+        updateCurrencyBoundText(activeCurrency);
 
         animateValue(investedResult, amount, {
             duration: 620,
-            formatter: (value) => arsFormatter.format(Math.round(value))
+            formatter: (value) => formatCurrencyValue(value, activeCurrency)
         });
 
         animateValue(monthlyResult, monthly, {
             duration: 700,
-            formatter: (value) => arsFormatter.format(Math.round(value))
+            formatter: (value) => formatCurrencyValue(value, activeCurrency)
         });
         animateValue(quarterResult, quarter, {
             duration: 820,
-            formatter: (value) => arsFormatter.format(Math.round(value))
+            formatter: (value) => formatCurrencyValue(value, activeCurrency)
         });
         animateValue(fixedIncomeQuarterResult, fixedIncomeQuarter, {
             duration: 860,
-            formatter: (value) => arsFormatter.format(Math.round(value))
+            formatter: (value) => formatCurrencyValue(value, activeCurrency)
         });
         animateValue(spreadResult, spread, {
             duration: 920,
-            formatter: (value) => arsFormatter.format(Math.round(value))
+            formatter: (value) => formatCurrencyValue(value, activeCurrency)
         });
         animateValue(totalResult, total, {
             duration: 980,
-            formatter: (value) => arsFormatter.format(Math.round(value))
+            formatter: (value) => formatCurrencyValue(value, activeCurrency)
         });
         animateValue(semiannualResult, semiannualTotal, {
             duration: 1080,
-            formatter: (value) => arsFormatter.format(Math.round(value))
+            formatter: (value) => formatCurrencyValue(value, activeCurrency)
         });
         animateValue(annualResult, annualTotal, {
             duration: 1180,
-            formatter: (value) => arsFormatter.format(Math.round(value))
+            formatter: (value) => formatCurrencyValue(value, activeCurrency)
         });
         animateValue(annualGainResult, annualGain, {
             duration: 1220,
-            formatter: (value) => arsFormatter.format(Math.round(value))
+            formatter: (value) => formatCurrencyValue(value, activeCurrency)
         });
 
         const fixedBarWidth = Math.min((FIXED_INCOME_QUARTERLY_RATE / 0.12) * 100, 100);
@@ -1225,24 +1356,48 @@ function initializeCalculator() {
         maxGroupBarLabel.textContent = "12% trimestral";
         fixedIncomeBarLabel.textContent = `${(FIXED_INCOME_QUARTERLY_RATE * 100).toFixed(1)}% trimestral`;
 
-        growthSummary.textContent = `Con ${arsFormatter.format(amount)}, Max Group proyecta ${arsFormatter.format(Math.round(quarter))} en 90 dias frente a ${arsFormatter.format(Math.round(fixedIncomeQuarter))} de un plazo fijo tradicional. La diferencia estimada a favor es ${arsFormatter.format(Math.round(spread))}.`;
+        capitalInputGrowthBar.style.width = `${inputRoundShare}%`;
+        capitalOutputGrowthBar.style.width = `${outputRoundShare}%`;
+        capitalInputGrowthLabel.textContent = `${inputRoundShare.toFixed(0)}% del cupo activo`;
+        capitalOutputGrowthLabel.textContent = `${outputRoundShare.toFixed(0)}% proyectado`;
+        roundAvailabilityBar.style.width = `${ROUND_AVAILABLE_RATIO * 100}%`;
+        roundAvailabilityValue.textContent = `${(ROUND_AVAILABLE_RATIO * 100).toFixed(0)}%`;
+
+        growthSummary.textContent = `Con ${formatCurrencyValue(amount, activeCurrency)}, Max Group proyecta ${formatCurrencyValue(Math.round(quarter), activeCurrency)} en 90 dias frente a ${formatCurrencyValue(Math.round(fixedIncomeQuarter), activeCurrency)} de un plazo fijo tradicional. La diferencia estimada a favor es ${formatCurrencyValue(Math.round(spread), activeCurrency)}.`;
+
+        document.dispatchEvent(new CustomEvent("maxgroupamountchange", {
+            detail: { amountArs: amount }
+        }));
     }
 
     amountInput.addEventListener("input", () => {
-        const amount = normalizeInvestmentAmount(amountInput.value);
+        const amount = parseInputAmountToArs(amountInput.value, activeCurrency);
         updateCalculator(amount);
     });
 
     amountInput.addEventListener("blur", () => {
-        amountInput.value = formatAmount(amountInput.value);
-        updateCalculator(amountInput.value);
+        amountInput.value = formatCurrencyInputValue(parseInputAmountToArs(amountInput.value, activeCurrency), activeCurrency);
+        updateCalculator(parseInputAmountToArs(amountInput.value, activeCurrency));
     });
 
     amountInput.addEventListener("change", () => {
-        setCalculatorAmount(amountInput.value);
+        setCalculatorAmount(parseInputAmountToArs(amountInput.value, activeCurrency));
     });
 
-    setCalculatorAmount(amountInput.value);
+    currencySelect.addEventListener("change", () => {
+        setActiveCurrency(currencySelect.value);
+    });
+
+    document.addEventListener("maxgroupcurrencychange", (event) => {
+        const nextCurrency = event.detail?.currency || "ARS";
+        currencySelect.value = nextCurrency;
+        updateCurrencyBoundText(nextCurrency);
+        amountInput.value = formatCurrencyInputValue(currentAmountArs, nextCurrency);
+        updateCalculator(currentAmountArs);
+    });
+
+    updateCurrencyBoundText(activeCurrency);
+    setCalculatorAmount(parseInputAmountToArs(amountInput.value, activeCurrency));
 }
 
 function initializeSmoothLinks() {
@@ -1326,6 +1481,7 @@ function initializeContactModal() {
     const modal = document.getElementById("contactModal");
     const closeButton = document.getElementById("contactModalClose");
     const form = document.getElementById("contactModalForm");
+    const currencySelect = document.getElementById("modalCurrencySelect");
     const amountInput = document.getElementById("modalAmount");
     const termSelect = document.getElementById("modalTerm");
     const projectedGain = document.getElementById("modalProjectedGain");
@@ -1339,7 +1495,7 @@ function initializeContactModal() {
     const originBadge = document.getElementById("contactModalOriginBadge");
     let activeSourceLabel = "Acceso directo";
 
-    if (!contactTriggers.length || !backdrop || !modal || !closeButton || !form || !amountInput || !termSelect || !projectedGain || !projectedTotal || !projectedSummary || !successBackdrop || !successClose || !successButton || !submitButton) {
+    if (!contactTriggers.length || !backdrop || !modal || !closeButton || !form || !currencySelect || !amountInput || !termSelect || !projectedGain || !projectedTotal || !projectedSummary || !successBackdrop || !successClose || !successButton || !submitButton) {
         return;
     }
 
@@ -1351,36 +1507,37 @@ function initializeContactModal() {
     }
 
     function syncProjection() {
-        const amount = normalizeInvestmentAmount(amountInput.value);
+        const amount = parseInputAmountToArs(amountInput.value, activeCurrency);
         const months = Number(termSelect.value || 3);
         const { gain, total } = calculateProjectedReturn(amount, months);
         const isValidAmount = amount >= MINIMUM_INVESTMENT;
 
-        amountInput.value = formatAmount(String(amount));
-        amountInput.setCustomValidity(isValidAmount ? "" : `El monto minimo es ${arsFormatter.format(MINIMUM_INVESTMENT)}.`);
+        amountInput.value = formatCurrencyInputValue(amount, activeCurrency);
+        amountInput.setCustomValidity(isValidAmount ? "" : `El monto minimo es ${formatMinimumHint(activeCurrency)}.`);
         submitButton.disabled = !isValidAmount;
 
         animateValue(projectedGain, gain, {
             duration: 620,
-            formatter: (value) => arsFormatter.format(Math.round(value))
+            formatter: (value) => formatCurrencyValue(value, activeCurrency)
         });
         animateValue(projectedTotal, total, {
             duration: 760,
-            formatter: (value) => arsFormatter.format(Math.round(value))
+            formatter: (value) => formatCurrencyValue(value, activeCurrency)
         });
 
         projectedSummary.textContent = isValidAmount
-            ? `Para ${arsFormatter.format(amount)} a ${months} meses, la ganancia estimada seria ${arsFormatter.format(Math.round(gain))} y el capital total proyectado ${arsFormatter.format(Math.round(total))}.`
-            : `El monto minimo validado es ${arsFormatter.format(MINIMUM_INVESTMENT)}.`;
+            ? `Para ${formatCurrencyValue(amount, activeCurrency)} a ${months} meses, la ganancia estimada seria ${formatCurrencyValue(Math.round(gain), activeCurrency)} y el capital total proyectado ${formatCurrencyValue(Math.round(total), activeCurrency)}.`
+            : `El monto minimo validado es ${formatMinimumHint(activeCurrency)}.`;
     }
 
     function openModal(prefilledAmount = null, sourceLabel = "Acceso directo") {
         const sourceAmount = typeof prefilledAmount === "number" && prefilledAmount > 0
-            ? normalizeInvestmentAmount(prefilledAmount)
-            : normalizeInvestmentAmount(calculatorAmountInput?.value || amountInput.value);
+            ? normalizeArsAmount(prefilledAmount)
+            : parseInputAmountToArs(calculatorAmountInput?.value || amountInput.value, activeCurrency);
 
         activeSourceLabel = sourceLabel;
-        amountInput.value = formatAmount(String(sourceAmount));
+        currencySelect.value = activeCurrency;
+        amountInput.value = formatCurrencyInputValue(sourceAmount, activeCurrency);
         if (originBadge) {
             originBadge.textContent = `Origen: ${sourceLabel}`;
         }
@@ -1460,7 +1617,7 @@ function initializeContactModal() {
     });
 
     amountInput.addEventListener("blur", () => {
-        amountInput.value = formatAmount(amountInput.value);
+        amountInput.value = formatCurrencyInputValue(parseInputAmountToArs(amountInput.value, activeCurrency), activeCurrency);
         syncProjection();
     });
 
@@ -1468,7 +1625,19 @@ function initializeContactModal() {
         syncProjection();
     });
 
+    currencySelect.addEventListener("change", () => {
+        setActiveCurrency(currencySelect.value);
+        syncProjection();
+    });
+
     termSelect.addEventListener("change", syncProjection);
+
+    document.addEventListener("maxgroupcurrencychange", (event) => {
+        const nextCurrency = event.detail?.currency || "ARS";
+        currencySelect.value = nextCurrency;
+        updateCurrencyBoundText(nextCurrency);
+        syncProjection();
+    });
 
     form.addEventListener("submit", (event) => {
         event.preventDefault();
@@ -1477,12 +1646,16 @@ function initializeContactModal() {
         const address = document.getElementById("modalAddress")?.value.trim() || "No informado";
         const phone = document.getElementById("modalPhone")?.value.trim() || "No informado";
         const email = document.getElementById("modalEmail")?.value.trim() || "No informado";
-        const amount = normalizeInvestmentAmount(amountInput.value);
+        const amount = parseInputAmountToArs(amountInput.value, activeCurrency);
         const months = Number(termSelect.value || 3);
         const { gain, total } = calculateProjectedReturn(amount, months);
+        const amountLabel = formatCurrencyValue(amount, activeCurrency);
+        const gainLabel = formatCurrencyValue(Math.round(gain), activeCurrency);
+        const totalLabel = formatCurrencyValue(Math.round(total), activeCurrency);
+        const equivalentArsLabel = activeCurrency === "ARS" ? "" : ` (equivalente ${arsFormatter.format(Math.round(amount))})`;
 
         if (amount < MINIMUM_INVESTMENT) {
-            amountInput.setCustomValidity(`El monto minimo es ${arsFormatter.format(MINIMUM_INVESTMENT)}.`);
+            amountInput.setCustomValidity(`El monto minimo es ${formatMinimumHint(activeCurrency)}.`);
             amountInput.reportValidity();
             return;
         }
@@ -1496,10 +1669,11 @@ function initializeContactModal() {
             `Domicilio: ${address}`,
             `Telefono: ${phone}`,
             `Email: ${email}`,
-            `Monto a invertir: ${arsFormatter.format(amount)}`,
+            `Moneda seleccionada: ${activeCurrency}`,
+            `Monto a invertir: ${amountLabel}${equivalentArsLabel}`,
             `Plazo seleccionado: ${months} meses`,
-            `Ganancia estimada: ${arsFormatter.format(Math.round(gain))}`,
-            `Capital total estimado: ${arsFormatter.format(Math.round(total))}`
+            `Ganancia estimada: ${gainLabel}`,
+            `Capital total estimado: ${totalLabel}`
         ].join("\n");
 
         const whatsappUrl = `https://wa.me/5492215047962?text=${encodeURIComponent(whatsappMessage)}`;
@@ -1519,7 +1693,9 @@ function initializeContactModal() {
         }
     });
 
-    amountInput.value = formatAmount(calculatorAmountInput?.value || "2500000");
+    updateCurrencyBoundText(activeCurrency);
+    currencySelect.value = activeCurrency;
+    amountInput.value = formatCurrencyInputValue(parseInputAmountToArs(calculatorAmountInput?.value || "2500000", activeCurrency), activeCurrency);
     syncProjection();
 }
 
@@ -1869,6 +2045,7 @@ function initializeCalculatorTradingBoard() {
     const sampleCount = 42;
     let phase = 0;
     let series = Array.from({ length: sampleCount }, (_, index) => 58 + Math.sin(index / 3.2) * 4);
+    let trackedAmountArs = MINIMUM_INVESTMENT;
 
     function setTickerState(element, nextText, isPositive) {
         const ticker = element.closest(".market-ticker");
@@ -1911,9 +2088,10 @@ function initializeCalculatorTradingBoard() {
 
     function renderFrame() {
         phase += 1;
+        const amplitudeScale = Math.max(1, Math.min(trackedAmountArs / 5000000, 2.6));
         series = series.map((value, index) => {
             const baseline = 60 + Math.sin((phase + index) / 4.5) * 3;
-            const pulse = createPulse(index, phase);
+            const pulse = createPulse(index, phase) * amplitudeScale;
             const drift = (Math.random() - 0.5) * 2.4;
             return Math.max(16, Math.min(104, baseline + pulse + drift));
         });
@@ -1923,13 +2101,22 @@ function initializeCalculatorTradingBoard() {
         const average = series.reduce((sum, value) => sum + value, 0) / series.length;
         const momentum = series[series.length - 1] - series[Math.max(series.length - 6, 0)];
         const flowPercent = (4.2 + average / 18).toFixed(1);
-        const capitalAmount = Math.round(4800000 + average * 62000 + Math.max(momentum, 0) * 54000);
+        const capitalAmount = Math.round(4800000 + trackedAmountArs * 0.72 + average * 62000 + Math.max(momentum, 0) * 54000);
         const expansionPercent = Number((momentum / 3.4).toFixed(1));
 
         setTickerState(flowValue, `${flowPercent > 0 ? "+" : ""}${flowPercent}%`, Number(flowPercent) >= 0);
-        setTickerState(capitalValue, arsFormatter.format(capitalAmount), true);
+        setTickerState(capitalValue, formatCurrencyValue(capitalAmount, activeCurrency), true);
         setTickerState(expansionValue, `${expansionPercent > 0 ? "+" : ""}${expansionPercent}%`, expansionPercent >= 0);
     }
+
+    document.addEventListener("maxgroupamountchange", (event) => {
+        trackedAmountArs = normalizeArsAmount(event.detail?.amountArs || trackedAmountArs);
+        renderFrame();
+    });
+
+    document.addEventListener("maxgroupcurrencychange", () => {
+        renderFrame();
+    });
 
     renderFrame();
     window.setInterval(renderFrame, 900);

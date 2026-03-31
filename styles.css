@@ -2239,6 +2239,88 @@ canvas {
     font-size: 0.92rem;
 }
 
+.calculator-control-row {
+    display: grid;
+    grid-template-columns: minmax(0, 220px);
+    gap: 14px;
+    margin-bottom: 12px;
+}
+
+.field-compact {
+    gap: 8px;
+}
+
+.currency-select {
+    min-height: 56px;
+}
+
+.round-availability,
+.capital-growth-panel {
+    display: grid;
+    gap: 10px;
+    margin-top: 18px;
+    padding: 14px 16px;
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.round-availability-head,
+.capital-growth-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.round-availability-head span,
+.capital-growth-head span {
+    color: var(--muted);
+    font-size: 0.86rem;
+    letter-spacing: 0.04em;
+}
+
+.round-availability-head strong,
+.capital-growth-head strong {
+    color: #eef7ff;
+    font-size: 0.9rem;
+}
+
+.availability-track,
+.capital-growth-track {
+    position: relative;
+    overflow: hidden;
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.availability-fill,
+.capital-growth-fill {
+    display: block;
+    width: 0;
+    height: 100%;
+    border-radius: inherit;
+    transition: width 820ms ease;
+}
+
+.availability-fill {
+    background: linear-gradient(90deg, rgba(255, 211, 107, 0.92), rgba(255, 138, 76, 0.92));
+}
+
+.capital-growth-fill {
+    background: linear-gradient(90deg, rgba(0, 212, 255, 0.92), rgba(138, 43, 226, 0.92));
+}
+
+.capital-growth-fill-secondary {
+    background: linear-gradient(90deg, rgba(11, 230, 154, 0.92), rgba(0, 212, 255, 0.92));
+}
+
+.capital-growth-row {
+    display: grid;
+    gap: 8px;
+}
+
 .calculator-results {
     display: grid;
     gap: 14px;
@@ -2531,12 +2613,13 @@ body.modal-open {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 62px;
-    height: 62px;
-    border-radius: 50%;
+    min-height: 62px;
+    padding: 0 18px;
+    border-radius: 999px;
     background: linear-gradient(135deg, #25d366, #0ebf77);
     color: #04130b;
     font-weight: 800;
+    letter-spacing: 0.02em;
     box-shadow: 0 0 18px rgba(37, 211, 102, 0.28), 0 18px 36px rgba(10, 78, 40, 0.35);
     transition: transform 180ms ease, box-shadow 180ms ease;
 }
@@ -3560,6 +3643,10 @@ body.modal-open {
         padding-right: 14px;
     }
 
+    .calculator-control-row {
+        grid-template-columns: 1fr;
+    }
+
     .contact-modal-backdrop,
     .success-modal-backdrop {
         padding: 10px;
@@ -3761,8 +3848,9 @@ body.modal-open {
     .whatsapp-float {
         right: 16px;
         bottom: 16px;
-        width: 58px;
-        height: 58px;
+        min-height: 54px;
+        padding: 0 14px;
+        font-size: 0.82rem;
     }
 
     .preview-head {

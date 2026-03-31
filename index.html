@@ -428,7 +428,7 @@
                 <div class="terms-grid">
                     <article class="term-card">
                         <span class="term-label">Minimo</span>
-                        <strong>ARS 2.500.000</strong>
+                        <strong id="minimumTermValue">ARS 2.500.000</strong>
                     </article>
                     <article class="term-card">
                         <span class="term-label">Retorno proyectado</span>
@@ -441,7 +441,7 @@
                 </div>
                 <div class="investment-highlights">
                     <div class="highlight-line">Asignacion prevista a expansion de capacidad, marketing comercial y consolidacion operativa.</div>
-                    <div class="highlight-line">Ingreso minimo: ARS 2.500.000 con holding minimo de 90 dias.</div>
+                    <div class="highlight-line" id="minimumHighlightValue">Ingreso minimo: ARS 2.500.000 con holding minimo de 90 dias.</div>
                     <div class="highlight-line">Canal de seguimiento directo con el equipo de Max Group Fitness Capital por WhatsApp.</div>
                 </div>
                 <p class="disclaimer">Rentabilidad proyectada, no garantizada.</p>
@@ -477,11 +477,30 @@
                         </div>
                         <div class="market-board-chart" id="marketBoardChart" aria-hidden="true"></div>
                     </div>
+                    <div class="calculator-control-row">
+                        <label class="field field-compact" for="currencySelect">
+                            <span>Moneda</span>
+                            <select id="currencySelect" class="currency-select">
+                                <option value="ARS">ARS</option>
+                                <option value="USD">USD</option>
+                                <option value="USDT">USDT</option>
+                            </select>
+                        </label>
+                    </div>
                     <label for="investmentAmount">Monto a invertir</label>
                     <div class="input-shell">
                         <input id="investmentAmount" name="investmentAmount" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="ARS 2.500.000" aria-describedby="investmentAmountHint">
                     </div>
                     <p class="input-hint" id="investmentAmountHint">Monto minimo validado: ARS 2.500.000. El simulador proyecta 4% mensual y 12% trimestral.</p>
+                    <div class="round-availability">
+                        <div class="round-availability-head">
+                            <span>Cupo disponible para esta ronda</span>
+                            <strong id="roundAvailabilityValue">15%</strong>
+                        </div>
+                        <div class="availability-track" aria-hidden="true">
+                            <span class="availability-fill" id="roundAvailabilityBar"></span>
+                        </div>
+                    </div>
                     <div class="comparison-bars">
                         <div class="comparison-bar-card">
                             <div class="comparison-bar-head">
@@ -496,6 +515,26 @@
                                 <strong id="fixedIncomeBarLabel">0%</strong>
                             </div>
                             <div class="comparison-bar-track"><span class="comparison-bar-fill comparison-bar-fill-secondary" id="fixedIncomeBar"></span></div>
+                        </div>
+                    </div>
+                    <div class="capital-growth-panel">
+                        <div class="capital-growth-row">
+                            <div class="capital-growth-head">
+                                <span>Capital ingresado</span>
+                                <strong id="capitalInputGrowthLabel">0%</strong>
+                            </div>
+                            <div class="capital-growth-track" aria-hidden="true">
+                                <span class="capital-growth-fill" id="capitalInputGrowthBar"></span>
+                            </div>
+                        </div>
+                        <div class="capital-growth-row">
+                            <div class="capital-growth-head">
+                                <span>Capital proyectado a 90 dias</span>
+                                <strong id="capitalOutputGrowthLabel">0%</strong>
+                            </div>
+                            <div class="capital-growth-track" aria-hidden="true">
+                                <span class="capital-growth-fill capital-growth-fill-secondary" id="capitalOutputGrowthBar"></span>
+                            </div>
                         </div>
                     </div>
                 </article>
@@ -847,7 +886,7 @@
                                 <strong>WhatsApp directo</strong>
                             </div>
                         </div>
-                        <a class="button button-primary contact-trigger" data-contact-source="Contacto - Recibir propuesta por WhatsApp" href="#contact-modal">Recibir propuesta por WhatsApp</a>
+                        <a class="button button-primary contact-trigger" data-contact-source="Contacto - Solicitar un asesor" href="#contact-modal">Solicitar un asesor</a>
                         <p class="contact-note">WhatsApp directo: +54 9 221 504 7962</p>
                     </div>
                 </article>
@@ -859,7 +898,7 @@
                 <span class="eyebrow">Capital defense</span>
                 <h2>No dejes tu capital mirando la inflacion desde afuera</h2>
                 <p>Si queres revisar la estructura legal, el respaldo en activos, el cupo disponible y la proyeccion de retorno, el siguiente paso es abrir el canal directo por WhatsApp.</p>
-                <a class="button button-primary contact-trigger glow-button" data-contact-source="CTA final - Quiero evaluar el ingreso" href="#contact-modal">Quiero evaluar el ingreso</a>
+                <a class="button button-primary contact-trigger glow-button" data-contact-source="CTA final - Solicitar un asesor" href="#contact-modal">Solicitar un asesor</a>
             </div>
         </section>
     </main>
@@ -872,12 +911,22 @@
                 <h2 id="contactModalTitle">Carga tus datos y envia la consulta por WhatsApp</h2>
                 <p>Completa tus datos, selecciona el plazo y visualiza en tiempo real el retorno estimado antes de enviar.</p>
                 <div class="contact-modal-badges">
-                    <span>Minimo ARS 2.500.000</span>
+                    <span id="contactModalMinimumBadge">Minimo ARS 2.500.000</span>
                     <span>Respuesta guiada por WhatsApp</span>
                     <span id="contactModalOriginBadge">Origen: acceso directo</span>
                 </div>
             </div>
             <form id="contactModalForm" class="lead-form contact-modal-form">
+                <div class="form-grid">
+                    <label class="field">
+                        <span>Moneda</span>
+                        <select id="modalCurrencySelect" name="modalCurrencySelect" required>
+                            <option value="ARS">ARS</option>
+                            <option value="USD">USD</option>
+                            <option value="USDT">USDT</option>
+                        </select>
+                    </label>
+                </div>
                 <div class="form-grid">
                     <label class="field">
                         <span>Nombre y apellido</span>
@@ -923,7 +972,7 @@
                     </div>
                 </div>
                 <p class="calculator-summary" id="modalProjectedSummary">Selecciona monto y plazo para ver el retorno estimado.</p>
-                <button class="button button-primary" type="submit">Enviar por WhatsApp</button>
+                <button class="button button-primary" type="submit">Solicitar un asesor por WhatsApp</button>
             </form>
         </div>
     </div>
@@ -1032,7 +1081,7 @@
             <div class="capital-private-grid">
                 <article class="result-card result-card-soft">
                     <span>Minimo de ingreso</span>
-                    <strong>ARS 2.500.000</strong>
+                    <strong id="capitalPrivateMinimumValue">ARS 2.500.000</strong>
                 </article>
                 <article class="result-card highlight">
                     <span>Retorno proyectado</span>
@@ -1048,12 +1097,12 @@
                 </article>
             </div>
             <p class="capital-private-note">Si queres revisar condiciones, flujo, plazo y canal de seguimiento, abrí la propuesta y avanzá por WhatsApp.</p>
-            <button class="button button-primary contact-trigger" data-contact-source="Capital privado - Modal flotante" type="button">Abrir propuesta privada</button>
+            <button class="button button-primary contact-trigger" data-contact-source="Capital privado - Modal flotante" type="button">Solicitar un asesor</button>
         </div>
     </div>
 
     <a class="whatsapp-float contact-trigger" data-contact-source="WhatsApp flotante" href="#contact-modal" aria-label="Contactar por WhatsApp">
-        <span>WA</span>
+        <span>Solicitar un asesor</span>
     </a>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
