@@ -1,3 +1,26 @@
+@media (max-width: 700px) {
+    .contact-modal {
+        width: 98vw !important;
+        max-width: 420px !important;
+        min-width: unset !important;
+        left: 50% !important;
+        top: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        padding: 10px 4px 14px 4px !important;
+        border-radius: 16px !important;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.32) !important;
+        overflow: auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        z-index: 9999 !important;
+    }
+    .contact-modal-form {
+        max-height: 48vh !important;
+        overflow-y: auto !important;
+        width: 100% !important;
+    }
+}
 /* --- RESPONSIVIDAD SOLO PARA MODALES Y ASISTENTE --- */
 @media (max-width: 700px) {
     .contact-modal,
