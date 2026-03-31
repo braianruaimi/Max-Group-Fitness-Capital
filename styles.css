@@ -87,7 +87,7 @@
         max-height: 22vh !important;
         font-size: 0.95em;
     }
-}
+} */
 @media (max-width: 600px) {
     .contact-modal,
     .success-modal {
@@ -4024,4 +4024,4 @@ body.modal-open {
     to {
         transform: translateX(120%);
     }
-}
+} */
