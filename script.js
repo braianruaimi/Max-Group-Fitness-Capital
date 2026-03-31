@@ -1854,9 +1854,7 @@ function initializeInstallPrompt() {
     }
 
     let deferredPrompt = null;
-    let serviceWorkerRegistration = null;
-    let waitingWorker = null;
-    let hasReloadedForUpdate = false;
+    // Eliminado: referencias a Service Worker
     let updateButtonTimeoutId = null;
 
     function isStandaloneMode() {
@@ -1869,34 +1867,9 @@ function initializeInstallPrompt() {
         }
     }
 
-    function syncUpdateButton(worker) {
-        waitingWorker = worker || null;
-        updateButton.hidden = !(waitingWorker && isStandaloneMode() && navigator.serviceWorker.controller);
+    // Eliminado: función syncUpdateButton relacionada a Service Worker
 
-        if (updateButtonTimeoutId) {
-            window.clearTimeout(updateButtonTimeoutId);
-            updateButtonTimeoutId = null;
-        }
-
-        if (!updateButton.hidden) {
-            updateButtonTimeoutId = window.setTimeout(() => {
-                updateButton.hidden = true;
-                updateButtonTimeoutId = null;
-            }, 10000);
-        }
-    }
-
-    window.addEventListener("beforeinstallprompt", (event) => {
-        event.preventDefault();
-        deferredPrompt = event;
-        installButton.hidden = isStandaloneMode();
-    });
-
-    window.addEventListener("appinstalled", () => {
-        deferredPrompt = null;
-        installButton.hidden = true;
-        serviceWorkerRegistration?.update().catch(() => undefined);
-    });
+    // Eliminado: eventos relacionados a instalación y actualización de PWA/Service Worker
 
     installButton.addEventListener("click", async () => {
         if (!deferredPrompt) {
