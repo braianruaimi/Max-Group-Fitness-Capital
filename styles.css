@@ -2498,12 +2498,13 @@ canvas {
     width: min(760px, 100%);
     max-height: min(88vh, 860px);
     display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
     gap: 18px;
     padding: 28px;
     border-radius: 28px;
     transform: translateY(18px) scale(0.98);
     transition: transform 220ms ease;
-    overflow-y: auto;
+    overflow: hidden;
 }
 
 .success-modal {
@@ -2527,6 +2528,17 @@ canvas {
     border-radius: 28px 28px 24px 24px;
     background: linear-gradient(180deg, rgba(7, 10, 20, 0.98), rgba(7, 10, 20, 0.92));
     backdrop-filter: blur(16px);
+}
+
+.contact-modal-drag-handle {
+    display: none;
+    justify-self: center;
+    width: 52px;
+    height: 5px;
+    margin: -6px auto 6px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.24);
+    box-shadow: 0 0 14px rgba(255, 255, 255, 0.08);
 }
 
 .contact-modal-head h2 {
@@ -2569,6 +2581,21 @@ canvas {
 .contact-modal-form {
     display: grid;
     gap: 16px;
+    min-height: 0;
+    overflow-y: auto;
+    padding-right: 4px;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+}
+
+.contact-modal-form::-webkit-scrollbar {
+    width: 6px;
+}
+
+.contact-modal-form::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: rgba(143, 239, 255, 0.28);
 }
 
 .contact-modal-results {
@@ -3654,14 +3681,14 @@ body.modal-open {
 
     .contact-modal-backdrop,
     .success-modal-backdrop {
-        padding: 10px;
+        padding: 8px;
     }
 
     .contact-modal,
     .success-modal {
-        max-height: calc(100vh - 20px);
-        padding: 16px;
-        border-radius: 20px;
+        max-height: calc(78dvh - 8px);
+        padding: 12px;
+        border-radius: 20px 20px 16px 16px;
     }
 
     .contact-modal-head {
@@ -3675,19 +3702,29 @@ body.modal-open {
     }
 
     .contact-modal {
-        padding: 14px 14px calc(14px + env(safe-area-inset-bottom));
+        width: min(440px, calc(100vw - 16px));
+        padding: 12px 12px calc(12px + env(safe-area-inset-bottom));
         border-radius: 22px 22px 18px 18px;
     }
 
+    .contact-modal-backdrop {
+        align-items: flex-end;
+    }
+
+    .contact-modal-drag-handle {
+        display: block;
+        cursor: grab;
+    }
+
     .contact-modal-head h2 {
-        font-size: 1.24rem;
+        font-size: 1.1rem;
         line-height: 1.1;
     }
 
     .contact-modal-head p,
     .calculator-summary {
-        font-size: 0.82rem;
-        line-height: 1.42;
+        font-size: 0.78rem;
+        line-height: 1.38;
     }
 
     .contact-modal-results {
@@ -3697,6 +3734,7 @@ body.modal-open {
 
     .contact-modal-form {
         gap: 8px;
+        padding-right: 2px;
     }
 
     .contact-modal .field {
@@ -3709,13 +3747,13 @@ body.modal-open {
 
     .contact-modal .field input,
     .contact-modal .field select {
-        padding: 11px 12px;
+        padding: 10px 11px;
         border-radius: 12px;
-        font-size: 0.9rem;
+        font-size: 0.86rem;
     }
 
     .contact-modal .button {
-        min-height: 46px;
+        min-height: 44px;
     }
 
     .contact-modal-results .result-card {
@@ -3728,6 +3766,12 @@ body.modal-open {
 
     .contact-modal-results .result-card strong {
         font-size: 1rem;
+    }
+
+    .contact-modal-close {
+        top: 10px;
+        right: 10px;
+        z-index: 4;
     }
 
     .contact-modal .button,
