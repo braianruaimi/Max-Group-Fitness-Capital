@@ -1126,47 +1126,49 @@ h3 {
 }
 
 .market-board-chart {
-    display: grid;
-    grid-template-columns: repeat(16, minmax(0, 1fr));
-    align-items: end;
-    gap: 6px;
-    min-height: 124px;
-    padding: 10px 2px 2px;
-}
-
-.market-candle {
     position: relative;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    min-height: 100%;
+    min-height: 124px;
+    padding: 8px 0 0;
+    border-radius: 16px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.015), rgba(255, 255, 255, 0.035));
+    overflow: hidden;
 }
 
-.market-candle::before {
+.market-board-chart::before {
     content: "";
     position: absolute;
-    bottom: 14px;
-    width: 2px;
-    height: var(--wick-height, 42px);
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.18);
+    inset: 0;
+    background:
+        linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 22px 100%, 100% 22px;
+    opacity: 0.32;
+    pointer-events: none;
 }
 
-.market-candle span {
-    position: relative;
+.market-ecg-svg {
     display: block;
     width: 100%;
-    height: var(--candle-height, 42px);
-    min-height: 18px;
-    border-radius: 8px;
-    background: linear-gradient(180deg, rgba(11, 230, 154, 0.9), rgba(6, 149, 100, 0.82));
-    box-shadow: 0 0 14px rgba(11, 230, 154, 0.16);
-    transition: height 520ms ease, background 320ms ease;
+    height: 124px;
 }
 
-.market-candle.is-down span {
-    background: linear-gradient(180deg, rgba(255, 112, 124, 0.88), rgba(179, 48, 72, 0.8));
-    box-shadow: 0 0 14px rgba(255, 112, 124, 0.14);
+.market-ecg-grid {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.09);
+    stroke-width: 0.8;
+}
+
+.market-ecg-line {
+    fill: none;
+    stroke: url(#marketEcgStroke);
+    stroke-width: 2.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.market-ecg-line-glow {
+    opacity: 0.75;
+    filter: url(#marketEcgGlow);
 }
 
 .blindada-icon {
@@ -3505,7 +3507,10 @@ body.modal-open {
 
     .market-board-chart {
         min-height: 104px;
-        gap: 4px;
+    }
+
+    .market-ecg-svg {
+        height: 104px;
     }
 
     .topbar {

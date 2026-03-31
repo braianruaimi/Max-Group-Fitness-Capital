@@ -1680,7 +1680,7 @@ function initializeInstallPrompt() {
 
     function syncUpdateButton(worker) {
         waitingWorker = worker || null;
-        updateButton.hidden = !waitingWorker;
+        updateButton.hidden = !(waitingWorker && isStandaloneMode() && navigator.serviceWorker.controller);
     }
 
     window.addEventListener("beforeinstallprompt", (event) => {
@@ -1692,6 +1692,7 @@ function initializeInstallPrompt() {
     window.addEventListener("appinstalled", () => {
         deferredPrompt = null;
         installButton.hidden = true;
+        serviceWorkerRegistration?.update().catch(() => undefined);
     });
 
     installButton.addEventListener("click", async () => {
@@ -1713,10 +1714,12 @@ function initializeInstallPrompt() {
         }
 
         incrementTriggerMetric("Actualizar app", "clicks");
+        updateButton.hidden = true;
         waitingWorker.postMessage({ type: "SKIP_WAITING" });
     });
 
     syncInstallButton();
+    syncUpdateButton(null);
 
     if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
@@ -1834,17 +1837,38 @@ function initializeCalculatorTradingBoard() {
         return;
     }
 
-    const candleCount = 16;
-    const candles = Array.from({ length: candleCount }, () => {
-        const candle = document.createElement("div");
-        const body = document.createElement("span");
-        candle.className = "market-candle";
-        candle.appendChild(body);
-        marketChart.appendChild(candle);
-        return candle;
-    });
+    marketChart.innerHTML = `
+        <svg class="market-ecg-svg" viewBox="0 0 320 120" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+                <linearGradient id="marketEcgStroke" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#53f2ff"></stop>
+                    <stop offset="50%" stop-color="#12f0b8"></stop>
+                    <stop offset="100%" stop-color="#8a2be2"></stop>
+                </linearGradient>
+                <filter id="marketEcgGlow">
+                    <feGaussianBlur stdDeviation="3.2" result="blur"></feGaussianBlur>
+                    <feMerge>
+                        <feMergeNode in="blur"></feMergeNode>
+                        <feMergeNode in="SourceGraphic"></feMergeNode>
+                    </feMerge>
+                </filter>
+            </defs>
+            <path class="market-ecg-grid" d="M0 20 H320 M0 40 H320 M0 60 H320 M0 80 H320 M0 100 H320"></path>
+            <polyline class="market-ecg-line market-ecg-line-glow" id="marketEcgGlowLine" points=""></polyline>
+            <polyline class="market-ecg-line" id="marketEcgLine" points=""></polyline>
+        </svg>
+    `;
 
-    let series = Array.from({ length: candleCount }, (_, index) => 28 + index * 2 + Math.random() * 18);
+    const ecgLine = document.getElementById("marketEcgLine");
+    const ecgGlowLine = document.getElementById("marketEcgGlowLine");
+
+    if (!ecgLine || !ecgGlowLine) {
+        return;
+    }
+
+    const sampleCount = 42;
+    let phase = 0;
+    let series = Array.from({ length: sampleCount }, (_, index) => 58 + Math.sin(index / 3.2) * 4);
 
     function setTickerState(element, nextText, isPositive) {
         const ticker = element.closest(".market-ticker");
@@ -1853,27 +1877,51 @@ function initializeCalculatorTradingBoard() {
         ticker?.classList.toggle("negative", !isPositive);
     }
 
+    function createPulse(index, framePhase) {
+        const cycle = (index + framePhase) % 18;
+
+        if (cycle === 7) {
+            return -22;
+        }
+        if (cycle === 8) {
+            return 28;
+        }
+        if (cycle === 9) {
+            return -48;
+        }
+        if (cycle === 10) {
+            return 18;
+        }
+        if (cycle === 11) {
+            return -10;
+        }
+
+        return Math.sin((index + framePhase) / 2.6) * 3;
+    }
+
+    function renderEcg(points) {
+        const xStep = 320 / (points.length - 1);
+        const pointString = points
+            .map((value, index) => `${(index * xStep).toFixed(2)},${value.toFixed(2)}`)
+            .join(" ");
+
+        ecgLine.setAttribute("points", pointString);
+        ecgGlowLine.setAttribute("points", pointString);
+    }
+
     function renderFrame() {
+        phase += 1;
         series = series.map((value, index) => {
-            const wave = Math.sin(Date.now() / 900 + index * 0.6) * 5;
-            const randomShift = (Math.random() - 0.5) * 10;
-            return Math.max(20, Math.min(98, value + wave + randomShift));
+            const baseline = 60 + Math.sin((phase + index) / 4.5) * 3;
+            const pulse = createPulse(index, phase);
+            const drift = (Math.random() - 0.5) * 2.4;
+            return Math.max(16, Math.min(104, baseline + pulse + drift));
         });
 
-        candles.forEach((candle, index) => {
-            const previous = series[index - 1] ?? series[index];
-            const current = series[index];
-            const candleHeight = Math.round(current);
-            const wickHeight = Math.min(118, candleHeight + 14 + Math.round(Math.random() * 14));
-            const isDown = current < previous;
-
-            candle.style.setProperty("--candle-height", `${candleHeight}px`);
-            candle.style.setProperty("--wick-height", `${wickHeight}px`);
-            candle.classList.toggle("is-down", isDown);
-        });
+        renderEcg(series);
 
         const average = series.reduce((sum, value) => sum + value, 0) / series.length;
-        const momentum = series[series.length - 1] - series[Math.max(series.length - 4, 0)];
+        const momentum = series[series.length - 1] - series[Math.max(series.length - 6, 0)];
         const flowPercent = (4.2 + average / 18).toFixed(1);
         const capitalAmount = Math.round(4800000 + average * 62000 + Math.max(momentum, 0) * 54000);
         const expansionPercent = Number((momentum / 3.4).toFixed(1));
@@ -1884,7 +1932,7 @@ function initializeCalculatorTradingBoard() {
     }
 
     renderFrame();
-    window.setInterval(renderFrame, 1400);
+    window.setInterval(renderFrame, 900);
 }
 
 function initializeFaqAssistant() {
