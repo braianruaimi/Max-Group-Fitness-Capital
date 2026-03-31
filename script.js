@@ -1532,6 +1532,7 @@ function initializeMetricsPanel() {
     const errorMessage = document.getElementById("metricsPanelError");
     const lockSection = document.getElementById("metricsPanelLock");
     const contentSection = document.getElementById("metricsPanelContent");
+    const panelEyebrow = document.getElementById("metricsPanelEyebrow");
     const panelTitle = document.getElementById("metricsPanelTitle");
     const panelDescription = document.getElementById("metricsPanelDescription");
     const pageViewsElement = document.getElementById("metricsPageViews");
@@ -1543,7 +1544,7 @@ function initializeMetricsPanel() {
     const lastUpdatedElement = document.getElementById("metricsLastUpdated");
     const breakdownElement = document.getElementById("metricsBreakdown");
 
-    if (!metricsButton || !metricsPanel || !closeButton || !unlockButton || !passwordInput || !errorMessage || !lockSection || !contentSection || !panelTitle || !panelDescription || !pageViewsElement || !trackedViewsElement || !trackedClicksElement || !totalLeadsElement || !assistantInteractionsElement || !modalOpensElement || !lastUpdatedElement || !breakdownElement) {
+    if (!metricsButton || !metricsPanel || !closeButton || !unlockButton || !passwordInput || !errorMessage || !lockSection || !contentSection || !panelEyebrow || !panelTitle || !panelDescription || !pageViewsElement || !trackedViewsElement || !trackedClicksElement || !totalLeadsElement || !assistantInteractionsElement || !modalOpensElement || !lastUpdatedElement || !breakdownElement) {
         return;
     }
 
@@ -1584,14 +1585,17 @@ function initializeMetricsPanel() {
         metricsPanel.classList.add("is-open");
         metricsPanel.setAttribute("aria-hidden", "false");
         if (!isUnlocked) {
+            panelEyebrow.hidden = true;
             panelTitle.textContent = "Ingresar con contrasena";
-            panelDescription.textContent = "Acceso CEO. Ingresá la clave para desbloquear el panel completo.";
+            panelDescription.hidden = true;
             passwordInput.focus();
             return;
         }
 
+        panelEyebrow.hidden = false;
         panelTitle.textContent = "Metricas generales";
         panelDescription.textContent = "Resumen de views, clicks, leads y acciones del asistente sobre la landing.";
+        panelDescription.hidden = false;
         renderMetrics();
     }
 
@@ -1611,8 +1615,10 @@ function initializeMetricsPanel() {
         isUnlocked = true;
         lockSection.hidden = true;
         contentSection.hidden = false;
+        panelEyebrow.hidden = false;
         panelTitle.textContent = "Metricas generales";
         panelDescription.textContent = "Resumen de views, clicks, leads y acciones del asistente sobre la landing.";
+        panelDescription.hidden = false;
         renderMetrics();
     }
 

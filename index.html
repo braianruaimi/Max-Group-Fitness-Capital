@@ -918,16 +918,15 @@
     </div>
 
     <button class="metrics-float-button" id="metricsFloatButton" type="button" aria-label="Abrir Panel CEO">
-        <i class="fa-solid fa-lock"></i>
-        <span>Panel CEO</span>
+        <span class="sr-only">Panel CEO</span>
     </button>
 
     <div class="metrics-panel glass" id="metricsPanel" aria-hidden="true">
         <button class="preview-close metrics-panel-close" id="metricsPanelClose" type="button" aria-label="Cerrar panel de metricas">X</button>
         <div class="metrics-panel-head">
-            <span class="eyebrow">Panel CEO</span>
+            <span class="eyebrow" id="metricsPanelEyebrow" hidden>Panel CEO</span>
             <h2 id="metricsPanelTitle">Ingresar con contrasena</h2>
-            <p id="metricsPanelDescription">Acceso restringido. Ingresá la clave para ver clicks, views, leads e interacciones del asistente.</p>
+            <p id="metricsPanelDescription" hidden>Resumen de views, clicks, leads y acciones del asistente sobre la landing.</p>
         </div>
         <div class="metrics-panel-lock" id="metricsPanelLock">
             <label class="field">
