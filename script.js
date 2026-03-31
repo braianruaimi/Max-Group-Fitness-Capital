@@ -949,11 +949,15 @@ function initializeEcosystemPreview() {
             return;
         }
 
-        if (!hasFinePointer || sheetBreakpoint.matches) {
+        // Solo manipular estilos en desktop (no mobile)
+        if (window.innerWidth <= 600) {
+            // En mobile, dejar que el CSS controle el layout
             previewModal.classList.add("is-sheet-mode");
-            previewModal.style.left = sheetBreakpoint.matches ? "14px" : `${Math.max((window.innerWidth - previewModal.offsetWidth) / 2, 14)}px`;
-            previewModal.style.top = "auto";
-            previewModal.style.bottom = sheetBreakpoint.matches ? "14px" : "84px";
+            previewModal.style.left = "";
+            previewModal.style.top = "";
+            previewModal.style.bottom = "";
+            previewModal.style.width = "";
+            previewModal.style.height = "";
             return;
         }
 
@@ -1540,6 +1544,21 @@ function initializeContactModal() {
         backdrop.classList.add("is-open");
         backdrop.setAttribute("aria-hidden", "false");
         document.body.classList.add("modal-open");
+        // Solo manipular estilos en desktop (no mobile)
+        if (window.innerWidth > 600) {
+            modal.style.left = "50%";
+            modal.style.top = "50%";
+            modal.style.transform = "translate(-50%, -50%)";
+            modal.style.width = "360px";
+            modal.style.height = "auto";
+        } else {
+            // En mobile, dejar que el CSS controle el layout
+            modal.style.left = "";
+            modal.style.top = "";
+            modal.style.transform = "";
+            modal.style.width = "";
+            modal.style.height = "";
+        }
         updateMetrics((metrics) => {
             metrics.modalOpens += 1;
         });
@@ -2283,10 +2302,10 @@ document.addEventListener("DOMContentLoaded", () => {
     initializeSectionTransitions();
     initializeHeroCinematic();
     initializeCounters();
-    initializeCharts();
+    // initializeCharts(); // Panel dashboard y charts deshabilitados para evitar aparición automática
     initializeBackgroundParallax();
     initializeCursorGlow();
-    initializeDashboardLiveFeed();
+    // initializeDashboardLiveFeed(); // Panel dashboard deshabilitado
     initializeEcosystemPreview();
     initializeCalculator();
     initializeCalculatorTradingBoard();
