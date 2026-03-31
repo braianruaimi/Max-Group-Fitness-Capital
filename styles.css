@@ -1069,6 +1069,106 @@ h3 {
     text-transform: uppercase;
 }
 
+.calculator-market-board {
+    display: grid;
+    gap: 14px;
+    margin-bottom: 18px;
+    padding: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 22px;
+    background: linear-gradient(180deg, rgba(10, 15, 28, 0.94), rgba(5, 8, 16, 0.96));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03), 0 0 22px rgba(0, 212, 255, 0.06);
+}
+
+.market-board-head {
+    display: grid;
+    gap: 8px;
+}
+
+.market-board-head strong {
+    font-size: 1rem;
+    color: #f4f8ff;
+}
+
+.market-board-tickers {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.market-ticker {
+    display: grid;
+    gap: 6px;
+    padding: 12px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.market-ticker span {
+    color: var(--muted);
+    font-size: 0.74rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.market-ticker strong {
+    font-size: 1rem;
+    color: #eef7ff;
+}
+
+.market-ticker.positive strong {
+    color: #9cf6c8;
+}
+
+.market-ticker.negative strong {
+    color: #ff9ea8;
+}
+
+.market-board-chart {
+    display: grid;
+    grid-template-columns: repeat(16, minmax(0, 1fr));
+    align-items: end;
+    gap: 6px;
+    min-height: 124px;
+    padding: 10px 2px 2px;
+}
+
+.market-candle {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    min-height: 100%;
+}
+
+.market-candle::before {
+    content: "";
+    position: absolute;
+    bottom: 14px;
+    width: 2px;
+    height: var(--wick-height, 42px);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.18);
+}
+
+.market-candle span {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: var(--candle-height, 42px);
+    min-height: 18px;
+    border-radius: 8px;
+    background: linear-gradient(180deg, rgba(11, 230, 154, 0.9), rgba(6, 149, 100, 0.82));
+    box-shadow: 0 0 14px rgba(11, 230, 154, 0.16);
+    transition: height 520ms ease, background 320ms ease;
+}
+
+.market-candle.is-down span {
+    background: linear-gradient(180deg, rgba(255, 112, 124, 0.88), rgba(179, 48, 72, 0.8));
+    box-shadow: 0 0 14px rgba(255, 112, 124, 0.14);
+}
+
 .blindada-icon {
     display: inline-flex;
     align-items: center;
@@ -2578,6 +2678,7 @@ body.modal-open {
 }
 
 .install-float-button,
+.update-float-button,
 .assistant-float-button {
     position: fixed;
     left: 22px;
@@ -2599,12 +2700,20 @@ body.modal-open {
     bottom: 96px;
 }
 
+.update-float-button {
+    bottom: 158px;
+    background: linear-gradient(180deg, rgba(16, 32, 62, 0.94), rgba(8, 20, 40, 0.98));
+    border-color: rgba(0, 212, 255, 0.16);
+}
+
 .assistant-float-button {
     bottom: 22px;
 }
 
 .install-float-button:hover,
 .install-float-button:focus-visible,
+.update-float-button:hover,
+.update-float-button:focus-visible,
 .assistant-float-button:hover,
 .assistant-float-button:focus-visible {
     transform: translateY(-2px);
@@ -2613,7 +2722,8 @@ body.modal-open {
 }
 
 .assistant-float-button i,
-.install-float-button i {
+.install-float-button i,
+.update-float-button i {
     color: #8fefff;
 }
 
@@ -2751,6 +2861,61 @@ body.modal-open {
     font-weight: 700;
     letter-spacing: 0.05em;
     text-transform: uppercase;
+}
+
+.capital-private-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 88;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 18px;
+    background: rgba(2, 6, 14, 0.38);
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 220ms ease, visibility 220ms ease;
+}
+
+.capital-private-backdrop.is-open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.capital-private-modal {
+    position: relative;
+    width: min(560px, 100%);
+    padding: 24px;
+    border-radius: 26px;
+    transform: translateY(18px) scale(0.98);
+    transition: transform 220ms ease;
+}
+
+.capital-private-backdrop.is-open .capital-private-modal {
+    transform: translateY(0) scale(1);
+}
+
+.capital-private-close {
+    top: 14px;
+    right: 14px;
+}
+
+.capital-private-head p,
+.capital-private-note {
+    color: var(--muted);
+    line-height: 1.65;
+}
+
+.capital-private-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin: 18px 0 14px;
+}
+
+.capital-private-note {
+    margin-bottom: 16px;
 }
 
 .reveal {
@@ -3187,6 +3352,11 @@ body.modal-open {
         padding: 14px;
     }
 
+    .market-board-tickers,
+    .capital-private-grid {
+        grid-template-columns: 1fr;
+    }
+
     .contact-modal,
     .success-modal {
         width: 100%;
@@ -3197,6 +3367,16 @@ body.modal-open {
     .contact-modal-backdrop {
         align-items: flex-end;
         padding: 10px;
+    }
+
+    .capital-private-backdrop {
+        padding: 10px;
+    }
+
+    .capital-private-modal {
+        width: 100%;
+        padding: 20px;
+        border-radius: 24px 24px 18px 18px;
     }
 
     .contact-modal {
@@ -3316,6 +3496,16 @@ body.modal-open {
 
     .investor-proof-grid {
         grid-auto-columns: minmax(88%, 1fr);
+    }
+
+    .calculator-market-board {
+        padding: 14px;
+        border-radius: 18px;
+    }
+
+    .market-board-chart {
+        min-height: 104px;
+        gap: 4px;
     }
 
     .topbar {
@@ -3468,6 +3658,7 @@ body.modal-open {
     }
 
     .install-float-button,
+    .update-float-button,
     .assistant-float-button {
         left: 10px;
         min-height: 46px;
@@ -3477,6 +3668,10 @@ body.modal-open {
 
     .install-float-button {
         bottom: 84px;
+    }
+
+    .update-float-button {
+        bottom: 144px;
     }
 
     .assistant-float-button {
@@ -3509,6 +3704,11 @@ body.modal-open {
         width: 100%;
         justify-content: center;
         text-align: center;
+    }
+
+    .capital-private-modal {
+        padding: 18px;
+        border-radius: 22px 22px 18px 18px;
     }
 
     .activity-meter {

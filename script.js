@@ -1548,8 +1548,6 @@ function initializeMetricsPanel() {
         return;
     }
 
-    let isUnlocked = false;
-
     function renderMetrics() {
         const metrics = readMetrics();
         const triggerEntries = Object.entries(metrics.triggerStats || {});
@@ -1580,28 +1578,30 @@ function initializeMetricsPanel() {
             : '<article class="metrics-breakdown-item"><strong>Sin datos aun</strong><div class="metrics-breakdown-row"><span>Views</span><span>0</span></div><div class="metrics-breakdown-row"><span>Clicks</span><span>0</span></div><div class="metrics-breakdown-row"><span>Leads</span><span>0</span></div></article>';
     }
 
+    function resetPanelState() {
+        lockSection.hidden = false;
+        contentSection.hidden = true;
+        panelEyebrow.hidden = true;
+        panelTitle.textContent = "Ingresar con contrasena";
+        panelDescription.hidden = true;
+        passwordInput.value = "";
+        errorMessage.hidden = true;
+    }
+
     function openPanel() {
         incrementGlobalMetric("ceoPanelOpens");
+        resetPanelState();
         metricsPanel.classList.add("is-open");
         metricsPanel.setAttribute("aria-hidden", "false");
-        if (!isUnlocked) {
-            panelEyebrow.hidden = true;
-            panelTitle.textContent = "Ingresar con contrasena";
-            panelDescription.hidden = true;
+        window.setTimeout(() => {
             passwordInput.focus();
-            return;
-        }
-
-        panelEyebrow.hidden = false;
-        panelTitle.textContent = "Metricas generales";
-        panelDescription.textContent = "Resumen de views, clicks, leads y acciones del asistente sobre la landing.";
-        panelDescription.hidden = false;
-        renderMetrics();
+        }, 40);
     }
 
     function closePanel() {
         metricsPanel.classList.remove("is-open");
         metricsPanel.setAttribute("aria-hidden", "true");
+        resetPanelState();
     }
 
     function unlockPanel() {
@@ -1612,7 +1612,6 @@ function initializeMetricsPanel() {
             return;
         }
 
-        isUnlocked = true;
         lockSection.hidden = true;
         contentSection.hidden = false;
         panelEyebrow.hidden = false;
@@ -1652,21 +1651,42 @@ function initializeMetricsPanel() {
 
         closePanel();
     });
+
+    resetPanelState();
 }
 
 function initializeInstallPrompt() {
     const installButton = document.getElementById("installAppButton");
+    const updateButton = document.getElementById("updateAppButton");
 
-    if (!installButton) {
+    if (!installButton || !updateButton) {
         return;
     }
 
     let deferredPrompt = null;
+    let serviceWorkerRegistration = null;
+    let waitingWorker = null;
+    let hasReloadedForUpdate = false;
+
+    function isStandaloneMode() {
+        return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+    }
+
+    function syncInstallButton() {
+        if (isStandaloneMode()) {
+            installButton.hidden = true;
+        }
+    }
+
+    function syncUpdateButton(worker) {
+        waitingWorker = worker || null;
+        updateButton.hidden = !waitingWorker;
+    }
 
     window.addEventListener("beforeinstallprompt", (event) => {
         event.preventDefault();
         deferredPrompt = event;
-        installButton.hidden = false;
+        installButton.hidden = isStandaloneMode();
     });
 
     window.addEventListener("appinstalled", () => {
@@ -1687,13 +1707,184 @@ function initializeInstallPrompt() {
         installButton.hidden = true;
     });
 
+    updateButton.addEventListener("click", () => {
+        if (!waitingWorker) {
+            return;
+        }
+
+        incrementTriggerMetric("Actualizar app", "clicks");
+        waitingWorker.postMessage({ type: "SKIP_WAITING" });
+    });
+
+    syncInstallButton();
+
     if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
-            navigator.serviceWorker.register("./sw.js").catch(() => {
-                installButton.hidden = true;
-            });
+            navigator.serviceWorker.register("./sw.js")
+                .then((registration) => {
+                    serviceWorkerRegistration = registration;
+                    syncUpdateButton(registration.waiting);
+
+                    registration.addEventListener("updatefound", () => {
+                        const installingWorker = registration.installing;
+
+                        if (!installingWorker) {
+                            return;
+                        }
+
+                        installingWorker.addEventListener("statechange", () => {
+                            if (installingWorker.state === "installed" && navigator.serviceWorker.controller) {
+                                syncUpdateButton(registration.waiting || installingWorker);
+                            }
+                        });
+                    });
+
+                    window.setTimeout(() => {
+                        registration.update().catch(() => undefined);
+                    }, 1200);
+                })
+                .catch(() => {
+                    installButton.hidden = true;
+                    updateButton.hidden = true;
+                });
+        });
+
+        navigator.serviceWorker.addEventListener("controllerchange", () => {
+            if (hasReloadedForUpdate) {
+                return;
+            }
+
+            hasReloadedForUpdate = true;
+            window.location.reload();
+        });
+
+        document.addEventListener("visibilitychange", () => {
+            if (document.visibilityState === "visible") {
+                serviceWorkerRegistration?.update().catch(() => undefined);
+            }
         });
     }
+}
+
+function initializeCapitalPrivatePrompt() {
+    const backdrop = document.getElementById("capitalPrivateBackdrop");
+    const modal = document.getElementById("capitalPrivateModal");
+    const closeButton = document.getElementById("capitalPrivateClose");
+
+    if (!backdrop || !modal || !closeButton) {
+        return;
+    }
+
+    const sessionKey = "maxGroupCapitalPrivatePromptDismissed";
+    let isDismissed = false;
+
+    try {
+        isDismissed = window.sessionStorage.getItem(sessionKey) === "1";
+    } catch {
+        isDismissed = false;
+    }
+
+    function closePrompt() {
+        backdrop.classList.remove("is-open");
+        backdrop.setAttribute("aria-hidden", "true");
+        isDismissed = true;
+
+        try {
+            window.sessionStorage.setItem(sessionKey, "1");
+        } catch {
+            return;
+        }
+    }
+
+    function openPrompt() {
+        if (isDismissed || backdrop.classList.contains("is-open")) {
+            return;
+        }
+
+        backdrop.classList.add("is-open");
+        backdrop.setAttribute("aria-hidden", "false");
+        incrementTriggerMetric("Capital privado - Modal flotante", "views");
+    }
+
+    closeButton.addEventListener("click", closePrompt);
+    backdrop.addEventListener("click", (event) => {
+        if (event.target === backdrop) {
+            closePrompt();
+        }
+    });
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && backdrop.classList.contains("is-open")) {
+            closePrompt();
+        }
+    });
+
+    window.setTimeout(() => {
+        openPrompt();
+    }, 5000);
+}
+
+function initializeCalculatorTradingBoard() {
+    const marketChart = document.getElementById("marketBoardChart");
+    const flowValue = document.getElementById("marketFlowValue");
+    const capitalValue = document.getElementById("marketCapitalValue");
+    const expansionValue = document.getElementById("marketExpansionValue");
+
+    if (!marketChart || !flowValue || !capitalValue || !expansionValue) {
+        return;
+    }
+
+    const candleCount = 16;
+    const candles = Array.from({ length: candleCount }, () => {
+        const candle = document.createElement("div");
+        const body = document.createElement("span");
+        candle.className = "market-candle";
+        candle.appendChild(body);
+        marketChart.appendChild(candle);
+        return candle;
+    });
+
+    let series = Array.from({ length: candleCount }, (_, index) => 28 + index * 2 + Math.random() * 18);
+
+    function setTickerState(element, nextText, isPositive) {
+        const ticker = element.closest(".market-ticker");
+        element.textContent = nextText;
+        ticker?.classList.toggle("positive", isPositive);
+        ticker?.classList.toggle("negative", !isPositive);
+    }
+
+    function renderFrame() {
+        series = series.map((value, index) => {
+            const wave = Math.sin(Date.now() / 900 + index * 0.6) * 5;
+            const randomShift = (Math.random() - 0.5) * 10;
+            return Math.max(20, Math.min(98, value + wave + randomShift));
+        });
+
+        candles.forEach((candle, index) => {
+            const previous = series[index - 1] ?? series[index];
+            const current = series[index];
+            const candleHeight = Math.round(current);
+            const wickHeight = Math.min(118, candleHeight + 14 + Math.round(Math.random() * 14));
+            const isDown = current < previous;
+
+            candle.style.setProperty("--candle-height", `${candleHeight}px`);
+            candle.style.setProperty("--wick-height", `${wickHeight}px`);
+            candle.classList.toggle("is-down", isDown);
+        });
+
+        const average = series.reduce((sum, value) => sum + value, 0) / series.length;
+        const momentum = series[series.length - 1] - series[Math.max(series.length - 4, 0)];
+        const flowPercent = (4.2 + average / 18).toFixed(1);
+        const capitalAmount = Math.round(4800000 + average * 62000 + Math.max(momentum, 0) * 54000);
+        const expansionPercent = Number((momentum / 3.4).toFixed(1));
+
+        setTickerState(flowValue, `${flowPercent > 0 ? "+" : ""}${flowPercent}%`, Number(flowPercent) >= 0);
+        setTickerState(capitalValue, arsFormatter.format(capitalAmount), true);
+        setTickerState(expansionValue, `${expansionPercent > 0 ? "+" : ""}${expansionPercent}%`, expansionPercent >= 0);
+    }
+
+    renderFrame();
+    window.setInterval(renderFrame, 1400);
 }
 
 function initializeFaqAssistant() {
@@ -1909,8 +2100,10 @@ document.addEventListener("DOMContentLoaded", () => {
     initializeDashboardLiveFeed();
     initializeEcosystemPreview();
     initializeCalculator();
+    initializeCalculatorTradingBoard();
     initializeContactModal();
     initializeMetricsPanel();
+    initializeCapitalPrivatePrompt();
     initializeFaqAssistant();
     initializeInvestorProofSlider();
     initializeHeroParallax();

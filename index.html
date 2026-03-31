@@ -456,6 +456,27 @@
             </div>
             <div class="calculator-layout">
                 <article class="glass calculator-form reveal" data-delay="80">
+                    <div class="calculator-market-board">
+                        <div class="market-board-head">
+                            <span class="institutional-label">Capital en movimiento</span>
+                            <strong>Lectura interna de inversion Max Group</strong>
+                        </div>
+                        <div class="market-board-tickers">
+                            <div class="market-ticker positive">
+                                <span>Flujo operativo</span>
+                                <strong id="marketFlowValue">+12.4%</strong>
+                            </div>
+                            <div class="market-ticker positive">
+                                <span>Capital privado</span>
+                                <strong id="marketCapitalValue">ARS 24.8M</strong>
+                            </div>
+                            <div class="market-ticker positive">
+                                <span>Expansion</span>
+                                <strong id="marketExpansionValue">+6.2%</strong>
+                            </div>
+                        </div>
+                        <div class="market-board-chart" id="marketBoardChart" aria-hidden="true"></div>
+                    </div>
                     <label for="investmentAmount">Monto a invertir</label>
                     <div class="input-shell">
                         <input id="investmentAmount" name="investmentAmount" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="ARS 2.500.000" aria-describedby="investmentAmountHint">
@@ -973,6 +994,11 @@
         <span>Instalar app</span>
     </button>
 
+    <button class="install-float-button update-float-button" id="updateAppButton" type="button" aria-label="Actualizar app" hidden>
+        <i class="fa-solid fa-rotate"></i>
+        <span>Actualizar</span>
+    </button>
+
     <button class="assistant-float-button" id="assistantFloatButton" type="button" aria-label="Abrir asistente de preguntas frecuentes">
         <i class="fa-solid fa-comment-dots"></i>
         <span>Asistente IA</span>
@@ -993,6 +1019,37 @@
         </div>
         <div class="assistant-suggestions" id="assistantSuggestions"></div>
         <button class="button button-secondary assistant-contact-button contact-trigger" data-contact-source="Asistente IA - Abrir propuesta" type="button">Abrir propuesta</button>
+    </div>
+
+    <div class="capital-private-backdrop" id="capitalPrivateBackdrop" aria-hidden="true">
+        <div class="capital-private-modal glass" id="capitalPrivateModal" role="dialog" aria-modal="true" aria-labelledby="capitalPrivateTitle">
+            <button class="preview-close capital-private-close" id="capitalPrivateClose" type="button" aria-label="Cerrar panel de capital privado">X</button>
+            <div class="capital-private-head">
+                <span class="eyebrow">Capital privado</span>
+                <h2 id="capitalPrivateTitle">Panel de capital privado</h2>
+                <p>Estas viendo una lectura rapida de la oportunidad antes de abrir el formulario completo de propuesta.</p>
+            </div>
+            <div class="capital-private-grid">
+                <article class="result-card result-card-soft">
+                    <span>Minimo de ingreso</span>
+                    <strong>ARS 2.500.000</strong>
+                </article>
+                <article class="result-card highlight">
+                    <span>Retorno proyectado</span>
+                    <strong>4% mensual</strong>
+                </article>
+                <article class="result-card result-card-soft">
+                    <span>Holding minimo</span>
+                    <strong>90 dias</strong>
+                </article>
+                <article class="result-card result-card-soft">
+                    <span>Expansion activa</span>
+                    <strong>4 unidades</strong>
+                </article>
+            </div>
+            <p class="capital-private-note">Si queres revisar condiciones, flujo, plazo y canal de seguimiento, abrí la propuesta y avanzá por WhatsApp.</p>
+            <button class="button button-primary contact-trigger" data-contact-source="Capital privado - Modal flotante" type="button">Abrir propuesta privada</button>
+        </div>
     </div>
 
     <a class="whatsapp-float contact-trigger" data-contact-source="WhatsApp flotante" href="#contact-modal" aria-label="Contactar por WhatsApp">

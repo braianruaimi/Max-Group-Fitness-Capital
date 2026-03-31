@@ -1,4 +1,4 @@
-const CACHE_NAME = "max-group-fitness-capital-static-v1";
+const CACHE_NAME = "max-group-fitness-capital-static-v2";
 const STATIC_ASSETS = [
     "./",
     "./index.html",
@@ -13,7 +13,6 @@ self.addEventListener("install", (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS))
     );
-    self.skipWaiting();
 });
 
 self.addEventListener("activate", (event) => {
@@ -25,6 +24,12 @@ self.addEventListener("activate", (event) => {
         ))
     );
     self.clients.claim();
+});
+
+self.addEventListener("message", (event) => {
+    if (event.data?.type === "SKIP_WAITING") {
+        self.skipWaiting();
+    }
 });
 
 self.addEventListener("fetch", (event) => {
