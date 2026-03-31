@@ -1,3 +1,65 @@
+@media (max-width: 600px) {
+    .contact-modal,
+    .success-modal {
+        width: 98vw;
+        max-width: 420px;
+        min-width: unset;
+        max-height: 92vh;
+        padding: 12px 6px 18px 6px;
+        border-radius: 18px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.32);
+    }
+    .contact-modal-head {
+        margin: -12px -6px 0;
+        padding: 16px 10px 10px 10px;
+        border-radius: 18px 18px 12px 12px;
+    }
+    .contact-modal-drag-handle {
+        display: block !important;
+        margin: 8px auto 10px auto;
+    }
+    .contact-modal-form {
+        max-height: 48vh;
+        min-height: 180px;
+        padding: 0 2px 0 0;
+        font-size: 0.98em;
+    }
+    .contact-modal-close {
+        top: 8px;
+        right: 8px;
+        width: 32px;
+        height: 32px;
+        font-size: 1.3em;
+        background: rgba(0,0,0,0.12);
+        border-radius: 50%;
+    }
+    .assistant-panel {
+        left: 50% !important;
+        bottom: 10px !important;
+        transform: translateX(-50%) !important;
+        width: 98vw !important;
+        max-width: 420px !important;
+        max-height: 80vh !important;
+        padding: 10px 4px 14px 4px !important;
+        border-radius: 16px !important;
+    }
+    .assistant-panel-head {
+        padding: 8px 6px 6px 6px;
+    }
+    .assistant-panel-close {
+        top: 8px;
+        right: 8px;
+        width: 32px;
+        height: 32px;
+        font-size: 1.3em;
+        background: rgba(0,0,0,0.12);
+        border-radius: 50%;
+    }
+    .assistant-chat {
+        max-height: 32vh !important;
+        font-size: 0.98em;
+    }
+}
 :root {
     --bg: #0a0a0c;
     --bg-secondary: #11111a;
