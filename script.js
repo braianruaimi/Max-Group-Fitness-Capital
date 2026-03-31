@@ -99,7 +99,6 @@ function updateCurrencyBoundText(currency = activeCurrency) {
     const minimumHighlightValue = document.getElementById("minimumHighlightValue");
     const amountHint = document.getElementById("investmentAmountHint");
     const contactModalMinimumBadge = document.getElementById("contactModalMinimumBadge");
-    const capitalPrivateMinimumValue = document.getElementById("capitalPrivateMinimumValue");
     const modalAmount = document.getElementById("modalAmount");
 
     if (calculatorSelect && calculatorSelect.value !== safeCurrency) {
@@ -124,10 +123,6 @@ function updateCurrencyBoundText(currency = activeCurrency) {
 
     if (contactModalMinimumBadge) {
         contactModalMinimumBadge.textContent = `Minimo ${formatMinimumHint(safeCurrency)}`;
-    }
-
-    if (capitalPrivateMinimumValue) {
-        capitalPrivateMinimumValue.textContent = formatMinimumHint(safeCurrency);
     }
 
     if (modalAmount) {
