@@ -1843,6 +1843,7 @@ function initializeInstallPrompt() {
     let serviceWorkerRegistration = null;
     let waitingWorker = null;
     let hasReloadedForUpdate = false;
+    let updateButtonTimeoutId = null;
 
     function isStandaloneMode() {
         return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
@@ -1857,6 +1858,18 @@ function initializeInstallPrompt() {
     function syncUpdateButton(worker) {
         waitingWorker = worker || null;
         updateButton.hidden = !(waitingWorker && isStandaloneMode() && navigator.serviceWorker.controller);
+
+        if (updateButtonTimeoutId) {
+            window.clearTimeout(updateButtonTimeoutId);
+            updateButtonTimeoutId = null;
+        }
+
+        if (!updateButton.hidden) {
+            updateButtonTimeoutId = window.setTimeout(() => {
+                updateButton.hidden = true;
+                updateButtonTimeoutId = null;
+            }, 10000);
+        }
     }
 
     window.addEventListener("beforeinstallprompt", (event) => {
@@ -1891,6 +1904,10 @@ function initializeInstallPrompt() {
 
         incrementTriggerMetric("Actualizar app", "clicks");
         updateButton.hidden = true;
+        if (updateButtonTimeoutId) {
+            window.clearTimeout(updateButtonTimeoutId);
+            updateButtonTimeoutId = null;
+        }
         waitingWorker.postMessage({ type: "SKIP_WAITING" });
     });
 

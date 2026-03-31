@@ -1090,6 +1090,11 @@ h3 {
     color: #f4f8ff;
 }
 
+.market-board-head-accent {
+    color: #8fefff;
+    text-shadow: 0 0 18px rgba(0, 212, 255, 0.24);
+}
+
 .market-board-tickers {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
