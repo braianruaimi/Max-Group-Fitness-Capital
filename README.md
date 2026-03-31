@@ -1,8 +1,11 @@
 # Max Group Fitness Capital
 
-## Ingreso al sitio
 
-https://braianruaimi.github.io/Max-Group-Fitness-Capital/
+## Ingreso al sitio (producción)
+
+[Ir a la landing en producción](https://braianruaimi.github.io/Max-Group-Fitness-Capital/)
+
+> Si experimentas problemas de visualización en móviles, forzar recarga sin caché (Ctrl+F5 o limpiar caché del navegador).
 
 ## Resumen
 
