@@ -1,6 +1,96 @@
 @media (max-width: 600px) {
     .contact-modal,
     .success-modal {
+        width: 96vw;
+        max-width: 340px;
+        min-width: unset;
+        max-height: 80vh;
+        padding: 8px 2px 12px 2px;
+        border-radius: 14px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.32);
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%) !important;
+    }
+    .contact-modal-head {
+        margin: -8px -2px 0;
+        padding: 10px 6px 8px 6px;
+        border-radius: 14px 14px 10px 10px;
+    }
+    .contact-modal-drag-handle {
+        display: block !important;
+        margin: 6px auto 8px auto;
+    }
+    .contact-modal-form {
+        max-height: 38vh;
+        min-height: 120px;
+        padding: 0 1px 0 0;
+        font-size: 0.95em;
+        overflow-y: auto;
+    }
+    .contact-modal-form .form-grid {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+    }
+    .contact-modal-form input,
+    .contact-modal-form select {
+        font-size: 1em;
+        padding: 8px 8px;
+        min-width: 0;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .contact-modal-close {
+        top: 4px;
+        right: 4px;
+        width: 28px;
+        height: 28px;
+        font-size: 1.1em;
+        background: rgba(0,0,0,0.12);
+        border-radius: 50%;
+    }
+    .contact-modal-badges span {
+        font-size: 0.72rem;
+        min-height: 24px;
+        padding: 0 8px;
+    }
+    .contact-modal-head h2 {
+        font-size: 1.1rem;
+        margin-bottom: 6px;
+    }
+    .contact-modal-head p {
+        font-size: 0.98em;
+    }
+    .assistant-panel {
+        left: 50% !important;
+        bottom: 10px !important;
+        transform: translateX(-50%) !important;
+        width: 96vw !important;
+        max-width: 340px !important;
+        max-height: 70vh !important;
+        padding: 8px 2px 12px 2px !important;
+        border-radius: 12px !important;
+    }
+    .assistant-panel-head {
+        padding: 6px 4px 4px 4px;
+    }
+    .assistant-panel-close {
+        top: 4px;
+        right: 4px;
+        width: 28px;
+        height: 28px;
+        font-size: 1.1em;
+        background: rgba(0,0,0,0.12);
+        border-radius: 50%;
+    }
+    .assistant-chat {
+        max-height: 22vh !important;
+        font-size: 0.95em;
+    }
+}
+@media (max-width: 600px) {
+    .contact-modal,
+    .success-modal {
         width: 98vw;
         max-width: 420px;
         min-width: unset;
