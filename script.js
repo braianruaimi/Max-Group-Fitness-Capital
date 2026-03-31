@@ -1928,52 +1928,7 @@ function initializeInstallPrompt() {
     syncInstallButton();
     syncUpdateButton(null);
 
-    if ("serviceWorker" in navigator) {
-        window.addEventListener("load", () => {
-            navigator.serviceWorker.register("./sw.js")
-                .then((registration) => {
-                    serviceWorkerRegistration = registration;
-                    syncUpdateButton(registration.waiting);
-
-                    registration.addEventListener("updatefound", () => {
-                        const installingWorker = registration.installing;
-
-                        if (!installingWorker) {
-                            return;
-                        }
-
-                        installingWorker.addEventListener("statechange", () => {
-                            if (installingWorker.state === "installed" && navigator.serviceWorker.controller) {
-                                syncUpdateButton(registration.waiting || installingWorker);
-                            }
-                        });
-                    });
-
-                    window.setTimeout(() => {
-                        registration.update().catch(() => undefined);
-                    }, 1200);
-                })
-                .catch(() => {
-                    installButton.hidden = true;
-                    updateButton.hidden = true;
-                });
-        });
-
-        navigator.serviceWorker.addEventListener("controllerchange", () => {
-            if (hasReloadedForUpdate) {
-                return;
-            }
-
-            hasReloadedForUpdate = true;
-            window.location.reload();
-        });
-
-        document.addEventListener("visibilitychange", () => {
-            if (document.visibilityState === "visible") {
-                serviceWorkerRegistration?.update().catch(() => undefined);
-            }
-        });
-    }
+    // Service Worker eliminado: todos los usuarios verán siempre la última versión
 }
 
 function initializeCalculatorTradingBoard() {
