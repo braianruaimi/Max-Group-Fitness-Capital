@@ -1962,64 +1962,6 @@ function initializeInstallPrompt() {
     }
 }
 
-function initializeCapitalPrivatePrompt() {
-    const backdrop = document.getElementById("capitalPrivateBackdrop");
-    const modal = document.getElementById("capitalPrivateModal");
-    const closeButton = document.getElementById("capitalPrivateClose");
-
-    if (!backdrop || !modal || !closeButton) {
-        return;
-    }
-
-    const sessionKey = "maxGroupCapitalPrivatePromptDismissed";
-    let isDismissed = false;
-
-    try {
-        isDismissed = window.sessionStorage.getItem(sessionKey) === "1";
-    } catch {
-        isDismissed = false;
-    }
-
-    function closePrompt() {
-        backdrop.classList.remove("is-open");
-        backdrop.setAttribute("aria-hidden", "true");
-        isDismissed = true;
-
-        try {
-            window.sessionStorage.setItem(sessionKey, "1");
-        } catch {
-            return;
-        }
-    }
-
-    function openPrompt() {
-        if (isDismissed || backdrop.classList.contains("is-open")) {
-            return;
-        }
-
-        backdrop.classList.add("is-open");
-        backdrop.setAttribute("aria-hidden", "false");
-        incrementTriggerMetric("Capital privado - Modal flotante", "views");
-    }
-
-    closeButton.addEventListener("click", closePrompt);
-    backdrop.addEventListener("click", (event) => {
-        if (event.target === backdrop) {
-            closePrompt();
-        }
-    });
-
-    document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape" && backdrop.classList.contains("is-open")) {
-            closePrompt();
-        }
-    });
-
-    window.setTimeout(() => {
-        openPrompt();
-    }, 5000);
-}
-
 function initializeCalculatorTradingBoard() {
     const marketChart = document.getElementById("marketBoardChart");
     const flowValue = document.getElementById("marketFlowValue");
@@ -2355,7 +2297,6 @@ document.addEventListener("DOMContentLoaded", () => {
     initializeCalculatorTradingBoard();
     initializeContactModal();
     initializeMetricsPanel();
-    initializeCapitalPrivatePrompt();
     initializeFaqAssistant();
     initializeInvestorProofSlider();
     initializeHeroParallax();
