@@ -2434,43 +2434,54 @@ body.modal-open {
 
 .metrics-float-button {
     position: fixed;
-    top: 18px;
-    left: 18px;
+    top: 14px;
+    left: 14px;
     z-index: 120;
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    width: 50px;
-    height: 50px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 16px;
-    background: rgba(255, 255, 255, 0.04);
-    color: rgba(238, 245, 255, 0.92);
-    backdrop-filter: blur(16px);
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
-    transition: transform 180ms ease, border-color 180ms ease, background-color 180ms ease;
+    gap: 8px;
+    min-height: 40px;
+    padding: 0 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.025);
+    color: rgba(238, 245, 255, 0.74);
+    backdrop-filter: blur(18px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+    transition: transform 180ms ease, border-color 180ms ease, background-color 180ms ease, color 180ms ease;
 }
 
 .metrics-float-button:hover,
 .metrics-float-button:focus-visible {
-    transform: translateY(-2px);
-    border-color: rgba(0, 212, 255, 0.22);
-    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-1px);
+    border-color: rgba(0, 212, 255, 0.16);
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(238, 245, 255, 0.92);
+}
+
+.metrics-float-button span {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
 }
 
 .metrics-panel {
     position: fixed;
-    top: 78px;
-    left: 18px;
+    top: 58px;
+    left: 14px;
     z-index: 125;
-    width: min(380px, calc(100vw - 36px));
-    max-height: min(78vh, 760px);
-    padding: 24px;
-    border-radius: 26px;
+    width: min(320px, calc(100vw - 28px));
+    max-height: min(70vh, 680px);
+    padding: 18px;
+    border-radius: 22px;
     overflow-y: auto;
     opacity: 0;
     visibility: hidden;
     transform: translateY(-10px) scale(0.98);
+    background: rgba(10, 12, 20, 0.68);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.22);
     transition: opacity 220ms ease, visibility 220ms ease, transform 220ms ease;
 }
 
@@ -2482,7 +2493,8 @@ body.modal-open {
 
 .metrics-panel-head p {
     color: var(--muted);
-    line-height: 1.65;
+    line-height: 1.55;
+    font-size: 0.9rem;
 }
 
 .metrics-panel-close {
@@ -2500,26 +2512,49 @@ body.modal-open {
 .metrics-panel-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
+    gap: 10px;
+}
+
+.metrics-panel .result-card {
+    padding: 14px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.025);
+}
+
+.metrics-panel .result-card strong {
+    margin-top: 6px;
+    font-size: clamp(1.15rem, 3vw, 1.6rem);
+}
+
+.metrics-panel .result-card span {
+    font-size: 0.76rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.metrics-panel-updated {
+    margin: 4px 0 0;
+    color: var(--muted);
+    font-size: 0.82rem;
 }
 
 .metrics-panel-breakdown {
     display: grid;
-    gap: 10px;
+    gap: 8px;
 }
 
 .metrics-breakdown-item {
     display: grid;
-    gap: 8px;
-    padding: 14px;
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 18px;
-    background: rgba(255, 255, 255, 0.03);
+    gap: 6px;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.02);
 }
 
 .metrics-breakdown-item strong {
     color: #f4f7ff;
-    font-size: 0.94rem;
+    font-size: 0.86rem;
 }
 
 .metrics-breakdown-row {
@@ -2528,7 +2563,7 @@ body.modal-open {
     justify-content: space-between;
     gap: 12px;
     color: var(--muted);
-    font-size: 0.88rem;
+    font-size: 0.8rem;
 }
 
 .metrics-panel-error {
@@ -2689,6 +2724,28 @@ body.modal-open {
 .assistant-contact-button {
     width: 100%;
     margin-top: 18px;
+}
+
+.assistant-profile-ribbon {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+.assistant-profile-pill {
+    display: inline-flex;
+    align-items: center;
+    min-height: 30px;
+    padding: 0 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    color: #d9e9ff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
 }
 
 .reveal {
@@ -3138,23 +3195,56 @@ body.modal-open {
     }
 
     .contact-modal {
-        max-height: min(92dvh, 860px);
-        padding: 18px 18px calc(20px + env(safe-area-inset-bottom));
+        max-height: min(88dvh, 760px);
+        padding: 16px 16px calc(16px + env(safe-area-inset-bottom));
         border-radius: 26px 26px 20px 20px;
     }
 
     .contact-modal-head {
-        top: -18px;
-        margin: -18px -18px 0;
-        padding: 18px 18px 16px;
+        top: -16px;
+        margin: -16px -16px 0;
+        padding: 16px 16px 12px;
         border-radius: 24px 24px 18px 18px;
-        margin-bottom: 12px;
+        margin-bottom: 8px;
     }
 
     .contact-modal-badges span {
-        min-height: 32px;
-        padding: 0 12px;
-        font-size: 0.72rem;
+        min-height: 28px;
+        padding: 0 10px;
+        font-size: 0.66rem;
+    }
+
+    .contact-modal-form {
+        gap: 10px;
+    }
+
+    .contact-modal .field {
+        gap: 6px;
+    }
+
+    .contact-modal .field span {
+        font-size: 0.8rem;
+    }
+
+    .contact-modal .field input,
+    .contact-modal .field select {
+        padding: 13px 14px;
+        border-radius: 14px;
+        font-size: 0.94rem;
+    }
+
+    .contact-modal-results {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .contact-modal-results .result-card {
+        padding: 14px;
+    }
+
+    .contact-modal-results .result-card strong {
+        margin-top: 6px;
+        font-size: clamp(1.1rem, 3.8vw, 1.45rem);
     }
 
     .preview-stats {
@@ -3189,10 +3279,10 @@ body.modal-open {
     }
 
     .metrics-panel {
-        top: 76px;
+        top: 54px;
         left: 10px;
-        width: min(420px, calc(100vw - 20px));
-        max-height: calc(100dvh - 92px);
+        width: min(320px, calc(100vw - 20px));
+        max-height: calc(100dvh - 72px);
     }
 
     .assistant-panel {
@@ -3278,7 +3368,7 @@ body.modal-open {
     .contact-modal,
     .success-modal {
         max-height: calc(100vh - 20px);
-        padding: 18px;
+        padding: 16px;
         border-radius: 20px;
     }
 
@@ -3293,28 +3383,59 @@ body.modal-open {
     }
 
     .contact-modal {
-        padding: 18px 18px calc(18px + env(safe-area-inset-bottom));
+        padding: 14px 14px calc(14px + env(safe-area-inset-bottom));
         border-radius: 22px 22px 18px 18px;
     }
 
     .contact-modal-head h2 {
-        font-size: 1.55rem;
-        line-height: 1.08;
+        font-size: 1.24rem;
+        line-height: 1.1;
     }
 
     .contact-modal-head p,
     .calculator-summary {
-        font-size: 0.92rem;
-        line-height: 1.55;
+        font-size: 0.82rem;
+        line-height: 1.42;
     }
 
     .contact-modal-results {
-        grid-template-columns: 1fr;
-        gap: 12px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
     }
 
     .contact-modal-form {
-        gap: 14px;
+        gap: 8px;
+    }
+
+    .contact-modal .field {
+        gap: 5px;
+    }
+
+    .contact-modal .field span {
+        font-size: 0.76rem;
+    }
+
+    .contact-modal .field input,
+    .contact-modal .field select {
+        padding: 11px 12px;
+        border-radius: 12px;
+        font-size: 0.9rem;
+    }
+
+    .contact-modal .button {
+        min-height: 46px;
+    }
+
+    .contact-modal-results .result-card {
+        padding: 12px;
+    }
+
+    .contact-modal-results .result-card span {
+        font-size: 0.68rem;
+    }
+
+    .contact-modal-results .result-card strong {
+        font-size: 1rem;
     }
 
     .contact-modal .button,
@@ -3325,17 +3446,16 @@ body.modal-open {
     .metrics-float-button {
         top: 12px;
         left: 12px;
-        width: 46px;
-        height: 46px;
-        border-radius: 14px;
+        min-height: 36px;
+        padding: 0 10px;
     }
 
     .metrics-panel {
-        top: 66px;
+        top: 50px;
         left: 10px;
-        padding: 18px;
-        width: calc(100vw - 20px);
-        border-radius: 22px;
+        padding: 14px;
+        width: min(300px, calc(100vw - 20px));
+        border-radius: 18px;
     }
 
     .metrics-panel-grid {

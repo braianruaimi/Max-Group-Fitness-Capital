@@ -917,16 +917,17 @@
         </div>
     </div>
 
-    <button class="metrics-float-button" id="metricsFloatButton" type="button" aria-label="Abrir panel de metricas">
-        <i class="fa-solid fa-chart-simple"></i>
+    <button class="metrics-float-button" id="metricsFloatButton" type="button" aria-label="Abrir Panel CEO">
+        <i class="fa-solid fa-lock"></i>
+        <span>Panel CEO</span>
     </button>
 
     <div class="metrics-panel glass" id="metricsPanel" aria-hidden="true">
         <button class="preview-close metrics-panel-close" id="metricsPanelClose" type="button" aria-label="Cerrar panel de metricas">X</button>
         <div class="metrics-panel-head">
-            <span class="eyebrow">Panel privado</span>
-            <h2>Metricas de click y view</h2>
-            <p>Acceso restringido para revisar visualizaciones, aperturas del modal y consultas enviadas.</p>
+            <span class="eyebrow">Panel CEO</span>
+            <h2 id="metricsPanelTitle">Ingresar con contrasena</h2>
+            <p id="metricsPanelDescription">Acceso restringido. Ingresá la clave para ver clicks, views, leads e interacciones del asistente.</p>
         </div>
         <div class="metrics-panel-lock" id="metricsPanelLock">
             <label class="field">
@@ -943,26 +944,27 @@
                     <strong id="metricsPageViews">0</strong>
                 </article>
                 <article class="result-card result-card-soft">
-                    <span>Views de CTA</span>
-                    <strong id="metricsCtaViews">0</strong>
+                    <span>Views registradas</span>
+                    <strong id="metricsTrackedViews">0</strong>
                 </article>
                 <article class="result-card result-card-soft">
-                    <span>Clicks en CTA</span>
-                    <strong id="metricsCtaClicks">0</strong>
+                    <span>Clicks registrados</span>
+                    <strong id="metricsTrackedClicks">0</strong>
                 </article>
                 <article class="result-card highlight">
-                    <span>Aperturas del modal</span>
+                    <span>Leads generados</span>
+                    <strong id="metricsTotalLeads">0</strong>
+                </article>
+                <article class="result-card result-card-soft">
+                    <span>Interacciones IA</span>
+                    <strong id="metricsAssistantInteractions">0</strong>
+                </article>
+                <article class="result-card result-card-soft">
+                    <span>Aperturas modal</span>
                     <strong id="metricsModalOpens">0</strong>
                 </article>
-                <article class="result-card result-card-soft">
-                    <span>Consultas a WhatsApp</span>
-                    <strong id="metricsWhatsappSubmissions">0</strong>
-                </article>
-                <article class="result-card result-card-soft">
-                    <span>Ultima actualizacion</span>
-                    <strong id="metricsLastUpdated">-</strong>
-                </article>
             </div>
+            <p class="metrics-panel-updated">Ultima actualizacion: <strong id="metricsLastUpdated">-</strong></p>
             <div class="metrics-panel-breakdown" id="metricsBreakdown"></div>
         </div>
     </div>

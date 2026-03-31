@@ -35,6 +35,9 @@ function getDefaultMetrics() {
         pageViews: 0,
         modalOpens: 0,
         whatsappSubmissions: 0,
+        assistantInteractions: 0,
+        installClicks: 0,
+        ceoPanelOpens: 0,
         triggerStats: {},
         updatedAt: null
     };
@@ -85,9 +88,15 @@ function getMetricSourceLabel(element, fallbackLabel = "Acceso directo") {
 function incrementTriggerMetric(sourceLabel, metricKey) {
     updateMetrics((metrics) => {
         const metricSource = sourceLabel || "Acceso directo";
-        const currentStats = metrics.triggerStats[metricSource] || { views: 0, clicks: 0 };
-        currentStats[metricKey] += 1;
+        const currentStats = metrics.triggerStats[metricSource] || { views: 0, clicks: 0, leads: 0 };
+        currentStats[metricKey] = (currentStats[metricKey] || 0) + 1;
         metrics.triggerStats[metricSource] = currentStats;
+    });
+}
+
+function incrementGlobalMetric(metricKey, amount = 1) {
+    updateMetrics((metrics) => {
+        metrics[metricKey] = (metrics[metricKey] || 0) + amount;
     });
 }
 
@@ -1497,6 +1506,7 @@ function initializeContactModal() {
         updateMetrics((metrics) => {
             metrics.whatsappSubmissions += 1;
         });
+        incrementTriggerMetric(activeSourceLabel, "leads");
         window.open(whatsappUrl, "_blank", "noopener,noreferrer");
         closeModal();
         openSuccessModal();
@@ -1522,15 +1532,18 @@ function initializeMetricsPanel() {
     const errorMessage = document.getElementById("metricsPanelError");
     const lockSection = document.getElementById("metricsPanelLock");
     const contentSection = document.getElementById("metricsPanelContent");
+    const panelTitle = document.getElementById("metricsPanelTitle");
+    const panelDescription = document.getElementById("metricsPanelDescription");
     const pageViewsElement = document.getElementById("metricsPageViews");
-    const ctaViewsElement = document.getElementById("metricsCtaViews");
-    const ctaClicksElement = document.getElementById("metricsCtaClicks");
+    const trackedViewsElement = document.getElementById("metricsTrackedViews");
+    const trackedClicksElement = document.getElementById("metricsTrackedClicks");
+    const totalLeadsElement = document.getElementById("metricsTotalLeads");
+    const assistantInteractionsElement = document.getElementById("metricsAssistantInteractions");
     const modalOpensElement = document.getElementById("metricsModalOpens");
-    const whatsappSubmissionsElement = document.getElementById("metricsWhatsappSubmissions");
     const lastUpdatedElement = document.getElementById("metricsLastUpdated");
     const breakdownElement = document.getElementById("metricsBreakdown");
 
-    if (!metricsButton || !metricsPanel || !closeButton || !unlockButton || !passwordInput || !errorMessage || !lockSection || !contentSection || !pageViewsElement || !ctaViewsElement || !ctaClicksElement || !modalOpensElement || !whatsappSubmissionsElement || !lastUpdatedElement || !breakdownElement) {
+    if (!metricsButton || !metricsPanel || !closeButton || !unlockButton || !passwordInput || !errorMessage || !lockSection || !contentSection || !panelTitle || !panelDescription || !pageViewsElement || !trackedViewsElement || !trackedClicksElement || !totalLeadsElement || !assistantInteractionsElement || !modalOpensElement || !lastUpdatedElement || !breakdownElement) {
         return;
     }
 
@@ -1541,36 +1554,44 @@ function initializeMetricsPanel() {
         const triggerEntries = Object.entries(metrics.triggerStats || {});
         const totalViews = triggerEntries.reduce((sum, [, stats]) => sum + (stats.views || 0), 0);
         const totalClicks = triggerEntries.reduce((sum, [, stats]) => sum + (stats.clicks || 0), 0);
+        const totalLeads = triggerEntries.reduce((sum, [, stats]) => sum + (stats.leads || 0), 0);
 
         pageViewsElement.textContent = integerFormatter.format(metrics.pageViews || 0);
-        ctaViewsElement.textContent = integerFormatter.format(totalViews);
-        ctaClicksElement.textContent = integerFormatter.format(totalClicks);
+        trackedViewsElement.textContent = integerFormatter.format(totalViews);
+        trackedClicksElement.textContent = integerFormatter.format(totalClicks + (metrics.installClicks || 0) + (metrics.ceoPanelOpens || 0));
+        totalLeadsElement.textContent = integerFormatter.format(totalLeads);
+        assistantInteractionsElement.textContent = integerFormatter.format(metrics.assistantInteractions || 0);
         modalOpensElement.textContent = integerFormatter.format(metrics.modalOpens || 0);
-        whatsappSubmissionsElement.textContent = integerFormatter.format(metrics.whatsappSubmissions || 0);
         lastUpdatedElement.textContent = formatMetricsTimestamp(metrics.updatedAt);
 
         breakdownElement.innerHTML = triggerEntries.length
             ? triggerEntries
-                .sort((a, b) => (b[1].clicks || 0) - (a[1].clicks || 0))
+                .sort((a, b) => ((b[1].leads || 0) + (b[1].clicks || 0)) - ((a[1].leads || 0) + (a[1].clicks || 0)))
                 .map(([label, stats]) => `
                     <article class="metrics-breakdown-item">
                         <strong>${label}</strong>
                         <div class="metrics-breakdown-row"><span>Views</span><span>${integerFormatter.format(stats.views || 0)}</span></div>
                         <div class="metrics-breakdown-row"><span>Clicks</span><span>${integerFormatter.format(stats.clicks || 0)}</span></div>
+                        <div class="metrics-breakdown-row"><span>Leads</span><span>${integerFormatter.format(stats.leads || 0)}</span></div>
                     </article>
                 `)
                 .join("")
-            : '<article class="metrics-breakdown-item"><strong>Sin datos aun</strong><div class="metrics-breakdown-row"><span>Views</span><span>0</span></div><div class="metrics-breakdown-row"><span>Clicks</span><span>0</span></div></article>';
+            : '<article class="metrics-breakdown-item"><strong>Sin datos aun</strong><div class="metrics-breakdown-row"><span>Views</span><span>0</span></div><div class="metrics-breakdown-row"><span>Clicks</span><span>0</span></div><div class="metrics-breakdown-row"><span>Leads</span><span>0</span></div></article>';
     }
 
     function openPanel() {
+        incrementGlobalMetric("ceoPanelOpens");
         metricsPanel.classList.add("is-open");
         metricsPanel.setAttribute("aria-hidden", "false");
         if (!isUnlocked) {
+            panelTitle.textContent = "Ingresar con contrasena";
+            panelDescription.textContent = "Acceso CEO. Ingresá la clave para desbloquear el panel completo.";
             passwordInput.focus();
             return;
         }
 
+        panelTitle.textContent = "Metricas generales";
+        panelDescription.textContent = "Resumen de views, clicks, leads y acciones del asistente sobre la landing.";
         renderMetrics();
     }
 
@@ -1590,6 +1611,8 @@ function initializeMetricsPanel() {
         isUnlocked = true;
         lockSection.hidden = true;
         contentSection.hidden = false;
+        panelTitle.textContent = "Metricas generales";
+        panelDescription.textContent = "Resumen de views, clicks, leads y acciones del asistente sobre la landing.";
         renderMetrics();
     }
 
@@ -1650,6 +1673,8 @@ function initializeInstallPrompt() {
             return;
         }
 
+        incrementGlobalMetric("installClicks");
+        incrementTriggerMetric("Instalar app", "clicks");
         deferredPrompt.prompt();
         await deferredPrompt.userChoice;
         deferredPrompt = null;
@@ -1691,6 +1716,26 @@ function initializeFaqAssistant() {
         .filter(Boolean)
         .slice(0, 4);
 
+    const investorFlows = [
+        {
+            question: "Soy perfil conservador, que me protege aca?",
+            answer: "Si tu foco es preservar capital, la propuesta se apoya en activos reales, operacion vigente, permanencia minima definida y seguimiento por WhatsApp antes de decidir.",
+            profile: "Perfil conservador"
+        },
+        {
+            question: "Busco cobertura contra inflacion, por donde entro?",
+            answer: "La lectura comercial apunta a capital productivo dentro de un ecosistema activo. Si queres cobertura y flujo, el siguiente paso es abrir propuesta y revisar monto, plazo y condiciones.",
+            profile: "Cobertura inflacionaria"
+        },
+        {
+            question: "Quiero retorno y control, como sigue el proceso?",
+            answer: "El proceso esta pensado para inversores que necesitan contexto y seguimiento: consulta inicial, lectura de condiciones, seleccion de monto y avance directo por WhatsApp con datos concretos.",
+            profile: "Retorno y control"
+        }
+    ];
+
+    const assistantEntries = [...investorFlows, ...faqEntries.map((entry) => ({ ...entry, profile: "FAQ" }))];
+
     function appendMessage(role, content) {
         const roleLabel = role === "user" ? "Vos" : "Asistente IA";
         const roleClass = role === "user" ? "assistant-message-user" : "assistant-message-bot";
@@ -1703,12 +1748,22 @@ function initializeFaqAssistant() {
         assistantChat.scrollTop = assistantChat.scrollHeight;
     }
 
-    faqEntries.forEach((entry) => {
+    investorFlows.forEach((entry) => {
+        assistantChat.insertAdjacentHTML("beforeend", `
+            <div class="assistant-profile-ribbon">
+                <span class="assistant-profile-pill">${sanitizeAssistantText(entry.profile)}</span>
+            </div>
+        `);
+    });
+
+    assistantEntries.forEach((entry) => {
         const suggestionButton = document.createElement("button");
         suggestionButton.type = "button";
         suggestionButton.className = "assistant-suggestion";
         suggestionButton.textContent = entry.question;
         suggestionButton.addEventListener("click", () => {
+            incrementGlobalMetric("assistantInteractions");
+            incrementTriggerMetric(`Asistente IA - ${entry.question}`, "clicks");
             appendMessage("user", entry.question);
             window.setTimeout(() => {
                 appendMessage("bot", entry.answer);
@@ -1718,6 +1773,8 @@ function initializeFaqAssistant() {
     });
 
     function openAssistant() {
+        incrementGlobalMetric("assistantInteractions");
+        incrementTriggerMetric("Asistente IA - Abrir panel", "clicks");
         assistantPanel.classList.add("is-open");
         assistantPanel.setAttribute("aria-hidden", "false");
     }
