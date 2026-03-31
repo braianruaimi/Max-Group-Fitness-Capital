@@ -1469,7 +1469,7 @@ function initializeLeadForm() {
             `Mensaje: ${message}`
         ].join("\n");
 
-        const whatsappUrl = `https://wa.me/5492215047962?text=${encodeURIComponent(whatsappMessage)}`;
+        const whatsappUrl = `https://wa.me/5492216193178?text=${encodeURIComponent(whatsappMessage)}`;
         window.open(whatsappUrl, "_blank", "noopener,noreferrer");
     });
 }
