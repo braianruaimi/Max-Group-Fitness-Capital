@@ -2240,7 +2240,8 @@ h3 {
 }
 
 .grayscale-unit:hover::after,
-.grayscale-unit:focus-within::after {
+.grayscale-unit:focus-within::after,
+.grayscale-unit.show-entry-tooltip::after {
     opacity: 1;
     transform: translateY(0);
 }

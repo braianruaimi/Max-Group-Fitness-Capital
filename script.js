@@ -860,6 +860,7 @@ function initializeEcosystemPreview() {
     let hoverTimeoutId = null;
     let previewChart = null;
     let pinnedOpen = false;
+    let entryTooltipTimeoutId = null;
 
     function setActiveCard(card) {
         previewCards.forEach((entry) => {
@@ -1058,7 +1059,22 @@ function initializeEcosystemPreview() {
             });
         }
 
-        card.addEventListener("click", () => {
+        card.addEventListener("click", (event) => {
+            if (!hasFinePointer && card.classList.contains("grayscale-unit") && !card.classList.contains("show-entry-tooltip")) {
+                event.preventDefault();
+                card.classList.add("show-entry-tooltip");
+
+                if (entryTooltipTimeoutId !== null) {
+                    window.clearTimeout(entryTooltipTimeoutId);
+                }
+
+                entryTooltipTimeoutId = window.setTimeout(() => {
+                    card.classList.remove("show-entry-tooltip");
+                    entryTooltipTimeoutId = null;
+                }, 1800);
+                return;
+            }
+
             openPreview(card, true);
         });
     });
