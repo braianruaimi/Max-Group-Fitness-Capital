@@ -4440,6 +4440,20 @@ body.install-guide-open {
         grid-template-columns: 1fr;
     }
 
+    .grayscale-unit::after {
+        top: auto;
+        right: 16px;
+        bottom: 16px;
+        left: 16px;
+        max-width: none;
+        padding: 12px 14px;
+        border-radius: 16px;
+        font-size: 0.76rem;
+        letter-spacing: 0.04em;
+        text-align: center;
+        transform: translateY(8px);
+    }
+
     .preview-modal.is-sheet-mode {
         bottom: 10px;
         left: 10px !important;
