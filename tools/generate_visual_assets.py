@@ -6,6 +6,7 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont
 ROOT = Path(__file__).resolve().parent.parent
 OG_OUTPUT = ROOT / "og-gold-share.png"
 BG_OUTPUT = ROOT / "background-atmosphere.webp"
+ASSETS_DIR = ROOT / "assets" / "activos"
 
 
 def load_font(size: int, bold: bool = False) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
@@ -82,13 +83,13 @@ def create_og_image() -> None:
     stats_font = load_font(22, bold=True)
     stat_value_font = load_font(40, bold=True)
 
-    draw.text((388, 145), "CAPITAL RESPALDADO POR EL FITNESS REAL", font=eyebrow_font, fill="#e8c77c")
-    draw.multiline_text((388, 188), "Max Group Fitness\nCapital", font=title_font, fill="#fff7e7", spacing=4)
-    draw.multiline_text((388, 340), "Ecosistema operativo con flujo activo, activos tangibles\ny proyeccion de crecimiento visible.", font=subtitle_font, fill="#e7dcc3", spacing=8)
+    draw.text((388, 145), "RESPALDO REAL EN CRISIS ARGENTINA", font=eyebrow_font, fill="#e8c77c")
+    draw.multiline_text((388, 188), "12 anos de\ntrayectoria real", font=title_font, fill="#fff7e7", spacing=4)
+    draw.multiline_text((388, 340), "Activos tangibles, canon defendido y multiples ingresos\npensados para crecer cuando otros se frenan.", font=subtitle_font, fill="#e7dcc3", spacing=8)
 
     stats = [
         ("Clientes activos", "+550"),
-        ("Unidades operativas", "4"),
+        ("Unidades activas", "3"),
         ("Retorno proyectado", "4% mensual"),
     ]
     stat_left = 138
@@ -145,9 +146,62 @@ def create_background_image() -> None:
     image.save(BG_OUTPUT, format="WEBP", quality=74, method=6)
 
 
+def create_asset_placeholder(output_path: Path, title: str, subtitle: str) -> None:
+    width, height = 1400, 933
+    image = Image.new("RGB", (width, height), "#0b0d14")
+    draw = ImageDraw.Draw(image)
+
+    for index in range(height):
+        blend = index / max(height - 1, 1)
+        red = int(11 + (19 * blend))
+        green = int(13 + (13 * blend))
+        blue = int(20 + (10 * blend))
+        draw.line((0, index, width, index), fill=(red, green, blue))
+
+    frame = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+    frame_draw = ImageDraw.Draw(frame)
+    frame_draw.rounded_rectangle((42, 42, width - 42, height - 42), radius=36, outline=(215, 177, 95, 255), width=4)
+    frame_draw.rounded_rectangle((72, 72, width - 72, height - 72), radius=28, outline=(97, 74, 34, 185), width=2)
+    frame_draw.ellipse((width - 370, 90, width - 120, 340), fill=(245, 211, 130, 35))
+    frame = frame.filter(ImageFilter.GaussianBlur(4))
+    image = Image.alpha_composite(image.convert("RGBA"), frame)
+
+    draw = ImageDraw.Draw(image)
+    eyebrow_font = load_font(34, bold=True)
+    title_font = load_font(74, bold=True)
+    subtitle_font = load_font(34, bold=False)
+
+    draw.text((102, 118), "ACTIVO REAL AUDITABLE", font=eyebrow_font, fill="#e6c172")
+    draw.multiline_text((102, 220), title, font=title_font, fill="#fff2d0", spacing=4)
+    draw.multiline_text((102, 470), subtitle, font=subtitle_font, fill="#e8dcc2", spacing=10)
+
+    image = image.convert("RGB")
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    image.save(output_path, format="JPEG", quality=88, optimize=True, progressive=True)
+
+
+def create_photo_placeholders() -> None:
+    create_asset_placeholder(
+        ASSETS_DIR / "maquinaria-ultima-generacion.jpg",
+        "Maquinaria de\nultima generacion",
+        "Reemplaza este archivo por tu foto real\nmanteniendo el mismo nombre.",
+    )
+    create_asset_placeholder(
+        ASSETS_DIR / "stock-carniceria-y-tiendas.jpg",
+        "Stock de carniceria\nboutique y tiendas",
+        "Reemplaza este archivo por tu foto real\nmanteniendo el mismo nombre.",
+    )
+    create_asset_placeholder(
+        ASSETS_DIR / "infraestructura-sedes.jpg",
+        "Infraestructura\nde las sedes",
+        "Reemplaza este archivo por tu foto real\nmanteniendo el mismo nombre.",
+    )
+
+
 def main() -> None:
     create_og_image()
     create_background_image()
+    create_photo_placeholders()
 
 
 if __name__ == "__main__":

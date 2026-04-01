@@ -1,4 +1,4 @@
-const CACHE_NAME = "max-group-fitness-shell-v2";
+const CACHE_NAME = "max-group-fitness-shell-v3";
 const APP_SHELL = [
     "./",
     "./index.html",
@@ -7,6 +7,9 @@ const APP_SHELL = [
     "./manifest.webmanifest",
     "./background-atmosphere.webp",
     "./og-gold-share.png",
+    "./assets/activos/maquinaria-ultima-generacion.jpg",
+    "./assets/activos/stock-carniceria-y-tiendas.jpg",
+    "./assets/activos/infraestructura-sedes.jpg",
     "./icon-192.png",
     "./icon-512.png",
     "./apple-touch-icon-180.png",
