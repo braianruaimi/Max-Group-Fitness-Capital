@@ -841,6 +841,9 @@ function initializeEcosystemPreview() {
     const previewTitle = document.getElementById("previewTitle");
     const previewDescription = document.getElementById("previewDescription");
     const previewMetric = document.getElementById("previewMetric");
+    const previewAddress = document.getElementById("previewAddress");
+    const previewHours = document.getElementById("previewHours");
+    const previewStatus = document.getElementById("previewStatus");
     const previewCanvas = document.getElementById("previewGrowthChart");
     const previewBaseValue = document.getElementById("previewBaseValue");
     const previewCurrentValue = document.getElementById("previewCurrentValue");
@@ -849,7 +852,7 @@ function initializeEcosystemPreview() {
     const hasFinePointer = window.matchMedia("(pointer: fine)").matches;
     const sheetBreakpoint = window.matchMedia("(max-width: 820px)");
 
-    if (!previewCards.length || !previewModal || !previewClose || !previewTitle || !previewDescription || !previewMetric || !previewCanvas || !previewBaseValue || !previewCurrentValue || !previewTargetValue) {
+    if (!previewCards.length || !previewModal || !previewClose || !previewTitle || !previewDescription || !previewMetric || !previewAddress || !previewHours || !previewStatus || !previewCanvas || !previewBaseValue || !previewCurrentValue || !previewTargetValue) {
         return;
     }
 
@@ -995,6 +998,10 @@ function initializeEcosystemPreview() {
         previewTitle.textContent = card.dataset.previewName || "Unidad";
         previewDescription.textContent = card.dataset.previewDescription || "Detalle ampliado: al breve.";
         previewMetric.textContent = card.dataset.previewMetric || "+0%";
+        previewAddress.textContent = card.dataset.previewAddress || "A confirmar";
+        previewHours.textContent = card.dataset.previewHours || "A confirmar";
+        previewStatus.textContent = card.dataset.previewStatus || "Operativa";
+        previewMetric.classList.toggle("preview-badge-soon", card.classList.contains("preview-card-inactive"));
 
         const points = (card.dataset.previewPoints || "10,15,18,22,27,31,36")
             .split(",")

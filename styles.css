@@ -2084,6 +2084,43 @@ h3 {
     box-shadow: 0 0 16px rgba(13, 226, 176, 0.08);
 }
 
+.preview-badge-soon {
+    border-color: rgba(215, 177, 95, 0.26);
+    background: rgba(215, 177, 95, 0.12);
+    color: #f2d088;
+    box-shadow: 0 0 16px rgba(215, 177, 95, 0.1);
+}
+
+.preview-details {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.preview-detail-item {
+    padding: 12px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.preview-detail-item span {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--muted);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.preview-detail-item strong {
+    display: block;
+    color: #f3f7ff;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
 .preview-chart-shell {
     position: relative;
     height: 180px;
@@ -3925,6 +3962,11 @@ body.install-guide-open {
         height: 240px !important;
     }
 
+    .preview-details,
+    .preview-stats {
+        grid-template-columns: 1fr;
+    }
+
     .contact-modal-backdrop,
     .success-modal-backdrop,
     .install-guide-backdrop {
@@ -4355,6 +4397,10 @@ body.install-guide-open {
 
     .preview-head {
         flex-direction: column;
+    }
+
+    .preview-details {
+        grid-template-columns: 1fr;
     }
 
     .preview-modal.is-sheet-mode {
