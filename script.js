@@ -21,6 +21,8 @@ const METRICS_PANEL_PASSWORD = "1234";
 const EXCHANGE_RATE_ARS = 1390;
 const ROUND_AVAILABLE_RATIO = 0.15;
 const ROUND_TOTAL_CAP_ARS = 100000000;
+const INSTALL_GUIDE_STORAGE_KEY = "maxGroupFitnessIosInstallGuideDismissed";
+const SERVICE_WORKER_URL = "./sw.js";
 let activeCurrency = "ARS";
 
 const easeOutCubic = (progress) => 1 - Math.pow(1 - progress, 3);
@@ -1848,40 +1850,151 @@ function initializeMetricsPanel() {
 function initializeInstallPrompt() {
     const installButton = document.getElementById("installAppButton");
     const updateButton = document.getElementById("updateAppButton");
+    const installGuideBackdrop = document.getElementById("installGuideBackdrop");
+    const installGuideClose = document.getElementById("installGuideClose");
+    const installGuideDismiss = document.getElementById("installGuideDismiss");
 
-    if (!installButton || !updateButton) {
+    if (!installButton || !updateButton || !installGuideBackdrop || !installGuideClose || !installGuideDismiss) {
         return;
     }
 
     let deferredPrompt = null;
-    // Eliminado: referencias a Service Worker
-    let updateButtonTimeoutId = null;
+    let waitingWorker = null;
+    let isReloadingForUpdate = false;
+    let serviceWorkerRegistration = null;
+    const userAgent = window.navigator.userAgent || "";
+    const installLabel = installButton.querySelector("span");
+
+    const isIosDevice = /iPad|iPhone|iPod/.test(userAgent)
+        || (window.navigator.platform === "MacIntel" && window.navigator.maxTouchPoints > 1);
+    const isSafariBrowser = /Safari/i.test(userAgent)
+        && !/CriOS|FxiOS|EdgiOS|OPiOS|YaBrowser|DuckDuckGo/i.test(userAgent);
 
     function isStandaloneMode() {
         return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
     }
 
-    function syncInstallButton() {
-        if (isStandaloneMode()) {
-            installButton.hidden = true;
+    function isIosSafariInstallable() {
+        if (!isIosDevice || !isSafariBrowser) {
+            return false;
+        }
+
+        try {
+            return window.localStorage.getItem(INSTALL_GUIDE_STORAGE_KEY) !== "dismissed";
+        } catch {
+            return true;
         }
     }
 
-    // Eliminado: función syncUpdateButton relacionada a Service Worker
+    function dismissIosInstallGuide() {
+        try {
+            window.localStorage.setItem(INSTALL_GUIDE_STORAGE_KEY, "dismissed");
+        } catch {
+            return;
+        }
+    }
 
-    // Eliminado: eventos relacionados a instalación y actualización de PWA/Service Worker
+    function syncUpdateButton(nextWaitingWorker) {
+        waitingWorker = nextWaitingWorker;
+        updateButton.hidden = !waitingWorker;
+    }
+
+    function syncInstallButton() {
+        if (isStandaloneMode()) {
+            installButton.hidden = true;
+            updateButton.hidden = !waitingWorker;
+            return;
+        }
+
+        installButton.hidden = !(deferredPrompt || isIosSafariInstallable());
+
+        if (installLabel) {
+            installLabel.textContent = isIosSafariInstallable() ? "Instalar en iPhone" : "Instalar app";
+        }
+    }
+
+    function openInstallGuide() {
+        installGuideBackdrop.classList.add("is-open");
+        installGuideBackdrop.setAttribute("aria-hidden", "false");
+        document.body.classList.add("install-guide-open");
+    }
+
+    function closeInstallGuide() {
+        installGuideBackdrop.classList.remove("is-open");
+        installGuideBackdrop.setAttribute("aria-hidden", "true");
+        document.body.classList.remove("install-guide-open");
+    }
+
+    async function registerServiceWorker() {
+        if (!("serviceWorker" in window.navigator) || !window.isSecureContext) {
+            syncUpdateButton(null);
+            return;
+        }
+
+        try {
+            const registration = await window.navigator.serviceWorker.register(SERVICE_WORKER_URL);
+            serviceWorkerRegistration = registration;
+
+            if (registration.waiting) {
+                syncUpdateButton(registration.waiting);
+            }
+
+            registration.addEventListener("updatefound", () => {
+                const installingWorker = registration.installing;
+
+                if (!installingWorker) {
+                    return;
+                }
+
+                installingWorker.addEventListener("statechange", () => {
+                    if (installingWorker.state === "installed" && window.navigator.serviceWorker.controller) {
+                        syncUpdateButton(registration.waiting || installingWorker);
+                    }
+                });
+            });
+
+            window.navigator.serviceWorker.addEventListener("controllerchange", () => {
+                if (isReloadingForUpdate) {
+                    return;
+                }
+
+                isReloadingForUpdate = true;
+                window.location.reload();
+            });
+        } catch {
+            syncUpdateButton(null);
+        }
+    }
+
+    window.addEventListener("beforeinstallprompt", (event) => {
+        event.preventDefault();
+        deferredPrompt = event;
+        syncInstallButton();
+    });
+
+    window.addEventListener("appinstalled", () => {
+        deferredPrompt = null;
+        syncInstallButton();
+    });
 
     installButton.addEventListener("click", async () => {
-        if (!deferredPrompt) {
+        if (deferredPrompt) {
+            incrementGlobalMetric("installClicks");
+            incrementTriggerMetric("Instalar app", "clicks");
+            deferredPrompt.prompt();
+            await deferredPrompt.userChoice;
+            deferredPrompt = null;
+            syncInstallButton();
+            return;
+        }
+
+        if (!isIosSafariInstallable()) {
             return;
         }
 
         incrementGlobalMetric("installClicks");
-        incrementTriggerMetric("Instalar app", "clicks");
-        deferredPrompt.prompt();
-        await deferredPrompt.userChoice;
-        deferredPrompt = null;
-        installButton.hidden = true;
+        incrementTriggerMetric("Instalar app iOS", "clicks");
+        openInstallGuide();
     });
 
     updateButton.addEventListener("click", () => {
@@ -1891,17 +2004,39 @@ function initializeInstallPrompt() {
 
         incrementTriggerMetric("Actualizar app", "clicks");
         updateButton.hidden = true;
-        if (updateButtonTimeoutId) {
-            window.clearTimeout(updateButtonTimeoutId);
-            updateButtonTimeoutId = null;
-        }
         waitingWorker.postMessage({ type: "SKIP_WAITING" });
+    });
+
+    installGuideClose.addEventListener("click", closeInstallGuide);
+    installGuideDismiss.addEventListener("click", () => {
+        dismissIosInstallGuide();
+        closeInstallGuide();
+        syncInstallButton();
+    });
+
+    installGuideBackdrop.addEventListener("click", (event) => {
+        if (event.target === installGuideBackdrop) {
+            closeInstallGuide();
+        }
+    });
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && installGuideBackdrop.classList.contains("is-open")) {
+            closeInstallGuide();
+        }
+    });
+
+    document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "visible" && serviceWorkerRegistration) {
+            serviceWorkerRegistration.update().catch(() => null);
+        }
+
+        syncInstallButton();
     });
 
     syncInstallButton();
     syncUpdateButton(null);
-
-    // Service Worker eliminado: todos los usuarios verán siempre la última versión
+    registerServiceWorker();
 }
 
 function initializeCalculatorTradingBoard() {

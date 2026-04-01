@@ -32,6 +32,14 @@ El sitio esta pensado para convertir trafico en consultas calificadas de inversi
 - Chart.js por CDN
 - GitHub Pages para publicacion
 
+## Soporte PWA e iOS
+
+- manifest configurado para modo standalone
+- service worker local en sw.js para cache del shell y actualizaciones
+- iconos PNG para manifest y apple-touch-icon de 180x180
+- flujo de instalacion especifico para Safari en iPhone y iPad mediante "Agregar a pantalla de inicio"
+- ajustes visuales para safe areas de iOS con notch y barra inferior
+
 No requiere build, bundler ni dependencias de npm.
 
 ## Funcionalidades principales

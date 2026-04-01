@@ -2,16 +2,18 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Max Group Fitness Capital | Inversion en Ecosistema Fitness</title>
     <meta name="description" content="Max Group Fitness Capital presenta una propuesta de inversion blindada en activos reales del ecosistema fitness, con rentabilidad proyectada y estructura operativa activa.">
     <meta name="theme-color" content="#0a0a0c">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Max Group Fitness Capital">
     <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
     <link rel="icon" type="image/svg+xml" href="icon-192.svg">
-    <link rel="apple-touch-icon" href="icon-192.svg">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-180.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -871,6 +873,22 @@
             <h2 id="successModalTitle">Consulta preparada correctamente</h2>
             <p>Tu mensaje fue generado y enviado al canal de WhatsApp para continuar la conversacion con Max Group Fitness Capital.</p>
             <button class="button button-primary" id="successModalButton" type="button">Cerrar</button>
+        </div>
+    </div>
+
+    <div class="install-guide-backdrop" id="installGuideBackdrop" aria-hidden="true">
+        <div class="install-guide-modal glass" id="installGuideModal" role="dialog" aria-modal="true" aria-labelledby="installGuideTitle">
+            <button class="preview-close contact-modal-close" id="installGuideClose" type="button" aria-label="Cerrar guia de instalacion">X</button>
+            <span class="eyebrow">Instalacion en iPhone y iPad</span>
+            <h2 id="installGuideTitle">Agregar a pantalla de inicio</h2>
+            <p>En Safari para iOS, la instalacion se hace manualmente desde el menu de compartir. Segui estos pasos:</p>
+            <ol class="install-guide-steps">
+                <li>Toca el boton <strong>Compartir</strong> de Safari <i class="fa-solid fa-arrow-up-from-bracket" aria-hidden="true"></i>.</li>
+                <li>Desplazate en el menu y elige <strong>Agregar a pantalla de inicio</strong>.</li>
+                <li>Confirma el nombre y toca <strong>Agregar</strong>.</li>
+            </ol>
+            <p class="install-guide-note">Despues de instalarla, la app se abre en modo pantalla completa y usa el icono optimizado para Apple.</p>
+            <button class="button button-primary" id="installGuideDismiss" type="button">Entendido</button>
         </div>
     </div>
 

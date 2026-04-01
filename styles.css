@@ -324,11 +324,13 @@ html, body {
 
 html {
     scroll-behavior: smooth;
+    background: #08080b;
 }
 
 body {
     margin: 0;
     min-height: 100vh;
+    min-height: 100dvh;
     font-family: "Inter", sans-serif;
     color: var(--text);
     background:
@@ -338,6 +340,7 @@ body {
         radial-gradient(circle at 18% 65%, rgba(0, 212, 255, 0.08), transparent 18%),
         linear-gradient(180deg, #08080b 0%, #10101a 35%, #09090c 100%);
     overflow-x: hidden;
+    padding-bottom: env(safe-area-inset-bottom);
 }
 
 a {
@@ -522,13 +525,13 @@ body.has-cursor-glow label {
 
 .topbar {
     position: sticky;
-    top: 18px;
+    top: calc(env(safe-area-inset-top, 0px) + 18px);
     z-index: 20;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 20px;
-    margin-top: 18px;
+    margin-top: calc(env(safe-area-inset-top, 0px) + 18px);
     padding: 14px 18px;
     border: 1px solid var(--border);
     border-radius: 999px;
@@ -2784,13 +2787,14 @@ canvas {
 }
 
 .contact-modal-backdrop,
-.success-modal-backdrop {
+.success-modal-backdrop,
+.install-guide-backdrop {
     position: fixed;
     inset: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: calc(env(safe-area-inset-top, 0px) + 20px) calc(env(safe-area-inset-right, 0px) + 20px) calc(env(safe-area-inset-bottom, 0px) + 20px) calc(env(safe-area-inset-left, 0px) + 20px);
     background: rgba(1, 5, 11, 0.74);
     backdrop-filter: blur(12px);
     opacity: 0;
@@ -2800,13 +2804,15 @@ canvas {
 }
 
 .contact-modal-backdrop.is-open,
-.success-modal-backdrop.is-open {
+.success-modal-backdrop.is-open,
+.install-guide-backdrop.is-open {
     opacity: 1;
     visibility: visible;
 }
 
 .contact-modal,
-.success-modal {
+.success-modal,
+.install-guide-modal {
     position: relative;
     width: min(760px, 100%);
     max-height: min(88vh, 860px);
@@ -2825,9 +2831,36 @@ canvas {
     text-align: center;
 }
 
+.install-guide-modal {
+    width: min(520px, 100%);
+    gap: 16px;
+    text-align: left;
+}
+
 .contact-modal-backdrop.is-open .contact-modal,
-.success-modal-backdrop.is-open .success-modal {
+.success-modal-backdrop.is-open .success-modal,
+.install-guide-backdrop.is-open .install-guide-modal {
     transform: translateY(0) scale(1);
+}
+
+.install-guide-steps {
+    display: grid;
+    gap: 10px;
+    margin: 0;
+    padding-left: 20px;
+    color: #e9efff;
+    line-height: 1.7;
+}
+
+.install-guide-steps li::marker {
+    color: #8fefff;
+    font-weight: 800;
+}
+
+.install-guide-note {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.7;
 }
 
 .contact-modal-head {
@@ -2933,6 +2966,10 @@ body.modal-open {
     overflow: hidden;
 }
 
+body.install-guide-open {
+    overflow: hidden;
+}
+
 .final-cta {
     padding-top: 30px;
     padding-bottom: 120px;
@@ -2952,8 +2989,8 @@ body.modal-open {
 
 .whatsapp-float {
     position: fixed;
-    right: 22px;
-    bottom: 22px;
+    right: calc(env(safe-area-inset-right, 0px) + 22px);
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 22px);
     z-index: 30;
     display: inline-flex;
     align-items: center;
@@ -2976,8 +3013,8 @@ body.modal-open {
 
 .metrics-float-button {
     position: fixed;
-    bottom: 22px;
-    right: 22px;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 22px);
+    right: calc(env(safe-area-inset-right, 0px) + 22px);
     z-index: 120;
     width: 36px;
     height: 36px;
@@ -3002,8 +3039,8 @@ body.modal-open {
 
 .metrics-panel {
     position: fixed;
-    top: 58px;
-    left: 14px;
+    top: calc(env(safe-area-inset-top, 0px) + 58px);
+    left: calc(env(safe-area-inset-left, 0px) + 14px);
     z-index: 125;
     width: min(320px, calc(100vw - 28px));
     max-height: min(70vh, 680px);
@@ -3111,7 +3148,7 @@ body.modal-open {
 .update-float-button,
 .assistant-float-button {
     position: fixed;
-    left: 22px;
+    left: calc(env(safe-area-inset-left, 0px) + 22px);
     z-index: 118;
     display: inline-flex;
     align-items: center;
@@ -3127,17 +3164,17 @@ body.modal-open {
 }
 
 .install-float-button {
-    bottom: 96px;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 96px);
 }
 
 .update-float-button {
-    bottom: 158px;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 158px);
     background: linear-gradient(180deg, rgba(16, 32, 62, 0.94), rgba(8, 20, 40, 0.98));
     border-color: rgba(0, 212, 255, 0.16);
 }
 
 .assistant-float-button {
-    bottom: 22px;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 22px);
 }
 
 .install-float-button:hover,
@@ -3159,8 +3196,8 @@ body.modal-open {
 
 .assistant-panel {
     position: fixed;
-    left: 22px;
-    bottom: 86px;
+    left: calc(env(safe-area-inset-left, 0px) + 22px);
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 86px);
     z-index: 126;
     width: min(390px, calc(100vw - 44px));
     max-height: min(72vh, 760px);
@@ -3723,9 +3760,10 @@ body.modal-open {
     }
 
     .contact-modal-backdrop,
-    .success-modal-backdrop {
+    .success-modal-backdrop,
+    .install-guide-backdrop {
         align-items: flex-start;
-        padding: 14px;
+        padding: calc(env(safe-area-inset-top, 0px) + 14px) calc(env(safe-area-inset-right, 0px) + 14px) calc(env(safe-area-inset-bottom, 0px) + 14px) calc(env(safe-area-inset-left, 0px) + 14px);
     }
 
     .market-board-tickers {
@@ -3733,7 +3771,8 @@ body.modal-open {
     }
 
     .contact-modal,
-    .success-modal {
+    .success-modal,
+    .install-guide-modal {
         width: 100%;
         max-height: calc(100dvh - 28px);
         border-radius: 26px;
@@ -3929,12 +3968,14 @@ body.modal-open {
     }
 
     .contact-modal-backdrop,
-    .success-modal-backdrop {
-        padding: 8px;
+    .success-modal-backdrop,
+    .install-guide-backdrop {
+        padding: calc(env(safe-area-inset-top, 0px) + 8px) calc(env(safe-area-inset-right, 0px) + 8px) calc(env(safe-area-inset-bottom, 0px) + 8px) calc(env(safe-area-inset-left, 0px) + 8px);
     }
 
     .contact-modal,
-    .success-modal {
+    .success-modal,
+    .install-guide-modal {
         max-height: calc(78dvh - 8px);
         padding: 12px;
         border-radius: 20px 20px 16px 16px;
@@ -4036,8 +4077,8 @@ body.modal-open {
     }
 
     .metrics-panel {
-        top: 50px;
-        left: 10px;
+        top: calc(env(safe-area-inset-top, 0px) + 50px);
+        left: calc(env(safe-area-inset-left, 0px) + 10px);
         padding: 14px;
         width: min(300px, calc(100vw - 20px));
         border-radius: 18px;
@@ -4050,28 +4091,28 @@ body.modal-open {
     .install-float-button,
     .update-float-button,
     .assistant-float-button {
-        left: 10px;
+        left: calc(env(safe-area-inset-left, 0px) + 10px);
         min-height: 46px;
         padding: 0 14px;
         border-radius: 14px;
     }
 
     .install-float-button {
-        bottom: 84px;
+        bottom: calc(env(safe-area-inset-bottom, 0px) + 84px);
     }
 
     .update-float-button {
-        bottom: 144px;
+        bottom: calc(env(safe-area-inset-bottom, 0px) + 144px);
     }
 
     .assistant-float-button {
-        bottom: 10px;
+        bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);
     }
 
     .assistant-panel {
-        left: 10px;
+        left: calc(env(safe-area-inset-left, 0px) + 10px);
         right: 10px;
-        bottom: 64px;
+        bottom: calc(env(safe-area-inset-bottom, 0px) + 64px);
         width: auto;
         max-height: min(76dvh, 640px);
         padding: 18px;
