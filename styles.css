@@ -373,6 +373,18 @@ input {
     overflow: hidden;
 }
 
+.page-background::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(180deg, rgba(8, 8, 11, 0.28), rgba(8, 8, 11, 0.42)),
+        url("background-atmosphere.webp") center top / cover no-repeat;
+    opacity: 0.72;
+    transform: scale(1.04);
+    transform-origin: center top;
+}
+
 .cursor-glow {
     position: fixed;
     top: 0;

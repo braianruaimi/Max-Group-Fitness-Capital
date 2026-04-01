@@ -244,6 +244,11 @@ function animateCounterElement(element, duration = 1400) {
     animateValue(element, targetValue, { prefix, suffix, decimals: 0, duration });
 }
 
+function getDisplayedNumericValue(text) {
+    const sanitizedValue = String(text ?? "").replace(/[^\d.-]/g, "");
+    return Number(sanitizedValue || 0);
+}
+
 function animateValue(element, targetValue, options = {}) {
     const {
         prefix = "",
@@ -253,7 +258,9 @@ function animateValue(element, targetValue, options = {}) {
         formatter = null
     } = options;
 
-    const startValue = Number(element.dataset.currentValue || 0);
+    const startValue = element.dataset.currentValue
+        ? Number(element.dataset.currentValue)
+        : getDisplayedNumericValue(element.textContent);
     const startTime = performance.now();
 
     function updateValue(now) {
