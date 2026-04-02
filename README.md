@@ -218,6 +218,19 @@ Los puntos mas habituales para modificar son:
 - textos comerciales e institucionales en [index.html](index.html)
 - paleta, glow, fondos y responsive en [styles.css](styles.css)
 - montos validos, retorno mensual y logica de proyeccion en [script.js](script.js)
+
+## Fotos reales y rendimiento
+
+Cuando se reemplacen placeholders por fotos reales de clientes, sedes o activos, mantener estas reglas para no degradar la carga del sitio:
+
+- usar imagenes comprimidas en formato .jpg o .webp
+- evitar PNG para fotos
+- exportar cada imagen al tamano real aproximado en que se va a mostrar
+- priorizar WebP cuando no afecte compatibilidad del flujo de publicacion
+- revisar peso final antes de subir: idealmente liviano para mobile y 4G
+- si se actualizan assets visibles en produccion, recordar versionar el service worker
+
+Objetivo: mantener una experiencia rapida en desktop, Android e iPhone aun cuando la landing empiece a usar fotos reales.
 - numero de WhatsApp de destino en [script.js](script.js)
 - datasets de las graficas en [script.js](script.js)
 
