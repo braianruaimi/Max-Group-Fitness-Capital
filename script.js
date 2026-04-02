@@ -147,6 +147,7 @@ function getDefaultMetrics() {
         pageViews: 0,
         modalOpens: 0,
         whatsappSubmissions: 0,
+        whatsappIntentClicks: 0,
         assistantInteractions: 0,
         installClicks: 0,
         ceoPanelOpens: 0,
@@ -1678,6 +1679,14 @@ function initializeContactModal() {
 
     termSelect.addEventListener("change", syncProjection);
 
+    submitButton.addEventListener("click", () => {
+        incrementGlobalMetric("whatsappIntentClicks");
+        console.log("[CEO] Paso final WhatsApp alcanzado", {
+            source: activeSourceLabel,
+            timestamp: new Date().toISOString()
+        });
+    });
+
     document.addEventListener("maxgroupcurrencychange", (event) => {
         const nextCurrency = event.detail?.currency || "ARS";
         currencySelect.value = nextCurrency;
@@ -1763,10 +1772,11 @@ function initializeMetricsPanel() {
     const totalLeadsElement = document.getElementById("metricsTotalLeads");
     const assistantInteractionsElement = document.getElementById("metricsAssistantInteractions");
     const modalOpensElement = document.getElementById("metricsModalOpens");
+    const whatsappIntentClicksElement = document.getElementById("metricsWhatsappIntentClicks");
     const lastUpdatedElement = document.getElementById("metricsLastUpdated");
     const breakdownElement = document.getElementById("metricsBreakdown");
 
-    if (!metricsButton || !metricsPanel || !closeButton || !unlockButton || !passwordInput || !errorMessage || !lockSection || !contentSection || !panelEyebrow || !panelTitle || !panelDescription || !pageViewsElement || !trackedViewsElement || !trackedClicksElement || !totalLeadsElement || !assistantInteractionsElement || !modalOpensElement || !lastUpdatedElement || !breakdownElement) {
+    if (!metricsButton || !metricsPanel || !closeButton || !unlockButton || !passwordInput || !errorMessage || !lockSection || !contentSection || !panelEyebrow || !panelTitle || !panelDescription || !pageViewsElement || !trackedViewsElement || !trackedClicksElement || !totalLeadsElement || !assistantInteractionsElement || !modalOpensElement || !whatsappIntentClicksElement || !lastUpdatedElement || !breakdownElement) {
         return;
     }
 
@@ -1783,6 +1793,7 @@ function initializeMetricsPanel() {
         totalLeadsElement.textContent = integerFormatter.format(totalLeads);
         assistantInteractionsElement.textContent = integerFormatter.format(metrics.assistantInteractions || 0);
         modalOpensElement.textContent = integerFormatter.format(metrics.modalOpens || 0);
+        whatsappIntentClicksElement.textContent = integerFormatter.format(metrics.whatsappIntentClicks || 0);
         lastUpdatedElement.textContent = formatMetricsTimestamp(metrics.updatedAt);
 
         breakdownElement.innerHTML = triggerEntries.length
