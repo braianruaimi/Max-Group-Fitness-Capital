@@ -182,8 +182,11 @@ function writeMetrics(metrics) {
     try {
         window.localStorage.setItem(METRICS_STORAGE_KEY, JSON.stringify(payload));
     } catch {
+        renderVisibleIntentMetrics(payload);
         return payload;
     }
+
+    renderVisibleIntentMetrics(payload);
 
     return payload;
 }
@@ -225,6 +228,14 @@ function formatMetricsTimestamp(timestamp) {
         }).format(new Date(timestamp));
     } catch {
         return timestamp;
+    }
+}
+
+function renderVisibleIntentMetrics(metrics = readMetrics()) {
+    const marketWhatsappIntentValue = document.getElementById("marketWhatsappIntentValue");
+
+    if (marketWhatsappIntentValue) {
+        marketWhatsappIntentValue.textContent = integerFormatter.format(metrics.whatsappIntentClicks || 0);
     }
 }
 
