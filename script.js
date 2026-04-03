@@ -116,15 +116,15 @@ function updateCurrencyBoundText(currency = activeCurrency) {
     }
 
     if (minimumHighlightValue) {
-        minimumHighlightValue.textContent = `Ingreso minimo: ${formatMinimumHint(safeCurrency)} con holding minimo de 90 dias.`;
+        minimumHighlightValue.textContent = `Ingreso mínimo: ${formatMinimumHint(safeCurrency)} con holding mínimo de 90 días.`;
     }
 
     if (amountHint) {
-        amountHint.textContent = `Monto minimo validado: ${formatMinimumHint(safeCurrency)}. El simulador proyecta 4% mensual y 12% trimestral.`;
+        amountHint.textContent = `Monto mínimo validado: ${formatMinimumHint(safeCurrency)}. El simulador proyecta 4% mensual y 12% trimestral.`;
     }
 
     if (contactModalMinimumBadge) {
-        contactModalMinimumBadge.textContent = `Minimo ${formatMinimumHint(safeCurrency)}`;
+        contactModalMinimumBadge.textContent = `Mínimo ${formatMinimumHint(safeCurrency)}`;
     }
 
     if (modalAmount) {
@@ -576,7 +576,7 @@ function initializeCharts() {
                 data: {
                     labels: ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9"],
                     datasets: [{
-                        label: "Valuacion consolidada",
+                        label: "Valuación consolidada",
                         data: [230000, 248000, 239000, 268000, 287000, 276000, 309000, 332000, 350000],
                         borderColor: "#5ef2ff",
                         backgroundColor: gradient,
@@ -781,7 +781,7 @@ function initializeDashboardLiveFeed() {
         ["refreshing unit contribution", "stable"],
         ["monitoring monthly yield", "+4.0%"],
         ["checking supplements velocity", "rising"],
-        ["validating holding threshold", "90 dias"],
+        ["validating holding threshold", "90 días"],
         ["recomputing blended growth", "+31%"],
         ["syncing investor dashboard", "online"]
     ];
@@ -1406,7 +1406,7 @@ function initializeCalculator() {
         roundAvailabilityBar.style.width = `${ROUND_AVAILABLE_RATIO * 100}%`;
         roundAvailabilityValue.textContent = `${(ROUND_AVAILABLE_RATIO * 100).toFixed(0)}%`;
 
-        growthSummary.textContent = `Con ${formatCurrencyValue(amount, activeCurrency)}, Max Group proyecta ${formatCurrencyValue(Math.round(quarter), activeCurrency)} en 90 dias frente a ${formatCurrencyValue(Math.round(fixedIncomeQuarter), activeCurrency)} de un plazo fijo tradicional. La diferencia estimada a favor es ${formatCurrencyValue(Math.round(spread), activeCurrency)}.`;
+        growthSummary.textContent = `Con ${formatCurrencyValue(amount, activeCurrency)}, Max Group proyecta ${formatCurrencyValue(Math.round(quarter), activeCurrency)} en 90 días frente a ${formatCurrencyValue(Math.round(fixedIncomeQuarter), activeCurrency)} de un plazo fijo tradicional. La diferencia estimada a favor es ${formatCurrencyValue(Math.round(spread), activeCurrency)}.`;
 
         document.dispatchEvent(new CustomEvent("maxgroupamountchange", {
             detail: { amountArs: amount }
@@ -1502,7 +1502,7 @@ function initializeLeadForm() {
         const name = document.getElementById("leadName")?.value.trim() || "Sin nombre";
         const capital = Number(document.getElementById("leadCapital")?.value || 0);
         const profile = document.getElementById("leadProfile")?.value || "Inversor individual";
-        const message = document.getElementById("leadMessage")?.value.trim() || "Quiero recibir mas informacion sobre la propuesta.";
+        const message = document.getElementById("leadMessage")?.value.trim() || "Quiero recibir más información sobre la propuesta.";
 
         const formattedCapital = capital > 0 ? arsFormatter.format(capital) : "No especificado";
         const whatsappMessage = [
@@ -1556,7 +1556,7 @@ function initializeContactModal() {
         const isValidAmount = amount >= MINIMUM_INVESTMENT;
 
         amountInput.value = formatCurrencyInputValue(amount, activeCurrency);
-        amountInput.setCustomValidity(isValidAmount ? "" : `El monto minimo es ${formatMinimumHint(activeCurrency)}.`);
+        amountInput.setCustomValidity(isValidAmount ? "" : `El monto mínimo es ${formatMinimumHint(activeCurrency)}.`);
         submitButton.disabled = !isValidAmount;
 
         animateValue(projectedGain, gain, {
@@ -1569,8 +1569,8 @@ function initializeContactModal() {
         });
 
         projectedSummary.textContent = isValidAmount
-            ? `Para ${formatCurrencyValue(amount, activeCurrency)} a ${months} meses, la ganancia estimada seria ${formatCurrencyValue(Math.round(gain), activeCurrency)} y el capital total proyectado ${formatCurrencyValue(Math.round(total), activeCurrency)}.`
-            : `El monto minimo validado es ${formatMinimumHint(activeCurrency)}.`;
+            ? `Para ${formatCurrencyValue(amount, activeCurrency)} a ${months} meses, la ganancia estimada sería ${formatCurrencyValue(Math.round(gain), activeCurrency)} y el capital total proyectado ${formatCurrencyValue(Math.round(total), activeCurrency)}.`
+            : `El monto mínimo validado es ${formatMinimumHint(activeCurrency)}.`;
     }
 
     function openModal(prefilledAmount = null, sourceLabel = "Acceso directo") {
@@ -1721,7 +1721,7 @@ function initializeContactModal() {
         const equivalentArsLabel = activeCurrency === "ARS" ? "" : ` (equivalente ${arsFormatter.format(Math.round(amount))})`;
 
         if (amount < MINIMUM_INVESTMENT) {
-            amountInput.setCustomValidity(`El monto minimo es ${formatMinimumHint(activeCurrency)}.`);
+            amountInput.setCustomValidity(`El monto mínimo es ${formatMinimumHint(activeCurrency)}.`);
             amountInput.reportValidity();
             return;
         }
@@ -1729,11 +1729,11 @@ function initializeContactModal() {
         amountInput.setCustomValidity("");
 
         const whatsappMessage = [
-            "Hola, quiero avanzar con una consulta de inversion en Max Group Fitness Capital.",
+            "Hola, quiero avanzar con una consulta de inversión en Max Group Fitness Capital.",
             `Origen de la solicitud: ${activeSourceLabel}`,
             `Nombre y apellido: ${fullName}`,
             `Domicilio: ${address}`,
-            `Telefono: ${phone}`,
+            `Teléfono: ${phone}`,
             `Email: ${email}`,
             `Moneda seleccionada: ${activeCurrency}`,
             `Monto a invertir: ${amountLabel}${equivalentArsLabel}`,
@@ -1826,7 +1826,7 @@ function initializeMetricsPanel() {
         lockSection.hidden = false;
         contentSection.hidden = true;
         panelEyebrow.hidden = true;
-        panelTitle.textContent = "Ingresar con contrasena";
+        panelTitle.textContent = "Ingresar con contraseña";
         panelDescription.hidden = true;
         passwordInput.value = "";
         errorMessage.hidden = true;
@@ -2238,18 +2238,18 @@ function initializeFaqAssistant() {
 
     const investorFlows = [
         {
-            question: "Soy perfil conservador, que me protege aca?",
-            answer: "Si tu foco es preservar capital, la propuesta se apoya en activos reales, operacion vigente, permanencia minima definida y seguimiento por WhatsApp antes de decidir.",
+            question: "Soy perfil conservador, ¿qué me protege acá?",
+            answer: "Si tu foco es preservar capital, la propuesta se apoya en activos reales, operación vigente, permanencia mínima definida y seguimiento por WhatsApp antes de decidir.",
             profile: "Perfil conservador"
         },
         {
-            question: "Busco cobertura contra inflacion, por donde entro?",
-            answer: "La lectura comercial apunta a capital productivo dentro de un ecosistema activo. Si queres cobertura y flujo, el siguiente paso es abrir propuesta y revisar monto, plazo y condiciones.",
+            question: "Busco cobertura contra inflación, ¿por dónde entro?",
+            answer: "La lectura comercial apunta a capital productivo dentro de un ecosistema activo. Si querés cobertura y flujo, el siguiente paso es abrir propuesta y revisar monto, plazo y condiciones.",
             profile: "Cobertura inflacionaria"
         },
         {
-            question: "Quiero retorno y control, como sigue el proceso?",
-            answer: "El proceso esta pensado para inversores que necesitan contexto y seguimiento: consulta inicial, lectura de condiciones, seleccion de monto y avance directo por WhatsApp con datos concretos.",
+            question: "Quiero retorno y control, ¿cómo sigue el proceso?",
+            answer: "El proceso está pensado para inversores que necesitan contexto y seguimiento: consulta inicial, lectura de condiciones, selección de monto y avance directo por WhatsApp con datos concretos.",
             profile: "Retorno y control"
         }
     ];
