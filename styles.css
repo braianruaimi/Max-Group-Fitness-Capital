@@ -4859,6 +4859,78 @@ body.install-guide-open {
     }
 }
 
+@media (max-width: 480px) {
+    .stat-card,
+    .result-card,
+    .valuation-metric,
+    .hero-panel-floating,
+    .preview-badge,
+    .card-chip {
+        min-width: 0;
+    }
+
+    .stat-value,
+    .valuation-metric strong,
+    .preview-badge,
+    .card-chip,
+    .hero-panel-floating strong,
+    .market-ticker strong {
+        overflow-wrap: anywhere;
+        word-break: break-word;
+    }
+
+    .stat-value {
+        font-size: clamp(1rem, 5.8vw, 1.28rem);
+        line-height: 1;
+    }
+
+    .hero-visual-metric strong {
+        font-size: clamp(2.05rem, 11vw, 2.7rem);
+    }
+
+    .hero-panel-floating strong {
+        font-size: clamp(1rem, 5vw, 1.18rem);
+        line-height: 1.12;
+    }
+
+    .trust-bar {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .trust-item {
+        min-width: 0;
+        padding: 12px 10px;
+        font-size: 0.66rem;
+        letter-spacing: 0.04em;
+        overflow-wrap: anywhere;
+    }
+
+    .preview-badge {
+        min-width: 0;
+        padding: 0 10px;
+        font-size: 0.74rem;
+    }
+
+    .card-chip {
+        max-width: 100%;
+        justify-content: center;
+        text-align: center;
+        white-space: normal;
+        font-size: 0.72rem;
+        line-height: 1.2;
+    }
+
+    .valuation-metric strong {
+        font-size: clamp(1rem, 5.4vw, 1.22rem);
+        line-height: 1.08;
+    }
+
+    .market-ticker strong {
+        font-size: 0.84rem;
+    }
+}
+
 @keyframes activityFlow {
     from {
         transform: translateX(-120%);
