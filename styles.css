@@ -5,6 +5,19 @@
     -webkit-backdrop-filter: none !important;
     filter: none !important;
     box-shadow: 0 8px 32px rgba(0,0,0,0.52) !important;
+    overflow-y: auto !important;
+    max-height: 90vh !important;
+    scrollbar-width: thin;
+    scrollbar-color: #79ecff #181828;
+}
+/* Scrollbar visible y personalizado para el modal de inversión */
+.contact-modal::-webkit-scrollbar, .contact-modal-form::-webkit-scrollbar {
+    width: 8px;
+    background: #181828;
+}
+.contact-modal::-webkit-scrollbar-thumb, .contact-modal-form::-webkit-scrollbar-thumb {
+    background: #79ecff;
+    border-radius: 6px;
 }
 .contact-modal .glass, .contact-modal-form .glass, .contact-modal-head .glass {
     background: #10101a !important;
