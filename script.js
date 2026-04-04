@@ -1537,10 +1537,17 @@ function initializeContactModal() {
     if (amountInput) {
         amountInput.removeAttribute('readonly');
         amountInput.removeAttribute('disabled');
+        amountInput.value = '';
     }
     if (termSelect) {
         termSelect.removeAttribute('readonly');
         termSelect.removeAttribute('disabled');
+    }
+    // Asegurar que el campo email sea editable
+    const emailInput = document.getElementById("modalEmail");
+    if (emailInput) {
+        emailInput.removeAttribute('readonly');
+        emailInput.removeAttribute('disabled');
     }
 
     // Asegurar que los campos sean editables
@@ -1697,20 +1704,20 @@ function initializeContactModal() {
 
 
     // Permitir edición libre, solo formatear al salir del campo
-    amountInput.addEventListener("input", () => {
-        // No formatear aquí, solo actualizar proyección
-        syncProjection();
-    });
-
-    amountInput.addEventListener("blur", () => {
-        // Al salir del campo, formatear el valor
-        amountInput.value = formatCurrencyInputValue(parseInputAmountToArs(amountInput.value, activeCurrency), activeCurrency);
-        syncProjection();
-    });
-
-    amountInput.addEventListener("change", () => {
-        syncProjection();
-    });
+    if (amountInput) {
+        amountInput.addEventListener("input", () => {
+            // Solo actualizar proyección, nunca formatear ni modificar el valor
+            syncProjection();
+        });
+        amountInput.addEventListener("blur", () => {
+            // Al salir del campo, formatear el valor
+            amountInput.value = formatCurrencyInputValue(parseInputAmountToArs(amountInput.value, activeCurrency), activeCurrency);
+            syncProjection();
+        });
+        amountInput.addEventListener("change", () => {
+            syncProjection();
+        });
+    }
 
     currencySelect.addEventListener("change", () => {
         setActiveCurrency(currencySelect.value);
