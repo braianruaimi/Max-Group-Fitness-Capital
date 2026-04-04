@@ -3386,29 +3386,47 @@ body.install-guide-open {
 }
 
 .metrics-float-button {
-    position: fixed;
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 22px);
-    right: calc(env(safe-area-inset-right, 0px) + 22px);
-    z-index: 120;
-    width: 36px;
-    height: 36px;
-    padding: 0;
-    border: 1px solid rgba(255, 255, 255, 0.025);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 30px;
+    padding: 0 10px;
+    border: 1px solid rgba(255, 255, 255, 0.04);
     border-radius: 999px;
-    background: linear-gradient(135deg, var(--purple), var(--blue));
-    color: #fff;
-    backdrop-filter: blur(18px);
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 0 12px rgba(138, 43, 226, 0.18), 0 0 18px rgba(0, 212, 255, 0.12), 0 4px 8px rgba(0, 0, 0, 0.12);
-    opacity: 0.92;
-    transition: transform 180ms ease, border-color 180ms ease, background-color 180ms ease, opacity 180ms ease;
+    background: rgba(255, 255, 255, 0.035);
+    color: rgba(238, 245, 255, 0.68);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.16);
+    opacity: 0.6;
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    transition: transform 180ms ease, border-color 180ms ease, background-color 180ms ease, opacity 180ms ease, color 180ms ease;
 }
 
 .metrics-float-button:hover,
 .metrics-float-button:focus-visible {
     transform: translateY(-1px);
     border-color: rgba(255, 255, 255, 0.08);
-    background: rgba(255, 255, 255, 0.03);
-    opacity: 0.45;
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.86);
+    opacity: 0.9;
+}
+
+.metrics-float-button i {
+    font-size: 0.76rem;
+}
+
+.page-end-tools {
+    display: flex;
+    justify-content: flex-start;
+    padding: 20px 24px calc(22px + env(safe-area-inset-bottom, 0px));
+}
+
+.metrics-end-button {
+    position: static;
+    z-index: auto;
 }
 
 .metrics-panel {
@@ -4627,11 +4645,14 @@ body.install-guide-open {
         display: none;
     }
 
+    .page-end-tools {
+        padding: 14px 10px calc(18px + env(safe-area-inset-bottom, 0px));
+    }
+
     .metrics-float-button {
-        top: 8px;
-        left: 8px;
-        width: 14px;
-        height: 14px;
+        min-height: 28px;
+        padding: 0 9px;
+        font-size: 0.68rem;
     }
 
     .metrics-panel {

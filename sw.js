@@ -1,4 +1,4 @@
-const CACHE_NAME = "max-group-fitness-shell-v7";
+const CACHE_NAME = "max-group-fitness-shell-v8";
 const APP_SHELL = [
     "./",
     "./index.html",
