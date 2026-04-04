@@ -1,3 +1,15 @@
+/* Ajuste extra para formulario inversor: evitar superposición */
+.calculator-form {
+    padding-bottom: 2.2rem !important;
+    z-index: 2;
+}
+.calculator-control-row, .input-shell, .round-availability, .comparison-bars {
+    margin-bottom: 1.1rem !important;
+}
+.input-hint {
+    margin-bottom: 1.2rem !important;
+    display: block;
+}
 /* Ajuste métricas enterprise value */
 .valuation-metric.metric-gold {
     background: rgba(255, 215, 0, 0.08);
@@ -24,32 +36,49 @@
 
 /* Letras doradas neón para el título principal */
 
-@keyframes goldNeonPulse {
+
+@keyframes aquaNeonPulse {
     0%, 100% {
         text-shadow:
-            0 0 2px #fffbe6,
-            0 0 6px #ffe066,
-            0 0 0px #ffd700,
-            0 1px 0 #fff8dc;
+            0 0 2px #baffff,
+            0 0 8px #79ecff,
+            0 0 0px #00fff7,
+            0 1px 0 #e0fcff;
     }
     50% {
         text-shadow:
-            0 0 8px #ffd700,
-            0 0 16px #ffe066,
-            0 0 4px #fffbe6,
-            0 1px 0 #fff8dc;
+            0 0 12px #00fff7,
+            0 0 24px #79ecff,
+            0 0 8px #baffff,
+            0 1px 0 #e0fcff;
     }
 }
-.gold-neon-text {
-    color: #ffe066;
+.aqua-neon-text {
+    color: #fff;
     font-weight: 800;
     letter-spacing: 0.01em;
+    background: none;
     text-shadow:
-        0 0 2px #fffbe6,
-        0 0 6px #ffe066,
-        0 0 0px #ffd700,
-        0 1px 0 #fff8dc;
-    animation: goldNeonPulse 1.8s infinite alternate;
+        0 0 2px #baffff,
+        0 0 8px #79ecff,
+        0 0 0px #00fff7,
+        0 1px 0 #e0fcff;
+    animation: aquaNeonPulse 1.7s infinite alternate;
+}
+
+/* Botón verde agua neón */
+.aqua-neon-btn {
+    background: linear-gradient(90deg, #00ffc6 0%, #79ecff 100%) !important;
+    color: #0a0a0c !important;
+    font-weight: 700;
+    box-shadow: 0 0 16px 2px #00ffc6, 0 0 8px 1px #79ecff;
+    border: none;
+    outline: none;
+    transition: background 0.2s, color 0.2s;
+}
+.aqua-neon-btn:hover {
+    background: linear-gradient(90deg, #79ecff 0%, #00ffc6 100%) !important;
+    color: #0a0a0c !important;
 }
 
 @media (max-width: 700px) {
