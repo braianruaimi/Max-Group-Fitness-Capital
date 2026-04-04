@@ -1,3 +1,20 @@
+// Mostrar/ocultar historia completa en liderazgo
+document.addEventListener('DOMContentLoaded', function() {
+    var toggleBtn = document.querySelector('.leadership-story-toggle');
+    var storyFull = document.getElementById('leadershipStoryFull');
+    if (toggleBtn && storyFull) {
+        toggleBtn.addEventListener('click', function() {
+            storyFull.classList.toggle('show');
+            if (storyFull.classList.contains('show')) {
+                storyFull.style.display = 'block';
+                toggleBtn.textContent = 'Ocultar historia';
+            } else {
+                storyFull.style.display = 'none';
+                toggleBtn.textContent = 'Leer historia completa';
+            }
+        });
+    }
+});
 const arsFormatter = new Intl.NumberFormat("es-AR", {
     style: "currency",
     currency: "ARS",
