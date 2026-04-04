@@ -65,9 +65,35 @@
             <a href="#contact">Contacto</a>
         </nav>
         <a class="button button-ghost contact-trigger" data-contact-source="Topbar - Solicitar acceso" href="#contact-modal">Solicitar acceso</a>
+        <button class="button button-vip" id="vipAccessBtn">V.I.P</button>
     </header>
 
     <main>
+            <!-- Panel de acceso VIP oculto -->
+            <div id="vipAccessPanel" class="vip-panel" style="display:none;">
+                <div class="vip-panel-content">
+                    <button class="vip-close" id="vipPanelClose" aria-label="Cerrar">X</button>
+                    <h2>Acceso exclusivo V.I.P</h2>
+                    <p>Ingrese la contraseña para acceder al panel de inversores.</p>
+                    <input type="password" id="vipPasswordInput" placeholder="Contraseña" autocomplete="off" />
+                    <button class="button button-primary" id="vipPasswordSubmit">Ingresar</button>
+                    <div id="vipPasswordError" style="color:#ff3b3b;display:none;margin-top:8px;">Contraseña incorrecta</div>
+                </div>
+            </div>
+            <!-- Panel informativo VIP oculto -->
+            <div id="vipInfoPanel" class="vip-panel" style="display:none;">
+                <div class="vip-panel-content">
+                    <button class="vip-close" id="vipInfoPanelClose" aria-label="Cerrar">X</button>
+                    <h2>Panel de Inversores V.I.P</h2>
+                    <p>Aquí podrás ver los avances, progresos y cómo tu dinero está siendo trabajado y proyectado. (Contenido exclusivo para inversores)</p>
+                    <ul>
+                        <li>Actualizaciones periódicas de progreso</li>
+                        <li>Proyección de retornos</li>
+                        <li>Detalle de inversiones activas</li>
+                        <li>Y mucho más próximamente...</li>
+                    </ul>
+                </div>
+            </div>
         <section class="hero section" id="hero">
             <div class="hero-copy reveal">
                 <span class="eyebrow hero-intro-item intro-1">Max Group Fitness Capital</span>

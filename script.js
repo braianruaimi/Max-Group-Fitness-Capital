@@ -1,3 +1,49 @@
+// --- VIP PANEL LOGIC ---
+document.addEventListener('DOMContentLoaded', function() {
+    const vipBtn = document.getElementById('vipAccessBtn');
+    const vipPanel = document.getElementById('vipAccessPanel');
+    const vipPanelClose = document.getElementById('vipPanelClose');
+    const vipPasswordInput = document.getElementById('vipPasswordInput');
+    const vipPasswordSubmit = document.getElementById('vipPasswordSubmit');
+    const vipPasswordError = document.getElementById('vipPasswordError');
+    const vipInfoPanel = document.getElementById('vipInfoPanel');
+    const vipInfoPanelClose = document.getElementById('vipInfoPanelClose');
+    const VIP_PASSWORD = 'Max26';
+
+    if (vipBtn && vipPanel) {
+        vipBtn.addEventListener('click', function() {
+            vipPanel.style.display = 'flex';
+            vipPasswordInput.value = '';
+            vipPasswordError.style.display = 'none';
+            vipPasswordInput.focus();
+        });
+    }
+    if (vipPanelClose) {
+        vipPanelClose.addEventListener('click', function() {
+            vipPanel.style.display = 'none';
+        });
+    }
+    if (vipPasswordSubmit) {
+        vipPasswordSubmit.addEventListener('click', function() {
+            if (vipPasswordInput.value === VIP_PASSWORD) {
+                vipPanel.style.display = 'none';
+                vipInfoPanel.style.display = 'flex';
+            } else {
+                vipPasswordError.style.display = 'block';
+            }
+        });
+        vipPasswordInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                vipPasswordSubmit.click();
+            }
+        });
+    }
+    if (vipInfoPanelClose) {
+        vipInfoPanelClose.addEventListener('click', function() {
+            vipInfoPanel.style.display = 'none';
+        });
+    }
+});
 // Mostrar/ocultar historia completa en liderazgo
 document.addEventListener('DOMContentLoaded', function() {
     var toggleBtn = document.querySelector('.leadership-story-toggle');
