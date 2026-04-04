@@ -1,14 +1,32 @@
 
 /* Letras doradas neón para el título principal */
+
+@keyframes goldNeonPulse {
+    0%, 100% {
+        text-shadow:
+            0 0 2px #fffbe6,
+            0 0 6px #ffe066,
+            0 0 0px #ffd700,
+            0 1px 0 #fff8dc;
+    }
+    50% {
+        text-shadow:
+            0 0 8px #ffd700,
+            0 0 16px #ffe066,
+            0 0 4px #fffbe6,
+            0 1px 0 #fff8dc;
+    }
+}
 .gold-neon-text {
     color: #ffe066;
-    text-shadow:
-        0 0 8px #ffd700,
-        0 0 18px #ffe066,
-        0 0 2px #fffbe6,
-        0 1px 0 #fff8dc;
     font-weight: 800;
     letter-spacing: 0.01em;
+    text-shadow:
+        0 0 2px #fffbe6,
+        0 0 6px #ffe066,
+        0 0 0px #ffd700,
+        0 1px 0 #fff8dc;
+    animation: goldNeonPulse 1.8s infinite alternate;
 }
 
 @media (max-width: 700px) {
