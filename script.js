@@ -1385,7 +1385,7 @@ function initializeCalculator() {
     const roundAvailabilityBar = document.getElementById("roundAvailabilityBar");
     const roundAvailabilityValue = document.getElementById("roundAvailabilityValue");
 
-    if (!amountInput || !currencySelect || !investedResult || !monthlyResult || !quarterResult || !totalResult || !semiannualResult || !annualResult || !annualGainResult || !growthSummary || !maxGroupBar || !fixedIncomeBar || !maxGroupBarLabel || !fixedIncomeBarLabel || !capitalInputGrowthBar || !capitalOutputGrowthBar || !capitalInputGrowthLabel || !capitalOutputGrowthLabel || !roundAvailabilityBar || !roundAvailabilityValue) {
+    if (!amountInput || !currencySelect || !investedResult || !monthlyResult || !quarterResult || !totalResult || !semiannualResult || !annualResult || !annualGainResult || !growthSummary || !maxGroupBar || !fixedIncomeBar || !maxGroupBarLabel || !fixedIncomeBarLabel || !capitalInputGrowthBar || !capitalOutputGrowthBar || !capitalInputGrowthLabel || !capitalOutputGrowthLabel) {
         return;
     }
 
@@ -1455,8 +1455,13 @@ function initializeCalculator() {
         capitalOutputGrowthBar.style.width = `${outputRoundShare}%`;
         capitalInputGrowthLabel.textContent = `${inputRoundShare.toFixed(0)}% del cupo activo`;
         capitalOutputGrowthLabel.textContent = `${outputRoundShare.toFixed(0)}% proyectado`;
-        roundAvailabilityBar.style.width = `${ROUND_AVAILABLE_RATIO * 100}%`;
-        roundAvailabilityValue.textContent = `${(ROUND_AVAILABLE_RATIO * 100).toFixed(0)}%`;
+        if (roundAvailabilityBar) {
+            roundAvailabilityBar.style.width = `${ROUND_AVAILABLE_RATIO * 100}%`;
+        }
+
+        if (roundAvailabilityValue) {
+            roundAvailabilityValue.textContent = `${(ROUND_AVAILABLE_RATIO * 100).toFixed(0)}%`;
+        }
 
         growthSummary.textContent = `Con ${formatCurrencyValue(amount, activeCurrency)}, Max Group proyecta ${formatCurrencyValue(Math.round(quarter), activeCurrency)} en 90 días y un capital total estimado de ${formatCurrencyValue(Math.round(total), activeCurrency)}.`;
 
