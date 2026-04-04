@@ -1542,6 +1542,16 @@ function initializeContactModal() {
         termSelect.removeAttribute('readonly');
         termSelect.removeAttribute('disabled');
     }
+
+    // Asegurar que los campos sean editables
+    if (amountInput) {
+        amountInput.removeAttribute('readonly');
+        amountInput.removeAttribute('disabled');
+    }
+    if (termSelect) {
+        termSelect.removeAttribute('readonly');
+        termSelect.removeAttribute('disabled');
+    }
     const projectedGain = document.getElementById("modalProjectedGain");
     const projectedTotal = document.getElementById("modalProjectedTotal");
     const projectedSummary = document.getElementById("modalProjectedSummary");
@@ -1685,11 +1695,15 @@ function initializeContactModal() {
         }
     });
 
+
+    // Permitir edición libre, solo formatear al salir del campo
     amountInput.addEventListener("input", () => {
+        // No formatear aquí, solo actualizar proyección
         syncProjection();
     });
 
     amountInput.addEventListener("blur", () => {
+        // Al salir del campo, formatear el valor
         amountInput.value = formatCurrencyInputValue(parseInputAmountToArs(amountInput.value, activeCurrency), activeCurrency);
         syncProjection();
     });
