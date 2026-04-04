@@ -2312,6 +2312,9 @@ function initializeFaqAssistant() {
         suggestionButton.type = "button";
         suggestionButton.className = "assistant-suggestion";
         suggestionButton.textContent = entry.question;
+        suggestionButton.addEventListener("pointerdown", (event) => {
+            event.stopPropagation();
+        });
         suggestionButton.addEventListener("click", () => {
             incrementGlobalMetric("assistantInteractions");
             incrementTriggerMetric(`Asistente IA - ${entry.question}`, "clicks");
@@ -2334,6 +2337,10 @@ function initializeFaqAssistant() {
         assistantPanel.classList.remove("is-open");
         assistantPanel.setAttribute("aria-hidden", "true");
     }
+
+    assistantPanel.addEventListener("click", (event) => {
+        event.stopPropagation();
+    });
 
     assistantButton.addEventListener("click", () => {
         if (assistantPanel.classList.contains("is-open")) {
