@@ -1,3 +1,22 @@
+@media (max-width: 700px) {
+    .contact-round-banner {
+        padding: 8px !important;
+        border-radius: 12px !important;
+        gap: 6px !important;
+    }
+    .contact-round-banner strong {
+        font-size: 0.88rem !important;
+    }
+    .contact-round-banner p {
+        font-size: 0.82rem !important;
+        line-height: 1.4 !important;
+    }
+    .contact-round-banner .institutional-label {
+        font-size: 0.62rem !important;
+        padding: 4px 7px !important;
+        margin-bottom: 6px !important;
+    }
+}
 /* Ajuste responsivo para formularios */
 .formulario-contenedor, .contact-modal, .success-modal {
     width: 90vw !important;
