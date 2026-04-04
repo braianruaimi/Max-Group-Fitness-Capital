@@ -1899,6 +1899,49 @@ function initializeMetricsPanel() {
     resetPanelState();
 }
 
+function initializeFloatingActionMenu() {
+    const floatingActions = document.getElementById("floatingActions");
+    const toggleButton = document.getElementById("floatingActionsToggle");
+    const actionButtons = floatingActions?.querySelectorAll(".floating-action-pill");
+
+    if (!floatingActions || !toggleButton || !actionButtons?.length) {
+        return;
+    }
+
+    function setMenuState(isOpen) {
+        floatingActions.classList.toggle("is-open", isOpen);
+        toggleButton.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    }
+
+    toggleButton.addEventListener("click", () => {
+        setMenuState(!floatingActions.classList.contains("is-open"));
+    });
+
+    actionButtons.forEach((actionButton) => {
+        actionButton.addEventListener("click", () => {
+            setMenuState(false);
+        });
+    });
+
+    document.addEventListener("click", (event) => {
+        if (!floatingActions.classList.contains("is-open")) {
+            return;
+        }
+
+        if (event.target.closest("#floatingActions")) {
+            return;
+        }
+
+        setMenuState(false);
+    });
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+            setMenuState(false);
+        }
+    });
+}
+
 function initializeInstallPrompt() {
     const installButton = document.getElementById("installAppButton");
     const updateButton = document.getElementById("updateAppButton");
@@ -2412,6 +2455,7 @@ document.addEventListener("DOMContentLoaded", () => {
     updateMetrics((metrics) => {
         metrics.pageViews += 1;
     });
+    initializeFloatingActionMenu();
     initializeInstallPrompt();
     initializeRevealAnimations();
     initializeSectionTransitions();

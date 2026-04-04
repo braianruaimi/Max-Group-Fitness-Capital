@@ -3518,59 +3518,109 @@ body.install-guide-open {
     font-size: 0.9rem;
 }
 
-.install-float-button,
-.update-float-button,
-.assistant-float-button {
+.floating-actions {
     position: fixed;
-    left: calc(env(safe-area-inset-left, 0px) + 22px);
+    right: calc(env(safe-area-inset-right, 0px) + 22px);
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 22px);
     z-index: 118;
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.floating-actions-menu {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    pointer-events: none;
+}
+
+.floating-action-pill,
+.floating-actions-toggle {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    min-height: 52px;
-    padding: 0 16px;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 13px;
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 16px;
+    border-radius: 14px;
     background: linear-gradient(180deg, rgba(13, 17, 30, 0.94), rgba(7, 10, 20, 0.98));
     color: #eef5ff;
-    box-shadow: 0 16px 34px rgba(0, 0, 0, 0.24);
-    transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.24);
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    transition: transform 180ms ease, opacity 180ms ease, border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
 }
 
-.install-float-button {
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 96px);
+.floating-actions-toggle {
+    min-width: 48px;
+    padding: 0 14px;
 }
 
-.update-float-button {
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 158px);
-    background: linear-gradient(180deg, rgba(16, 32, 62, 0.94), rgba(8, 20, 40, 0.98));
-    border-color: rgba(0, 212, 255, 0.16);
+.floating-action-pill {
+    opacity: 0;
+    transform: translateX(18px) scale(0.96);
+    pointer-events: none;
+    white-space: nowrap;
 }
 
-.assistant-float-button {
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 22px);
+.floating-actions.is-open .floating-action-pill {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    pointer-events: auto;
 }
 
-.install-float-button:hover,
-.install-float-button:focus-visible,
-.update-float-button:hover,
-.update-float-button:focus-visible,
-.assistant-float-button:hover,
-.assistant-float-button:focus-visible {
+.floating-actions.is-open .floating-actions-menu {
+    pointer-events: auto;
+}
+
+.floating-actions-toggle:hover,
+.floating-actions-toggle:focus-visible,
+.floating-action-pill:hover,
+.floating-action-pill:focus-visible {
     transform: translateY(-2px);
     border-color: rgba(0, 212, 255, 0.24);
     box-shadow: 0 18px 38px rgba(0, 0, 0, 0.32), 0 0 18px rgba(0, 212, 255, 0.12);
 }
 
-.assistant-float-button i,
-.install-float-button i,
-.update-float-button i {
+.floating-actions.is-open .floating-actions-toggle {
+    border-color: rgba(0, 212, 255, 0.28);
+    background: linear-gradient(180deg, rgba(20, 30, 56, 0.96), rgba(9, 15, 30, 0.98));
+}
+
+.floating-actions-toggle i,
+.floating-action-pill i {
     color: #8fefff;
+}
+
+.floating-actions-toggle i {
+    transition: transform 180ms ease;
+}
+
+.floating-actions.is-open .floating-actions-toggle i {
+    transform: rotate(-90deg);
+}
+
+.update-float-button {
+    background: linear-gradient(180deg, rgba(16, 32, 62, 0.94), rgba(8, 20, 40, 0.98));
+    border-color: rgba(0, 212, 255, 0.16);
+}
+
+.floating-contact-button {
+    background: linear-gradient(180deg, rgba(32, 21, 62, 0.94), rgba(14, 10, 32, 0.98));
+    border-color: rgba(154, 121, 255, 0.16);
+}
+
+.floating-action-pill[hidden] {
+    display: none !important;
 }
 
 .assistant-panel {
     position: fixed;
-    left: calc(env(safe-area-inset-left, 0px) + 22px);
+    right: calc(env(safe-area-inset-right, 0px) + 22px);
     bottom: calc(env(safe-area-inset-bottom, 0px) + 86px);
     z-index: 126;
     width: min(390px, calc(100vw - 44px));
@@ -3982,8 +4032,16 @@ body.install-guide-open {
 }
 
 @media (max-width: 820px) {
+    html {
+        font-size: 15px;
+    }
+
     body.preview-open {
         overflow: hidden;
+    }
+
+    body {
+        line-height: 1.55;
     }
 
     .investor-proof-slider-controls,
@@ -4002,6 +4060,49 @@ body.install-guide-open {
 
     .topbar {
         padding: 14px;
+    }
+
+    .button,
+    .button-primary,
+    .button-secondary,
+    .button-ghost,
+    .glow-button,
+    .contact-trigger {
+        min-height: 38px;
+        padding-inline: 12px;
+        font-size: 0.88rem;
+    }
+
+    .eyebrow {
+        font-size: 0.66rem;
+        letter-spacing: 0.22em;
+    }
+
+    .hero-subheadline,
+    .section-heading p,
+    .institutional-copy,
+    .quote,
+    .faq-answer p,
+    .result-card span,
+    .testimonial-meta span,
+    .contact-note,
+    .calculator-summary,
+    .round-alert-copy p,
+    .structure-list,
+    .security-micro-faq-item p,
+    .investor-journey-card p,
+    .blindada-card p,
+    .trajectory-card p,
+    .thesis-card p,
+    .ecosystem-card p,
+    .leader-card p {
+        font-size: 0.92rem;
+    }
+
+    .result-card strong,
+    .valuation-metric strong,
+    .stat-value {
+        font-size: 1.1rem;
     }
 
     .brand-text {
@@ -4259,7 +4360,8 @@ body.install-guide-open {
     }
 
     .assistant-panel {
-        left: 10px;
+        right: 10px;
+        left: auto;
         bottom: 78px;
         width: min(420px, calc(100vw - 20px));
         max-height: calc(100dvh - 94px);
@@ -4267,6 +4369,42 @@ body.install-guide-open {
 }
 
 @media (max-width: 560px) {
+    html {
+        font-size: 14.2px;
+    }
+
+    .button,
+    .button-primary,
+    .button-secondary,
+    .button-ghost,
+    .glow-button,
+    .contact-trigger {
+        min-height: 36px;
+        padding-inline: 11px;
+        font-size: 0.84rem;
+    }
+
+    .hero-subheadline,
+    .section-heading p,
+    .institutional-copy,
+    .quote,
+    .faq-answer p,
+    .result-card span,
+    .testimonial-meta span,
+    .contact-note,
+    .calculator-summary,
+    .round-alert-copy p,
+    .structure-list,
+    .security-micro-faq-item p,
+    .investor-journey-card p,
+    .blindada-card p,
+    .trajectory-card p,
+    .thesis-card p,
+    .ecosystem-card p,
+    .leader-card p {
+        font-size: 0.9rem;
+    }
+
     .investor-proof-slider-bar {
         align-items: stretch;
         flex-direction: column;
@@ -4481,29 +4619,25 @@ body.install-guide-open {
         grid-template-columns: 1fr;
     }
 
-    .install-float-button,
-    .update-float-button,
-    .assistant-float-button {
-        left: calc(env(safe-area-inset-left, 0px) + 10px);
-        min-height: 46px;
-        padding: 0 14px;
-        border-radius: 14px;
-    }
-
-    .install-float-button {
-        bottom: calc(env(safe-area-inset-bottom, 0px) + 84px);
-    }
-
-    .update-float-button {
-        bottom: calc(env(safe-area-inset-bottom, 0px) + 144px);
-    }
-
-    .assistant-float-button {
+    .floating-actions {
+        right: calc(env(safe-area-inset-right, 0px) + 10px);
         bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);
+        gap: 8px;
+    }
+
+    .floating-actions-menu {
+        gap: 8px;
+    }
+
+    .floating-actions-toggle,
+    .floating-action-pill {
+        min-height: 40px;
+        padding: 0 12px;
+        border-radius: 13px;
+        font-size: 0.76rem;
     }
 
     .assistant-panel {
-        left: calc(env(safe-area-inset-left, 0px) + 10px);
         right: 10px;
         bottom: calc(env(safe-area-inset-bottom, 0px) + 64px);
         width: auto;

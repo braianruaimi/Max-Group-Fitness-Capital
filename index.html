@@ -1131,20 +1131,34 @@
         </div>
     </div>
 
-    <button class="install-float-button" id="installAppButton" type="button" aria-label="Instalar app" hidden>
-        <i class="fa-solid fa-download"></i>
-        <span>Instalar app</span>
-    </button>
+    <div class="floating-actions" id="floatingActions">
+        <div class="floating-actions-menu" id="floatingActionsMenu" aria-label="Accesos rápidos">
+            <button class="floating-action-pill install-float-button" id="installAppButton" type="button" aria-label="Instalar app" hidden>
+                <i class="fa-solid fa-download"></i>
+                <span>Instalar app</span>
+            </button>
 
-    <button class="install-float-button update-float-button" id="updateAppButton" type="button" aria-label="Actualizar app" hidden>
-        <i class="fa-solid fa-rotate"></i>
-        <span>Actualizar</span>
-    </button>
+            <button class="floating-action-pill install-float-button update-float-button" id="updateAppButton" type="button" aria-label="Actualizar app" hidden>
+                <i class="fa-solid fa-rotate"></i>
+                <span>Actualizar</span>
+            </button>
 
-    <button class="assistant-float-button" id="assistantFloatButton" type="button" aria-label="Abrir asistente de preguntas frecuentes">
-        <i class="fa-solid fa-comment-dots"></i>
-        <span>MAX</span>
-    </button>
+            <button class="floating-action-pill assistant-float-button" id="assistantFloatButton" type="button" aria-label="Abrir asistente de preguntas frecuentes">
+                <i class="fa-solid fa-comment-dots"></i>
+                <span>MAX</span>
+            </button>
+
+            <a class="floating-action-pill floating-contact-button contact-trigger" data-contact-source="Flotante - Solicitar asesor" href="#contact-modal" aria-label="Solicitar asesor">
+                <i class="fa-solid fa-user-tie"></i>
+                <span>Solicitar asesor</span>
+            </a>
+        </div>
+
+        <button class="floating-actions-toggle" id="floatingActionsToggle" type="button" aria-label="Abrir accesos rápidos" aria-expanded="false" aria-controls="floatingActionsMenu">
+            <i class="fa-solid fa-bars-staggered"></i>
+            <span>Accesos</span>
+        </button>
+    </div>
 
     <div class="assistant-panel glass" id="assistantPanel" aria-hidden="true">
         <button class="preview-close assistant-panel-close" id="assistantPanelClose" type="button" aria-label="Cerrar asistente">X</button>
@@ -1162,10 +1176,6 @@
         <div class="assistant-suggestions" id="assistantSuggestions"></div>
         <button class="button button-secondary assistant-contact-button contact-trigger" data-contact-source="Asistente IA - Abrir propuesta" type="button">Abrir propuesta</button>
     </div>
-
-    <a class="whatsapp-float contact-trigger" data-contact-source="WhatsApp flotante" href="#contact-modal" aria-label="Contactar por WhatsApp">
-        <span>Solicitar carpeta</span>
-    </a>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="script.js"></script>
