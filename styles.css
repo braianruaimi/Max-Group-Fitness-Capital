@@ -1399,9 +1399,9 @@ h3 {
 
 .calculator-market-board {
     display: grid;
-    gap: 14px;
-    margin-bottom: 18px;
-    padding: 18px;
+    gap: 10px;
+    margin-bottom: 14px;
+    padding: 14px;
     border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: 22px;
     background: linear-gradient(180deg, rgba(10, 15, 28, 0.94), rgba(5, 8, 16, 0.96));
@@ -1410,12 +1410,13 @@ h3 {
 
 .market-board-head {
     display: grid;
-    gap: 8px;
+    gap: 5px;
 }
 
 .market-board-head strong {
-    font-size: 1rem;
+    font-size: 0.92rem;
     color: #f4f8ff;
+    line-height: 1.35;
 }
 
 .market-board-head-accent {
@@ -1426,13 +1427,13 @@ h3 {
 .market-board-tickers {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 10px;
+    gap: 8px;
 }
 
 .market-ticker {
     display: grid;
-    gap: 6px;
-    padding: 12px;
+    gap: 4px;
+    padding: 10px;
     border-radius: 16px;
     border: 1px solid rgba(255, 255, 255, 0.05);
     background: rgba(255, 255, 255, 0.03);
@@ -1440,13 +1441,13 @@ h3 {
 
 .market-ticker span {
     color: var(--muted);
-    font-size: 0.74rem;
+    font-size: 0.68rem;
     letter-spacing: 0.06em;
     text-transform: uppercase;
 }
 
 .market-ticker strong {
-    font-size: 1rem;
+    font-size: 0.92rem;
     color: #eef7ff;
 }
 
@@ -1460,8 +1461,8 @@ h3 {
 
 .market-board-chart {
     position: relative;
-    min-height: 124px;
-    padding: 8px 0 0;
+    min-height: 94px;
+    padding: 4px 0 0;
     border-radius: 16px;
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.015), rgba(255, 255, 255, 0.035));
     overflow: hidden;
@@ -2884,6 +2885,32 @@ canvas {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
+    align-content: start;
+}
+
+.calculator-result-primary {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.calculator-result-secondary {
+    opacity: 0.92;
+}
+
+.calculator-result-hero,
+.calculator-result-wide {
+    grid-column: 1 / -1;
+}
+
+.calculator-result-hero {
+    padding: 24px;
+}
+
+.calculator-result-hero strong {
+    font-size: clamp(2rem, 4.2vw, 2.7rem);
+}
+
+.calculator-result-wide {
+    border-color: rgba(16, 213, 255, 0.16);
 }
 
 .calculator-summary {
@@ -4474,16 +4501,16 @@ body.install-guide-open {
     }
 
     .calculator-market-board {
-        padding: 14px;
+        padding: 12px;
         border-radius: 18px;
     }
 
     .market-board-chart {
-        min-height: 104px;
+        min-height: 88px;
     }
 
     .market-ecg-svg {
-        height: 104px;
+        height: 88px;
     }
 
     .topbar {
