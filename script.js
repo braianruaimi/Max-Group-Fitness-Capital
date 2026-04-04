@@ -1306,8 +1306,6 @@ function initializeCalculator() {
     const monthlyResult = document.getElementById("monthlyResult");
     const quarterResult = document.getElementById("quarterResult");
     const totalResult = document.getElementById("totalResult");
-    const fixedIncomeQuarterResult = document.getElementById("fixedIncomeQuarterResult");
-    const spreadResult = document.getElementById("spreadResult");
     const semiannualResult = document.getElementById("semiannualResult");
     const annualResult = document.getElementById("annualResult");
     const annualGainResult = document.getElementById("annualGainResult");
@@ -1323,7 +1321,7 @@ function initializeCalculator() {
     const roundAvailabilityBar = document.getElementById("roundAvailabilityBar");
     const roundAvailabilityValue = document.getElementById("roundAvailabilityValue");
 
-    if (!amountInput || !currencySelect || !investedResult || !monthlyResult || !quarterResult || !totalResult || !fixedIncomeQuarterResult || !spreadResult || !semiannualResult || !annualResult || !annualGainResult || !growthSummary || !maxGroupBar || !fixedIncomeBar || !maxGroupBarLabel || !fixedIncomeBarLabel || !capitalInputGrowthBar || !capitalOutputGrowthBar || !capitalInputGrowthLabel || !capitalOutputGrowthLabel || !roundAvailabilityBar || !roundAvailabilityValue) {
+    if (!amountInput || !currencySelect || !investedResult || !monthlyResult || !quarterResult || !totalResult || !semiannualResult || !annualResult || !annualGainResult || !growthSummary || !maxGroupBar || !fixedIncomeBar || !maxGroupBarLabel || !fixedIncomeBarLabel || !capitalInputGrowthBar || !capitalOutputGrowthBar || !capitalInputGrowthLabel || !capitalOutputGrowthLabel || !roundAvailabilityBar || !roundAvailabilityValue) {
         return;
     }
 
@@ -1343,8 +1341,6 @@ function initializeCalculator() {
             : parseInputAmountToArs(amountInput.value, activeCurrency);
         const monthly = amount * 0.04;
         const quarter = amount * 0.12;
-        const fixedIncomeQuarter = amount * FIXED_INCOME_QUARTERLY_RATE;
-        const spread = quarter - fixedIncomeQuarter;
         const total = amount + quarter;
         const semiannualTotal = amount * 1.24;
         const annualTotal = amount * 1.48;
@@ -1366,14 +1362,6 @@ function initializeCalculator() {
         });
         animateValue(quarterResult, quarter, {
             duration: 820,
-            formatter: (value) => formatCurrencyValue(value, activeCurrency)
-        });
-        animateValue(fixedIncomeQuarterResult, fixedIncomeQuarter, {
-            duration: 860,
-            formatter: (value) => formatCurrencyValue(value, activeCurrency)
-        });
-        animateValue(spreadResult, spread, {
-            duration: 920,
             formatter: (value) => formatCurrencyValue(value, activeCurrency)
         });
         animateValue(totalResult, total, {
@@ -1406,7 +1394,7 @@ function initializeCalculator() {
         roundAvailabilityBar.style.width = `${ROUND_AVAILABLE_RATIO * 100}%`;
         roundAvailabilityValue.textContent = `${(ROUND_AVAILABLE_RATIO * 100).toFixed(0)}%`;
 
-        growthSummary.textContent = `Con ${formatCurrencyValue(amount, activeCurrency)}, Max Group proyecta ${formatCurrencyValue(Math.round(quarter), activeCurrency)} en 90 días frente a ${formatCurrencyValue(Math.round(fixedIncomeQuarter), activeCurrency)} de un plazo fijo tradicional. La diferencia estimada a favor es ${formatCurrencyValue(Math.round(spread), activeCurrency)}.`;
+        growthSummary.textContent = `Con ${formatCurrencyValue(amount, activeCurrency)}, Max Group proyecta ${formatCurrencyValue(Math.round(quarter), activeCurrency)} en 90 días y un capital total estimado de ${formatCurrencyValue(Math.round(total), activeCurrency)}.`;
 
         document.dispatchEvent(new CustomEvent("maxgroupamountchange", {
             detail: { amountArs: amount }

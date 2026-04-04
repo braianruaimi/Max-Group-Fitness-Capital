@@ -2278,7 +2278,7 @@ h3 {
 .calculator-layout {
     display: grid;
     grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
-    gap: 20px;
+    gap: 16px;
 }
 
 .valuation-panel {
@@ -2439,7 +2439,7 @@ h3 {
 .dashboard-side,
 .calculator-form,
 .calculator-results {
-    padding: 24px;
+    padding: 20px;
 }
 
 .card-header-row {
@@ -2882,14 +2882,16 @@ canvas {
 
 .calculator-results {
     display: grid;
-    gap: 14px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
 }
 
 .calculator-summary {
+    grid-column: 1 / -1;
     margin: 2px 4px 0;
     color: #d8e5ff;
-    font-size: 0.98rem;
-    line-height: 1.7;
+    font-size: 0.92rem;
+    line-height: 1.55;
 }
 
 .comparison-bars {
@@ -3188,13 +3190,13 @@ canvas {
 .success-modal,
 .install-guide-modal {
     position: relative;
-    width: min(760px, 100%);
-    max-height: min(88vh, 860px);
+    width: min(620px, calc(100vw - 28px));
+    max-height: min(84vh, 760px);
     display: grid;
     grid-template-rows: auto minmax(0, 1fr);
-    gap: 18px;
-    padding: 28px;
-    border-radius: 28px;
+    gap: 14px;
+    padding: 20px;
+    border-radius: 24px;
     transform: translateY(18px) scale(0.98);
     transition: transform 220ms ease;
     overflow: hidden;
@@ -3239,13 +3241,13 @@ canvas {
 
 .contact-modal-head {
     position: sticky;
-    top: -28px;
+    top: -20px;
     z-index: 2;
-    margin: -28px -28px 0;
-    padding: 28px 28px 18px;
-    margin-bottom: 22px;
+    margin: -20px -20px 0;
+    padding: 20px 20px 14px;
+    margin-bottom: 14px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 28px 28px 24px 24px;
+    border-radius: 24px 24px 20px 20px;
     background: linear-gradient(180deg, rgba(7, 10, 20, 0.98), rgba(7, 10, 20, 0.92));
     backdrop-filter: blur(16px);
 }
@@ -3262,31 +3264,33 @@ canvas {
 }
 
 .contact-modal-head h2 {
-    margin-bottom: 12px;
+    margin-bottom: 8px;
+    font-size: clamp(1.18rem, 2vw, 1.5rem);
 }
 
 .contact-modal-head p {
     color: var(--muted);
-    line-height: 1.7;
+    line-height: 1.5;
+    font-size: 0.9rem;
 }
 
 .contact-modal-badges {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 16px;
+    gap: 8px;
+    margin-top: 12px;
 }
 
 .contact-modal-badges span {
     display: inline-flex;
     align-items: center;
-    min-height: 34px;
-    padding: 0 14px;
+    min-height: 30px;
+    padding: 0 12px;
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.05);
     color: #e9efff;
-    font-size: 0.78rem;
+    font-size: 0.72rem;
     font-weight: 700;
     letter-spacing: 0.04em;
     text-transform: uppercase;
@@ -3300,7 +3304,7 @@ canvas {
 
 .contact-modal-form {
     display: grid;
-    gap: 16px;
+    gap: 12px;
     min-height: 0;
     overflow-y: auto;
     padding-right: 4px;
@@ -3321,7 +3325,7 @@ canvas {
 .contact-modal-results {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 14px;
+    gap: 10px;
 }
 
 .contact-modal input,
@@ -3331,8 +3335,8 @@ canvas {
 }
 
 .contact-modal-close {
-    top: 18px;
-    right: 18px;
+    top: 12px;
+    right: 12px;
     z-index: 3;
 }
 
@@ -4542,9 +4546,9 @@ body.install-guide-open {
     .contact-modal,
     .success-modal,
     .install-guide-modal {
-        max-height: calc(78dvh - 8px);
-        padding: 12px;
-        border-radius: 20px 20px 16px 16px;
+        max-height: calc(82dvh - 8px);
+        padding: 10px;
+        border-radius: 18px 18px 16px 16px;
     }
 
     .contact-modal-head {
@@ -4553,14 +4557,14 @@ body.install-guide-open {
 
     .contact-modal-head {
         top: -18px;
-        margin: -18px -18px 0;
-        padding: 18px 18px 14px;
+        margin: -18px -12px 0;
+        padding: 16px 14px 12px;
     }
 
     .contact-modal {
-        width: min(440px, calc(100vw - 16px));
-        padding: 12px 12px calc(12px + env(safe-area-inset-bottom));
-        border-radius: 22px 22px 18px 18px;
+        width: min(400px, calc(100vw - 14px));
+        padding: 10px 10px calc(10px + env(safe-area-inset-bottom));
+        border-radius: 18px 18px 16px 16px;
     }
 
     .contact-modal-backdrop {
@@ -4591,6 +4595,11 @@ body.install-guide-open {
     .contact-modal-form {
         gap: 8px;
         padding-right: 2px;
+    }
+
+    .contact-modal-form .form-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
     }
 
     .contact-modal .field {
@@ -4625,8 +4634,8 @@ body.install-guide-open {
     }
 
     .contact-modal-close {
-        top: 10px;
-        right: 10px;
+        top: 8px;
+        right: 8px;
         z-index: 4;
     }
 
