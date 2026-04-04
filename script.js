@@ -2472,4 +2472,62 @@ document.addEventListener("DOMContentLoaded", () => {
     initializeSmoothLinks();
     initializeFaq();
     initializeLeadForm();
+    // Gráfico animado mini debajo de '+550 socios activos'
+    const miniChart = document.getElementById("marketBoardChartMini");
+    if (miniChart) {
+        miniChart.innerHTML = `
+            <svg class="market-ecg-svg" viewBox="0 0 320 54" preserveAspectRatio="none" aria-hidden="true" style="width:100%;height:54px;">
+                <defs>
+                    <linearGradient id="marketEcgStrokeMini" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#53f2ff"></stop>
+                        <stop offset="50%" stop-color="#12f0b8"></stop>
+                        <stop offset="100%" stop-color="#8a2be2"></stop>
+                    </linearGradient>
+                    <filter id="marketEcgGlowMini">
+                        <feGaussianBlur stdDeviation="2.2" result="blur"></feGaussianBlur>
+                        <feMerge>
+                            <feMergeNode in="blur"></feMergeNode>
+                            <feMergeNode in="SourceGraphic"></feMergeNode>
+                        </feMerge>
+                    </filter>
+                </defs>
+                <path class="market-ecg-grid" d="M0 18 H320 M0 36 H320" stroke="#233" stroke-width="1" fill="none"></path>
+                <polyline class="market-ecg-line market-ecg-line-glow" id="marketEcgGlowLineMini" points=""></polyline>
+                <polyline class="market-ecg-line" id="marketEcgLineMini" points=""></polyline>
+            </svg>
+        `;
+        const ecgLine = document.getElementById("marketEcgLineMini");
+        const ecgGlowLine = document.getElementById("marketEcgGlowLineMini");
+        if (ecgLine && ecgGlowLine) {
+            let phase = 0;
+            let series = Array.from({ length: 38 }, (_, index) => 28 + Math.sin(index / 3.2) * 2);
+            function createPulse(index, framePhase) {
+                const cycle = (index + framePhase) % 18;
+                if (cycle === 7) return -8;
+                if (cycle === 8) return 12;
+                if (cycle === 9) return -18;
+                if (cycle === 10) return 8;
+                if (cycle === 11) return -4;
+                return Math.sin((index + framePhase) / 2.6) * 1.2;
+            }
+            function renderEcg(points) {
+                const xStep = 320 / (points.length - 1);
+                const pointString = points.map((value, index) => `${(index * xStep).toFixed(2)},${value.toFixed(2)}`).join(" ");
+                ecgLine.setAttribute("points", pointString);
+                ecgGlowLine.setAttribute("points", pointString);
+            }
+            function renderFrame() {
+                phase += 1;
+                series = series.map((value, index) => {
+                    const baseline = 28 + Math.sin((phase + index) / 4.5) * 1.2;
+                    const pulse = createPulse(index, phase);
+                    const drift = (Math.random() - 0.5) * 1.2;
+                    return Math.max(8, Math.min(46, baseline + pulse + drift));
+                });
+                renderEcg(series);
+                requestAnimationFrame(renderFrame);
+            }
+            renderFrame();
+        }
+    }
 });
