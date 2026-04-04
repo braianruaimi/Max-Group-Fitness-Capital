@@ -4078,6 +4078,16 @@ body.install-guide-open {
         letter-spacing: 0.22em;
     }
 
+    .floating-actions-toggle {
+        min-width: 40px;
+        width: 40px;
+        padding: 0;
+    }
+
+    .floating-actions-toggle span {
+        display: none;
+    }
+
     .hero-subheadline,
     .section-heading p,
     .institutional-copy,
@@ -4403,6 +4413,23 @@ body.install-guide-open {
     .ecosystem-card p,
     .leader-card p {
         font-size: 0.9rem;
+    }
+
+    .floating-actions-toggle,
+    .floating-action-pill {
+        min-height: 38px;
+        border-radius: 12px;
+    }
+
+    .floating-actions-toggle {
+        width: 38px;
+        min-width: 38px;
+        padding: 0;
+    }
+
+    .floating-action-pill {
+        padding-inline: 11px;
+        font-size: 0.74rem;
     }
 
     .investor-proof-slider-bar {
