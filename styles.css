@@ -13,6 +13,19 @@ input, select, textarea {
     box-sizing: border-box !important;
 }
 @media (max-width: 700px) {
+    /* Ajuste responsivo para formularios */
+    .formulario-contenedor, .contact-modal, .success-modal {
+        width: 90vw !important;
+        max-width: 500px !important;
+        margin: 0 auto !important;
+        padding: 20px !important;
+        box-sizing: border-box !important;
+    }
+    input, select, textarea {
+        width: 100% !important;
+        font-size: 16px !important;
+        box-sizing: border-box !important;
+    }
     .contact-modal, .success-modal {
         width: 100vw !important;
         max-width: 100vw !important;
@@ -309,11 +322,54 @@ html, body {
     }
     .topbar, .section, .dashboard-layout, .valuation-layout, .ecosystem-grid, .thesis-grid, .testimonial-grid, .capital-structure-grid, .blindada-grid, .leadership-grid, .trajectory-grid, .investor-proof-grid {
         min-width: 0 !important;
-        max-width: 100vw !important;
-        width: 100vw !important;
+        max-width: 92vw !important;
+        width: 92vw !important;
         margin-left: 0 !important;
         margin-right: 0 !important;
         box-sizing: border-box !important;
+    }
+    .section {
+        padding: 48px 0 !important;
+    }
+    .hero {
+        grid-template-columns: 1fr !important;
+        gap: 18px !important;
+        min-height: unset !important;
+        padding-top: 24px !important;
+    }
+    h1 {
+        font-size: 2.1rem !important;
+    }
+    h2 {
+        font-size: 1.3rem !important;
+    }
+    h3 {
+        font-size: 1.05rem !important;
+    }
+    .hero-subheadline, .section-heading p, .ecosystem-card p, .result-card span {
+        font-size: 0.98rem !important;
+    }
+    .stat-card, .ecosystem-card, .testimonial-card {
+        padding: 10px !important;
+    }
+    .stat-value, .hero-visual-metric {
+        font-size: 1.1rem !important;
+    }
+    .topbar {
+        padding: 8px 8px !important;
+        font-size: 0.92rem !important;
+    }
+    .brand-mark {
+        width: 28px !important;
+        height: 28px !important;
+    }
+    .brand-text {
+        font-size: 0.82rem !important;
+    }
+    .button, .button-primary, .button-secondary, .button-ghost, .glow-button, .whatsapp-float {
+        min-height: 24px !important;
+        font-size: 0.82rem !important;
+        padding: 0 6px !important;
     }
 }
 }
