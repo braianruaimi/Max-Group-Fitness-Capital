@@ -1,9 +1,13 @@
-/* Ajuste extra para formulario inversor: evitar superposición */
+/* Ajuste extra para formulario inversor: evitar superposición y mejorar tarjeta marrón */
 .calculator-form {
     padding-bottom: 2.2rem !important;
     z-index: 2;
+    background: rgba(13, 13, 22, 0.92) !important;
+    box-shadow: 0 4px 32px 0 rgba(0,0,0,0.22);
+    border-radius: 1.2rem;
+    margin-bottom: 2.2rem;
 }
-.calculator-control-row, .input-shell, .round-availability, .comparison-bars {
+.calculator-control-row, .input-shell, .comparison-bars {
     margin-bottom: 1.1rem !important;
 }
 .input-hint {
