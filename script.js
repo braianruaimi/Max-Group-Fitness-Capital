@@ -146,6 +146,7 @@ function updateCurrencyBoundText(currency = activeCurrency) {
 
     if (modalAmount) {
         modalAmount.placeholder = formatCurrencyInputValue(MINIMUM_INVESTMENT, safeCurrency);
+        modalAmount.value = '';
     }
 }
 
@@ -1582,13 +1583,15 @@ function initializeContactModal() {
     }
 
     function syncProjection() {
-        const amount = parseInputAmountToArs(amountInput.value, activeCurrency);
+        // Permitir edición libre, solo validar y formatear al salir o enviar
+        const rawValue = amountInput.value;
+        const amount = parseAmountValue(rawValue);
         const months = Number(termSelect.value || 3);
         const { gain, total } = calculateProjectedReturn(amount, months);
         const isValidAmount = amount >= MINIMUM_INVESTMENT;
 
-        amountInput.value = formatCurrencyInputValue(amount, activeCurrency);
-        amountInput.setCustomValidity(isValidAmount ? "" : `El monto mínimo es ${formatMinimumHint(activeCurrency)}.`);
+        // No formatear el valor aquí
+        amountInput.setCustomValidity(isValidAmount || !rawValue ? "" : `El monto mínimo es ${formatMinimumHint(activeCurrency)}.`);
         submitButton.disabled = !isValidAmount;
 
         animateValue(projectedGain, gain, {
@@ -1706,12 +1709,15 @@ function initializeContactModal() {
     // Permitir edición libre, solo formatear al salir del campo
     if (amountInput) {
         amountInput.addEventListener("input", () => {
-            // Solo actualizar proyección, nunca formatear ni modificar el valor
+            // Permitir edición libre, solo actualizar proyección
             syncProjection();
         });
         amountInput.addEventListener("blur", () => {
-            // Al salir del campo, formatear el valor
-            amountInput.value = formatCurrencyInputValue(parseInputAmountToArs(amountInput.value, activeCurrency), activeCurrency);
+            // Al salir del campo, si es válido, formatear; si no, dejar como está
+            const amount = parseAmountValue(amountInput.value);
+            if (amount >= MINIMUM_INVESTMENT) {
+                amountInput.value = formatCurrencyInputValue(amount, activeCurrency);
+            }
             syncProjection();
         });
         amountInput.addEventListener("change", () => {
