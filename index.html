@@ -984,11 +984,16 @@
                 <div class="form-grid">
                     <label class="field">
                         <span>Moneda</span>
-                        <select id="modalCurrencySelect" name="modalCurrencySelect" required>
-                            <option value="ARS">ARS</option>
-                            <option value="USD">USD</option>
-                            <option value="USDT">USDT</option>
-                        </select>
+                        <div style="position:relative;display:flex;align-items:center;">
+                            <select id="modalCurrencySelect" name="modalCurrencySelect" required style="padding-right:28px;">
+                                <option value="ARS">ARS</option>
+                                <option value="USD">USD</option>
+                                <option value="USDT">USDT</option>
+                            </select>
+                            <span style="pointer-events:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:1.1em;color:#8ea4bc;">
+                                ▼
+                            </span>
+                        </div>
                     </label>
                 </div>
                 <div class="form-grid">
