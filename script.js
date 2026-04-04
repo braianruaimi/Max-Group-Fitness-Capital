@@ -2561,7 +2561,11 @@ document.addEventListener("DOMContentLoaded", () => {
     initializeCursorGlow();
     // initializeDashboardLiveFeed(); // Panel dashboard deshabilitado
     initializeEcosystemPreview();
-    initializeCalculator();
+    try {
+        initializeCalculator();
+    } catch (e) {
+        console.error('Error al inicializar la calculadora:', e);
+    }
     initializeCalculatorTradingBoard();
     initializeContactModal();
     initializeMetricsPanel();
