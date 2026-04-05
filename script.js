@@ -1835,7 +1835,7 @@ function initializeContactModal() {
             `Capital total estimado: ${totalLabel}`
         ].join("\n");
 
-        const whatsappUrl = `https://wa.me/5492215047962?text=${encodeURIComponent(whatsappMessage)}`;
+        const whatsappUrl = `https://wa.me/5492216193178?text=${encodeURIComponent(whatsappMessage)}`;
         updateMetrics((metrics) => {
             metrics.whatsappSubmissions += 1;
         });
