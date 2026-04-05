@@ -189,6 +189,34 @@
     .contact-modal-results {
         margin-bottom: 8px !important;
     }
+
+    .contact-submit-button {
+        width: 100% !important;
+        margin-top: 8px !important;
+        color: #cffff0 !important;
+        background: linear-gradient(180deg, rgba(6, 24, 20, 0.96), rgba(8, 36, 28, 0.96)) !important;
+        border: 1px solid rgba(57, 255, 157, 0.95) !important;
+        box-shadow: 0 0 0 1px rgba(57, 255, 157, 0.22), 0 0 18px rgba(57, 255, 157, 0.28), 0 0 34px rgba(57, 255, 157, 0.14), inset 0 0 18px rgba(57, 255, 157, 0.06) !important;
+        text-shadow: 0 0 10px rgba(57, 255, 157, 0.2) !important;
+    }
+
+    .contact-submit-button:hover {
+        color: #f5fff9 !important;
+        border-color: rgba(92, 255, 179, 1) !important;
+        background: linear-gradient(180deg, rgba(9, 34, 28, 0.98), rgba(10, 48, 36, 0.98)) !important;
+        box-shadow: 0 0 0 1px rgba(92, 255, 179, 0.28), 0 0 22px rgba(92, 255, 179, 0.36), 0 0 42px rgba(92, 255, 179, 0.18), inset 0 0 22px rgba(92, 255, 179, 0.08) !important;
+    }
+
+    .contact-submit-button:focus-visible {
+        outline: 2px solid rgba(92, 255, 179, 0.95) !important;
+        outline-offset: 3px !important;
+    }
+
+    .contact-submit-button span,
+    .contact-submit-button strong {
+        color: inherit !important;
+    }
+
     .calculator-summary, #modalProjectedSummary {
         font-size: 0.95em !important;
         margin-bottom: 8px !important;
