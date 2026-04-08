@@ -87,7 +87,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     var inlineGalleryConfigs = {
         fem: [
-            {src: 'assets/activos/maxfem.jpg', caption: 'Max Club Femenino'}
+            {src: 'assets/activos/maxfem.jpg', caption: 'Max Club Femenino - Fachada de la sede'},
+            {src: 'assets/activos/mujer.jpg', caption: 'Max Club Femenino - Espacio principal de entrenamiento'},
+            {src: 'assets/activos/muje.png', caption: 'Max Club Femenino - Comunidad en acción'},
+            {src: 'assets/activos/mujeentre.jpg', caption: 'Max Club Femenino - Interior de la sede'}
         ],
         ateneo: [
             {src: 'assets/activos/ateneo.webp', caption: 'Max Club Ateneo - Fachada'},
@@ -95,10 +98,14 @@ document.addEventListener('DOMContentLoaded', function() {
             {src: 'assets/activos/ateneo dentro.jpg', caption: 'Max Club Ateneo - Interior 2'},
             {src: 'assets/activos/ateneo afuera.jpg', caption: 'Max Club Ateneo - Exterior'}
         ],
+        camba: [
+            {src: 'assets/activos/camba.jpg', caption: 'Max Club Cambaceres'}
+        ],
         suplementos: [
             {src: 'assets/activos/suple.jpg', caption: 'Max SuplementosFit - Mostrador'},
             {src: 'assets/activos/suple1.jpg', caption: 'Max SuplementosFit - Interior'},
-            {src: 'assets/activos/suple2.jpg', caption: 'Max SuplementosFit - Productos'}
+            {src: 'assets/activos/suple2.jpg', caption: 'Max SuplementosFit - Productos'},
+            {src: 'assets/activos/suplex.jpg', caption: 'Max SuplementosFit - Nueva vista'}
         ],
         carni: [
             {src: 'assets/activos/carni.jpg', caption: 'Carnicería Boutique Bossinga - Mostrador'},
@@ -106,14 +113,21 @@ document.addEventListener('DOMContentLoaded', function() {
         ]
     };
 
-    function closeInlineGallery(gallery, trigger) {
-        if (!gallery || !trigger) {
+    function setGalleryTriggersExpanded(key, expanded) {
+        var triggers = document.querySelectorAll('[data-gallery-key="' + key + '"]');
+        triggers.forEach(function(trigger) {
+            trigger.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+        });
+    }
+
+    function closeInlineGallery(key, gallery) {
+        if (!gallery) {
             return;
         }
 
         gallery.classList.remove('is-open');
         gallery.hidden = true;
-        trigger.setAttribute('aria-expanded', 'false');
+        setGalleryTriggersExpanded(key, false);
     }
 
     function closeAllInlineGalleries(exceptKey) {
@@ -122,20 +136,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            var trigger = document.querySelector('.card-photo-trigger[data-gallery-key="' + key + '"]');
             var gallery = document.getElementById(key + 'InlineGallery');
-            if (trigger && gallery) {
-                closeInlineGallery(gallery, trigger);
+            if (gallery) {
+                closeInlineGallery(key, gallery);
             }
         });
     }
 
     function initializeInlineGallery(key) {
-        var trigger = document.querySelector('.card-photo-trigger[data-gallery-key="' + key + '"]');
+        var triggers = document.querySelectorAll('[data-gallery-key="' + key + '"]');
         var gallery = document.getElementById(key + 'InlineGallery');
         var images = inlineGalleryConfigs[key];
 
-        if (!trigger || !gallery || !images || !images.length) {
+        if (!triggers.length || !gallery || !images || !images.length) {
             return;
         }
 
@@ -160,25 +173,27 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        trigger.addEventListener('click', function(event) {
-            var isOpen = !gallery.hidden;
+        triggers.forEach(function(trigger) {
+            trigger.addEventListener('click', function(event) {
+                var isOpen = !gallery.hidden;
 
-            event.preventDefault();
-            event.stopPropagation();
+                event.preventDefault();
+                event.stopPropagation();
 
-            if (isOpen) {
-                closeInlineGallery(gallery, trigger);
-                return;
-            }
+                if (isOpen) {
+                    closeInlineGallery(key, gallery);
+                    return;
+                }
 
-            closeAllInlineGalleries(key);
-            currentIndex = 0;
-            renderGallery();
-            gallery.hidden = false;
-            requestAnimationFrame(function() {
-                gallery.classList.add('is-open');
+                closeAllInlineGalleries(key);
+                currentIndex = 0;
+                renderGallery();
+                gallery.hidden = false;
+                requestAnimationFrame(function() {
+                    gallery.classList.add('is-open');
+                });
+                setGalleryTriggersExpanded(key, true);
             });
-            trigger.setAttribute('aria-expanded', 'true');
         });
 
         gallery.addEventListener('click', function(event) {
@@ -207,7 +222,7 @@ document.addEventListener('DOMContentLoaded', function() {
             closeButton.addEventListener('click', function(event) {
                 event.preventDefault();
                 event.stopPropagation();
-                closeInlineGallery(gallery, trigger);
+                closeInlineGallery(key, gallery);
             });
         }
     }
@@ -215,7 +230,7 @@ document.addEventListener('DOMContentLoaded', function() {
     Object.keys(inlineGalleryConfigs).forEach(initializeInlineGallery);
 
     document.addEventListener('click', function(event) {
-        if (event.target instanceof Element && event.target.closest('.card-photo-trigger, .ecosystem-inline-gallery')) {
+        if (event.target instanceof Element && event.target.closest('.card-photo-trigger, .ecosystem-photo-link, .ecosystem-inline-gallery')) {
             return;
         }
 

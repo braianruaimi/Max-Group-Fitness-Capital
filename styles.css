@@ -2332,6 +2332,37 @@ h3 {
     outline-offset: 4px;
 }
 
+.ecosystem-photo-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 42px;
+    margin-top: 12px;
+    border: 1px solid rgba(94, 242, 255, 0.18);
+    border-radius: 999px;
+    background: rgba(7, 18, 28, 0.52);
+    color: #dff7ff;
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 180ms ease, background 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.ecosystem-photo-link:hover,
+.ecosystem-photo-link[aria-expanded="true"] {
+    border-color: rgba(94, 242, 255, 0.4);
+    background: rgba(8, 24, 36, 0.82);
+    box-shadow: 0 10px 22px rgba(3, 8, 18, 0.22), 0 0 18px rgba(94, 242, 255, 0.08);
+}
+
+.ecosystem-photo-link:focus-visible {
+    outline: 2px solid rgba(94, 242, 255, 0.9);
+    outline-offset: 4px;
+}
+
 .ecosystem-inline-gallery {
     display: grid;
     gap: 12px;
