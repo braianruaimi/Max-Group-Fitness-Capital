@@ -2319,6 +2319,96 @@ h3 {
     color: #eef1ff;
 }
 
+.card-photo-trigger {
+    cursor: pointer;
+    border: none;
+    padding: 0;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.card-photo-trigger:focus-visible {
+    outline: 2px solid rgba(94, 242, 255, 0.9);
+    outline-offset: 4px;
+}
+
+.ecosystem-inline-gallery {
+    display: grid;
+    gap: 12px;
+    margin-top: 16px;
+    padding: 14px;
+    border-radius: 22px;
+    border: 1px solid rgba(94, 242, 255, 0.18);
+    background: linear-gradient(180deg, rgba(4, 12, 20, 0.92), rgba(7, 18, 28, 0.88));
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03), 0 16px 30px rgba(3, 8, 18, 0.34);
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.ecosystem-inline-gallery.is-open {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.ecosystem-inline-gallery-frame {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 12px;
+}
+
+.ecosystem-inline-gallery-image {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+}
+
+.ecosystem-inline-gallery-nav,
+.ecosystem-inline-gallery-close {
+    border: 1px solid rgba(94, 242, 255, 0.2);
+    background: rgba(8, 18, 28, 0.94);
+    color: #eaf7ff;
+    cursor: pointer;
+}
+
+.ecosystem-inline-gallery-nav {
+    width: 42px;
+    height: 42px;
+    border-radius: 999px;
+    font-size: 1.2rem;
+    box-shadow: 0 8px 20px rgba(3, 8, 18, 0.28);
+}
+
+.ecosystem-inline-gallery-nav[hidden] {
+    display: none;
+}
+
+.ecosystem-inline-gallery-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.ecosystem-inline-gallery-caption {
+    color: #dce9f6;
+    font-size: 0.92rem;
+    line-height: 1.4;
+}
+
+.ecosystem-inline-gallery-close {
+    min-height: 40px;
+    padding: 0 14px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
 .preview-card {
     cursor: pointer;
 }
@@ -5199,6 +5289,29 @@ body.install-guide-open {
 
     .activity-meter {
         margin-top: 16px;
+    }
+
+    .ecosystem-inline-gallery {
+        padding: 12px;
+    }
+
+    .ecosystem-inline-gallery-frame {
+        grid-template-columns: 1fr;
+    }
+
+    .ecosystem-inline-gallery-nav {
+        width: 100%;
+        height: 38px;
+        border-radius: 14px;
+    }
+
+    .ecosystem-inline-gallery-footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .ecosystem-inline-gallery-close {
+        width: 100%;
     }
 
     .activity-meter-track {

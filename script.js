@@ -85,155 +85,148 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Modal de foto Max Club Femenino
-    var femAvatar = document.getElementById('femAvatar');
-    var femPhotoModal = document.getElementById('femPhotoModal');
-    var closeFemPhotoModal = document.getElementById('closeFemPhotoModal');
-    if (femAvatar && femPhotoModal && closeFemPhotoModal) {
-        femAvatar.addEventListener('click', function() {
-            femPhotoModal.style.display = 'flex';
-        });
-        closeFemPhotoModal.addEventListener('click', function() {
-            femPhotoModal.style.display = 'none';
-        });
-        femPhotoModal.addEventListener('click', function(e) {
-            if (e.target === femPhotoModal) {
-                femPhotoModal.style.display = 'none';
+    var inlineGalleryConfigs = {
+        fem: [
+            {src: 'assets/activos/maxfem.jpg', caption: 'Max Club Femenino'}
+        ],
+        ateneo: [
+            {src: 'assets/activos/ateneo.webp', caption: 'Max Club Ateneo - Fachada'},
+            {src: 'assets/activos/ateneomax.jpg', caption: 'Max Club Ateneo - Interior'},
+            {src: 'assets/activos/ateneo dentro.jpg', caption: 'Max Club Ateneo - Interior 2'},
+            {src: 'assets/activos/ateneo afuera.jpg', caption: 'Max Club Ateneo - Exterior'}
+        ],
+        suplementos: [
+            {src: 'assets/activos/suple.jpg', caption: 'Max SuplementosFit - Mostrador'},
+            {src: 'assets/activos/suple1.jpg', caption: 'Max SuplementosFit - Interior'},
+            {src: 'assets/activos/suple2.jpg', caption: 'Max SuplementosFit - Productos'}
+        ],
+        carni: [
+            {src: 'assets/activos/carni.jpg', caption: 'Carnicería Boutique Bossinga - Mostrador'},
+            {src: 'assets/activos/carnicarli.jpg', caption: 'Carnicería Boutique Bossinga - Interior'}
+        ]
+    };
+
+    function closeInlineGallery(gallery, trigger) {
+        if (!gallery || !trigger) {
+            return;
+        }
+
+        gallery.classList.remove('is-open');
+        gallery.hidden = true;
+        trigger.setAttribute('aria-expanded', 'false');
+    }
+
+    function closeAllInlineGalleries(exceptKey) {
+        Object.keys(inlineGalleryConfigs).forEach(function(key) {
+            if (key === exceptKey) {
+                return;
+            }
+
+            var trigger = document.querySelector('.card-photo-trigger[data-gallery-key="' + key + '"]');
+            var gallery = document.getElementById(key + 'InlineGallery');
+            if (trigger && gallery) {
+                closeInlineGallery(gallery, trigger);
             }
         });
     }
 
-    // Modal carrusel Max Club Ateneo
-    var ateneoAvatar = document.getElementById('ateneoAvatar');
-    var ateneoPhotoModal = document.getElementById('ateneoPhotoModal');
-    var closeAteneoPhotoModal = document.getElementById('closeAteneoPhotoModal');
-    var ateneoPrev = document.getElementById('ateneoPrev');
-    var ateneoNext = document.getElementById('ateneoNext');
-    var ateneoCarouselImg = document.getElementById('ateneoCarouselImg');
-    var ateneoCarouselCaption = document.getElementById('ateneoCarouselCaption');
-    var ateneoImages = [
-        {src: 'assets/activos/ateneo.webp', caption: 'Max Club Ateneo - Fachada'},
-        {src: 'assets/activos/ateneomax.jpg', caption: 'Max Club Ateneo - Interior'},
-        {src: 'assets/activos/ateneo dentro.jpg', caption: 'Max Club Ateneo - Interior 2'},
-        {src: 'assets/activos/ateneo afuera.jpg', caption: 'Max Club Ateneo - Exterior'}
-    ];
+    function initializeInlineGallery(key) {
+        var trigger = document.querySelector('.card-photo-trigger[data-gallery-key="' + key + '"]');
+        var gallery = document.getElementById(key + 'InlineGallery');
+        var images = inlineGalleryConfigs[key];
 
-    // Modal carrusel Max SuplementosFit
-    var suplementosAvatar = document.getElementById('suplementosAvatar');
-    var suplementosPhotoModal = document.getElementById('suplementosPhotoModal');
-    var closeSuplementosPhotoModal = document.getElementById('closeSuplementosPhotoModal');
-    var suplementosPrev = document.getElementById('suplementosPrev');
-    var suplementosNext = document.getElementById('suplementosNext');
-    var suplementosCarouselImg = document.getElementById('suplementosCarouselImg');
-    var suplementosCarouselCaption = document.getElementById('suplementosCarouselCaption');
-    var suplementosImages = [
-        {src: 'assets/activos/suple.jpg', caption: 'Max SuplementosFit - Mostrador'},
-        {src: 'assets/activos/suple1.jpg', caption: 'Max SuplementosFit - Interior'},
-        {src: 'assets/activos/suple2.jpg', caption: 'Max SuplementosFit - Productos'}
-    ];
+        if (!trigger || !gallery || !images || !images.length) {
+            return;
+        }
 
-    // Modal carrusel Carnicería Bossinga
-    var carniAvatar = document.getElementById('carniAvatar');
-    var carniPhotoModal = document.getElementById('carniPhotoModal');
-    var closeCarniPhotoModal = document.getElementById('closeCarniPhotoModal');
-    var carniPrev = document.getElementById('carniPrev');
-    var carniNext = document.getElementById('carniNext');
-    var carniCarouselImg = document.getElementById('carniCarouselImg');
-    var carniCarouselCaption = document.getElementById('carniCarouselCaption');
-    var carniImages = [
-        {src: 'assets/activos/carni.jpg', caption: 'Carnicería Boutique Bossinga - Mostrador'},
-        {src: 'assets/activos/carnicarli.jpg', caption: 'Carnicería Boutique Bossinga - Interior'}
-    ];
-    var carniIndex = 0;
-    function updateCarniCarousel() {
-        carniCarouselImg.src = carniImages[carniIndex].src;
-        carniCarouselCaption.textContent = carniImages[carniIndex].caption;
-    }
-    if (carniAvatar && carniPhotoModal && closeCarniPhotoModal && carniPrev && carniNext && carniCarouselImg && carniCarouselCaption) {
-        carniAvatar.addEventListener('click', function() {
-            carniPhotoModal.style.display = 'flex';
-            carniIndex = 0;
-            updateCarniCarousel();
-        });
-        closeCarniPhotoModal.addEventListener('click', function() {
-            carniPhotoModal.style.display = 'none';
-        });
-        carniPhotoModal.addEventListener('click', function(e) {
-            if (e.target === carniPhotoModal) {
-                carniPhotoModal.style.display = 'none';
+        var image = gallery.querySelector('.ecosystem-inline-gallery-image');
+        var caption = gallery.querySelector('.ecosystem-inline-gallery-caption');
+        var prevButton = gallery.querySelector('[data-gallery-action="prev"]');
+        var nextButton = gallery.querySelector('[data-gallery-action="next"]');
+        var closeButton = gallery.querySelector('[data-gallery-action="close"]');
+        var currentIndex = 0;
+
+        function renderGallery() {
+            image.src = images[currentIndex].src;
+            image.alt = images[currentIndex].caption;
+            caption.textContent = images[currentIndex].caption;
+
+            if (prevButton) {
+                prevButton.hidden = images.length <= 1;
             }
-        });
-        carniPrev.addEventListener('click', function(e) {
-            e.stopPropagation();
-            carniIndex = (carniIndex - 1 + carniImages.length) % carniImages.length;
-            updateCarniCarousel();
-        });
-        carniNext.addEventListener('click', function(e) {
-            e.stopPropagation();
-            carniIndex = (carniIndex + 1) % carniImages.length;
-            updateCarniCarousel();
-        });
-    }
-    var suplementosIndex = 0;
-    function updateSuplementosCarousel() {
-        suplementosCarouselImg.src = suplementosImages[suplementosIndex].src;
-        suplementosCarouselCaption.textContent = suplementosImages[suplementosIndex].caption;
-    }
-    if (suplementosAvatar && suplementosPhotoModal && closeSuplementosPhotoModal && suplementosPrev && suplementosNext && suplementosCarouselImg && suplementosCarouselCaption) {
-        suplementosAvatar.addEventListener('click', function() {
-            suplementosPhotoModal.style.display = 'flex';
-            suplementosIndex = 0;
-            updateSuplementosCarousel();
-        });
-        closeSuplementosPhotoModal.addEventListener('click', function() {
-            suplementosPhotoModal.style.display = 'none';
-        });
-        suplementosPhotoModal.addEventListener('click', function(e) {
-            if (e.target === suplementosPhotoModal) {
-                suplementosPhotoModal.style.display = 'none';
+
+            if (nextButton) {
+                nextButton.hidden = images.length <= 1;
             }
-        });
-        suplementosPrev.addEventListener('click', function(e) {
-            e.stopPropagation();
-            suplementosIndex = (suplementosIndex - 1 + suplementosImages.length) % suplementosImages.length;
-            updateSuplementosCarousel();
-        });
-        suplementosNext.addEventListener('click', function(e) {
-            e.stopPropagation();
-            suplementosIndex = (suplementosIndex + 1) % suplementosImages.length;
-            updateSuplementosCarousel();
-        });
-    }
-    var ateneoIndex = 0;
-    function updateAteneoCarousel() {
-        ateneoCarouselImg.src = ateneoImages[ateneoIndex].src;
-        ateneoCarouselCaption.textContent = ateneoImages[ateneoIndex].caption;
-    }
-    if (ateneoAvatar && ateneoPhotoModal && closeAteneoPhotoModal && ateneoPrev && ateneoNext && ateneoCarouselImg && ateneoCarouselCaption) {
-        ateneoAvatar.addEventListener('click', function() {
-            ateneoPhotoModal.style.display = 'flex';
-            ateneoIndex = 0;
-            updateAteneoCarousel();
-        });
-        closeAteneoPhotoModal.addEventListener('click', function() {
-            ateneoPhotoModal.style.display = 'none';
-        });
-        ateneoPhotoModal.addEventListener('click', function(e) {
-            if (e.target === ateneoPhotoModal) {
-                ateneoPhotoModal.style.display = 'none';
+        }
+
+        trigger.addEventListener('click', function(event) {
+            var isOpen = !gallery.hidden;
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            if (isOpen) {
+                closeInlineGallery(gallery, trigger);
+                return;
             }
+
+            closeAllInlineGalleries(key);
+            currentIndex = 0;
+            renderGallery();
+            gallery.hidden = false;
+            requestAnimationFrame(function() {
+                gallery.classList.add('is-open');
+            });
+            trigger.setAttribute('aria-expanded', 'true');
         });
-        ateneoPrev.addEventListener('click', function(e) {
-            e.stopPropagation();
-            ateneoIndex = (ateneoIndex - 1 + ateneoImages.length) % ateneoImages.length;
-            updateAteneoCarousel();
+
+        gallery.addEventListener('click', function(event) {
+            event.stopPropagation();
         });
-        ateneoNext.addEventListener('click', function(e) {
-            e.stopPropagation();
-            ateneoIndex = (ateneoIndex + 1) % ateneoImages.length;
-            updateAteneoCarousel();
-        });
+
+        if (prevButton) {
+            prevButton.addEventListener('click', function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                currentIndex = (currentIndex - 1 + images.length) % images.length;
+                renderGallery();
+            });
+        }
+
+        if (nextButton) {
+            nextButton.addEventListener('click', function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                currentIndex = (currentIndex + 1) % images.length;
+                renderGallery();
+            });
+        }
+
+        if (closeButton) {
+            closeButton.addEventListener('click', function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                closeInlineGallery(gallery, trigger);
+            });
+        }
     }
+
+    Object.keys(inlineGalleryConfigs).forEach(initializeInlineGallery);
+
+    document.addEventListener('click', function(event) {
+        if (event.target instanceof Element && event.target.closest('.card-photo-trigger, .ecosystem-inline-gallery')) {
+            return;
+        }
+
+        closeAllInlineGalleries();
+    });
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            closeAllInlineGalleries();
+        }
+    });
 });
 const arsFormatter = new Intl.NumberFormat("es-AR", {
     style: "currency",
@@ -1310,6 +1303,10 @@ function initializeEcosystemPreview() {
         }
 
         card.addEventListener("click", (event) => {
+            if (event.target instanceof Element && event.target.closest(".card-photo-trigger, .ecosystem-inline-gallery")) {
+                return;
+            }
+
             if (!hasFinePointer && card.classList.contains("grayscale-unit") && !card.classList.contains("show-entry-tooltip")) {
                 event.preventDefault();
                 card.classList.add("show-entry-tooltip");

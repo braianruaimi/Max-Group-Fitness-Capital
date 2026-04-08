@@ -252,24 +252,25 @@
             </div>
             <div class="ecosystem-grid">
                 <article class="glass ecosystem-card reveal tilt-card preview-card" data-delay="0" data-tilt-strength="11" data-tilt-lift="8" data-preview-name="Max Club Ateneo" data-preview-metric="+68%" data-preview-description="Sede mixta de elite en pleno centro de la ciudad. Más de 1,000 m2 con enfoque tipo Boutique, orientada a una gran comunidad de socios que buscan excelencia y equipamiento de alta gama." data-preview-address="[completar dirección]" data-preview-hours="[completar horarios]" data-preview-status="Operativa y consolidada" data-preview-points="28,36,44,52,58,63,68">
-                    <div class="card-icon" data-tilt-layer="0.22" style="cursor:pointer;" id="ateneoAvatar">
+                    <button class="card-icon card-photo-trigger" data-tilt-layer="0.22" id="ateneoAvatar" type="button" data-gallery-key="ateneo" aria-label="Ver fotos de Max Club Ateneo" aria-expanded="false" aria-controls="ateneoInlineGallery">
                         <img src="assets/activos/ateneo.webp" alt="Max Club Ateneo" style="width:54px;height:54px;object-fit:cover;border-radius:50%;border:2px solid #79ecff;box-shadow:0 2px 12px #79ecff88;" />
-                    </div>
-                    <!-- Modal carrusel Ateneo -->
-                    <div id="ateneoPhotoModal" style="display:none;position:fixed;z-index:99999;top:0;left:0;width:100vw;height:100vh;background:rgba(10,10,12,0.92);align-items:center;justify-content:center;flex-direction:column;">
-                        <button id="closeAteneoPhotoModal" aria-label="Cerrar" style="position:absolute;top:32px;right:38px;background:none;border:none;color:#fff;font-size:2.2rem;cursor:pointer;z-index:2;">&times;</button>
-                        <div style="display:flex;align-items:center;justify-content:center;gap:2vw;">
-                            <button id="ateneoPrev" aria-label="Anterior" style="background:none;border:none;color:#fff;font-size:2.5rem;cursor:pointer;">&#8592;</button>
-                            <img id="ateneoCarouselImg" src="assets/activos/ateneo.webp" alt="Max Club Ateneo" style="max-width:82vw;max-height:82vh;border-radius:18px;box-shadow:0 8px 32px #79ecff88;" />
-                            <button id="ateneoNext" aria-label="Siguiente" style="background:none;border:none;color:#fff;font-size:2.5rem;cursor:pointer;">&#8594;</button>
-                        </div>
-                        <div style="margin-top:1rem;color:#fff;font-size:1.1rem;" id="ateneoCarouselCaption"></div>
-                    </div>
+                    </button>
                     <h3 data-tilt-layer="0.16">Max Club Ateneo</h3>
                     <p data-tilt-layer="0.1">Sede mixta en pleno centro de la ciudad. Más de 1,000 m2 con enfoque para una comunidad que busca acompañamiento y equipamiento de alta gama.</p>
                     <div class="ecosystem-meta" data-tilt-layer="0.12">
                         <span>Dirección: La Merced 313</span>
                         <span>Horarios: 06 am a 00 pm</span>
+                    </div>
+                    <div class="ecosystem-inline-gallery" id="ateneoInlineGallery" hidden>
+                        <div class="ecosystem-inline-gallery-frame">
+                            <button class="ecosystem-inline-gallery-nav" type="button" data-gallery-action="prev" aria-label="Foto anterior">&#8592;</button>
+                            <img class="ecosystem-inline-gallery-image" src="assets/activos/ateneo.webp" alt="Max Club Ateneo" />
+                            <button class="ecosystem-inline-gallery-nav" type="button" data-gallery-action="next" aria-label="Foto siguiente">&#8594;</button>
+                        </div>
+                        <div class="ecosystem-inline-gallery-footer">
+                            <span class="ecosystem-inline-gallery-caption">Max Club Ateneo - Fachada</span>
+                            <button class="ecosystem-inline-gallery-close" type="button" data-gallery-action="close">Cerrar foto</button>
+                        </div>
                     </div>
                     <a class="ecosystem-ig-btn" href="https://www.instagram.com/max.club.gym/" target="_blank" rel="noopener noreferrer">
                         <i class="fa-brands fa-instagram"></i> Visítanos
@@ -286,19 +287,25 @@
                     </div>
                 </article>
                 <article class="glass ecosystem-card reveal tilt-card preview-card" data-delay="120" data-tilt-strength="11" data-tilt-lift="8" data-preview-name="Max Club Mujeres" data-preview-metric="+39%" data-preview-description="Sede única en el mercado del fitness. Maquinaria, profesoras y métodos de entrenamiento 100% orientados a la mujer. Entendemos que el público femenino demanda un espacio propio, un refugio y una comunidad exclusiva." data-preview-address="[completar dirección]" data-preview-hours="[completar horarios]" data-preview-status="Operativa con crecimiento sostenido" data-preview-points="15,19,24,28,32,36,39">
-                    <div class="card-icon" data-tilt-layer="0.22" style="cursor:pointer;" id="femAvatar">
+                    <button class="card-icon card-photo-trigger" data-tilt-layer="0.22" id="femAvatar" type="button" data-gallery-key="fem" aria-label="Ver foto de Max Club Femenino" aria-expanded="false" aria-controls="femInlineGallery">
                         <img src="assets/activos/maxfem.jpg" alt="Max Club Femenino" style="width:54px;height:54px;object-fit:cover;border-radius:50%;border:2px solid #ff3b8a;box-shadow:0 2px 12px #ff3b8a88;" />
-                    </div>
-                    <!-- Modal de imagen expandida femenino -->
-                    <div id="femPhotoModal" style="display:none;position:fixed;z-index:99999;top:0;left:0;width:100vw;height:100vh;background:rgba(10,10,12,0.92);align-items:center;justify-content:center;flex-direction:column;">
-                        <button id="closeFemPhotoModal" aria-label="Cerrar" style="position:absolute;top:32px;right:38px;background:none;border:none;color:#fff;font-size:2.2rem;cursor:pointer;z-index:2;">&times;</button>
-                        <img src="assets/activos/maxfem.jpg" alt="Max Club Femenino" style="max-width:92vw;max-height:82vh;border-radius:18px;box-shadow:0 8px 32px #ff3b8a88;" />
-                    </div>
+                    </button>
                     <h3 data-tilt-layer="0.16">Max Club Femenino</h3>
                     <p data-tilt-layer="0.1">Sede única en el mercado del fitness, con maquinaria, profesoras y métodos de entrenamiento 100% orientados a la mujer.</p>
                     <div class="ecosystem-meta" data-tilt-layer="0.12">
                         <span>Dirección: Liniers y esq San Martin</span>
                         <span>Horarios: 08 am a 22 pm</span>
+                    </div>
+                    <div class="ecosystem-inline-gallery" id="femInlineGallery" hidden>
+                        <div class="ecosystem-inline-gallery-frame ecosystem-inline-gallery-frame-single">
+                            <button class="ecosystem-inline-gallery-nav" type="button" data-gallery-action="prev" aria-label="Foto anterior">&#8592;</button>
+                            <img class="ecosystem-inline-gallery-image" src="assets/activos/maxfem.jpg" alt="Max Club Femenino" />
+                            <button class="ecosystem-inline-gallery-nav" type="button" data-gallery-action="next" aria-label="Foto siguiente">&#8594;</button>
+                        </div>
+                        <div class="ecosystem-inline-gallery-footer">
+                            <span class="ecosystem-inline-gallery-caption">Max Club Femenino</span>
+                            <button class="ecosystem-inline-gallery-close" type="button" data-gallery-action="close">Cerrar foto</button>
+                        </div>
                     </div>
                     <a class="ecosystem-ig-btn" href="https://www.instagram.com/max.club.girls/" target="_blank" rel="noopener noreferrer">
                         <i class="fa-brands fa-instagram"></i> Visítanos
@@ -340,25 +347,26 @@
                                                 </div>
                                             </article>
                                             <article class="glass ecosystem-card reveal tilt-card preview-card" data-delay="260" data-tilt-strength="11" data-tilt-lift="8" data-preview-name="Max SuplementosFit" data-preview-metric="Crecimiento sostenido" data-preview-description="Tienda especializada en suplementos deportivos, nutrición y bienestar. Productos de calidad para potenciar tu entrenamiento y salud." data-preview-address="La Merced 313" data-preview-hours="06 am a 00 pm" data-preview-status="Activa" data-preview-points="10,20,30,40,50,60,70">
-                                                <div class="card-icon" data-tilt-layer="0.22" style="cursor:pointer;" id="suplementosAvatar">
+                                                <button class="card-icon card-photo-trigger" data-tilt-layer="0.22" id="suplementosAvatar" type="button" data-gallery-key="suplementos" aria-label="Ver fotos de Max SuplementosFit" aria-expanded="false" aria-controls="suplementosInlineGallery">
                                                     <img src="assets/activos/suple.jpg" alt="Max SuplementosFit" style="width:54px;height:54px;object-fit:cover;border-radius:50%;border:2px solid #ffb347;box-shadow:0 2px 12px #ffb34788;" />
-                                                </div>
-                                                <!-- Modal carrusel SuplementosFit -->
-                                                <div id="suplementosPhotoModal" style="display:none;position:fixed;z-index:99999;top:0;left:0;width:100vw;height:100vh;background:rgba(10,10,12,0.92);align-items:center;justify-content:center;flex-direction:column;">
-                                                    <button id="closeSuplementosPhotoModal" aria-label="Cerrar" style="position:absolute;top:32px;right:38px;background:none;border:none;color:#fff;font-size:2.2rem;cursor:pointer;z-index:2;">&times;</button>
-                                                    <div style="display:flex;align-items:center;justify-content:center;gap:2vw;">
-                                                        <button id="suplementosPrev" aria-label="Anterior" style="background:none;border:none;color:#fff;font-size:2.5rem;cursor:pointer;">&#8592;</button>
-                                                        <img id="suplementosCarouselImg" src="assets/activos/suple.jpg" alt="Max SuplementosFit" style="max-width:82vw;max-height:82vh;border-radius:18px;box-shadow:0 8px 32px #ffb34788;" />
-                                                        <button id="suplementosNext" aria-label="Siguiente" style="background:none;border:none;color:#fff;font-size:2.5rem;cursor:pointer;">&#8594;</button>
-                                                    </div>
-                                                    <div style="margin-top:1rem;color:#fff;font-size:1.1rem;" id="suplementosCarouselCaption"></div>
-                                                </div>
+                                                </button>
                                                 <h3 data-tilt-layer="0.16">Max SuplementosFit</h3>
                                                 <p data-tilt-layer="0.1">Tienda especializada en suplementos deportivos, nutrición y bienestar. Encontrá productos de calidad para potenciar tu entrenamiento y salud.</p>
                                                 <div class="ecosystem-meta" data-tilt-layer="0.12">
                                                     <span>Dirección: La Merced 313</span>
                                                     <span>Horarios: 06 am a 00 pm</span>
                                                     <span>Venta online y envío a todo el PAÍS</span>
+                                                </div>
+                                                <div class="ecosystem-inline-gallery" id="suplementosInlineGallery" hidden>
+                                                    <div class="ecosystem-inline-gallery-frame">
+                                                        <button class="ecosystem-inline-gallery-nav" type="button" data-gallery-action="prev" aria-label="Foto anterior">&#8592;</button>
+                                                        <img class="ecosystem-inline-gallery-image" src="assets/activos/suple.jpg" alt="Max SuplementosFit" />
+                                                        <button class="ecosystem-inline-gallery-nav" type="button" data-gallery-action="next" aria-label="Foto siguiente">&#8594;</button>
+                                                    </div>
+                                                    <div class="ecosystem-inline-gallery-footer">
+                                                        <span class="ecosystem-inline-gallery-caption">Max SuplementosFit - Mostrador</span>
+                                                        <button class="ecosystem-inline-gallery-close" type="button" data-gallery-action="close">Cerrar foto</button>
+                                                    </div>
                                                 </div>
                                                 <a class="ecosystem-ig-btn" href="https://www.instagram.com/ssuplemax/" target="_blank" rel="noopener noreferrer">
                                                     <i class="fa-brands fa-instagram"></i> Visítanos
@@ -375,24 +383,25 @@
                                                 </div>
                                             </article>
                                             <article class="glass ecosystem-card reveal tilt-card preview-card carniceria-neon" data-delay="280" data-tilt-strength="11" data-tilt-lift="8" data-preview-name="Carnicería Boutique Bossinga" data-preview-metric="NUEVO" data-preview-description="Carnicería boutique con selección premium de cortes, atención personalizada y calidad garantizada." data-preview-address="Bossinga 123" data-preview-hours="09 am a 13 pm" data-preview-status="Activa" data-preview-points="10,20,30,40,50,60,70">
-                                                <div class="card-icon" data-tilt-layer="0.22" style="cursor:pointer;" id="carniAvatar">
+                                                <button class="card-icon card-photo-trigger" data-tilt-layer="0.22" id="carniAvatar" type="button" data-gallery-key="carni" aria-label="Ver fotos de Carnicería Boutique Bossinga" aria-expanded="false" aria-controls="carniInlineGallery">
                                                     <img src="assets/activos/carni.jpg" alt="Carnicería Boutique Bossinga" style="width:54px;height:54px;object-fit:cover;border-radius:50%;border:2px solid #ff3b3b;box-shadow:0 2px 12px #ff3b3b88;" />
-                                                </div>
-                                                <!-- Modal carrusel Carnicería Bossinga -->
-                                                <div id="carniPhotoModal" style="display:none;position:fixed;z-index:99999;top:0;left:0;width:100vw;height:100vh;background:rgba(10,10,12,0.92);align-items:center;justify-content:center;flex-direction:column;">
-                                                    <button id="closeCarniPhotoModal" aria-label="Cerrar" style="position:absolute;top:32px;right:38px;background:none;border:none;color:#fff;font-size:2.2rem;cursor:pointer;z-index:2;">&times;</button>
-                                                    <div style="display:flex;align-items:center;justify-content:center;gap:2vw;">
-                                                        <button id="carniPrev" aria-label="Anterior" style="background:none;border:none;color:#fff;font-size:2.5rem;cursor:pointer;">&#8592;</button>
-                                                        <img id="carniCarouselImg" src="assets/activos/carni.jpg" alt="Carnicería Boutique Bossinga" style="max-width:82vw;max-height:82vh;border-radius:18px;box-shadow:0 8px 32px #ff3b3b88;" />
-                                                        <button id="carniNext" aria-label="Siguiente" style="background:none;border:none;color:#fff;font-size:2.5rem;cursor:pointer;">&#8594;</button>
-                                                    </div>
-                                                    <div style="margin-top:1rem;color:#fff;font-size:1.1rem;" id="carniCarouselCaption"></div>
-                                                </div>
+                                                </button>
                                                 <h3 data-tilt-layer="0.16">Carnicería Boutique Bossinga</h3>
                                                 <p data-tilt-layer="0.1">Selección premium de cortes, atención personalizada y calidad garantizada en cada compra.</p>
                                                 <div class="ecosystem-meta" data-tilt-layer="0.12">
                                                     <span>Dirección: Bossinga 123</span>
                                                     <span>Horarios: 09 am a 13 pm</span>
+                                                </div>
+                                                <div class="ecosystem-inline-gallery" id="carniInlineGallery" hidden>
+                                                    <div class="ecosystem-inline-gallery-frame">
+                                                        <button class="ecosystem-inline-gallery-nav" type="button" data-gallery-action="prev" aria-label="Foto anterior">&#8592;</button>
+                                                        <img class="ecosystem-inline-gallery-image" src="assets/activos/carni.jpg" alt="Carnicería Boutique Bossinga" />
+                                                        <button class="ecosystem-inline-gallery-nav" type="button" data-gallery-action="next" aria-label="Foto siguiente">&#8594;</button>
+                                                    </div>
+                                                    <div class="ecosystem-inline-gallery-footer">
+                                                        <span class="ecosystem-inline-gallery-caption">Carnicería Boutique Bossinga - Mostrador</span>
+                                                        <button class="ecosystem-inline-gallery-close" type="button" data-gallery-action="close">Cerrar foto</button>
+                                                    </div>
                                                 </div>
                                                 <span class="card-tag card-tag-new" data-tilt-layer="0.18">NUEVO</span>
                                                 <div class="activity-meter" data-tilt-layer="0.14" style="--activity-level: 70%; --activity-delay: 1.0s;">
