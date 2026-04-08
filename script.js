@@ -69,6 +69,12 @@ document.addEventListener('DOMContentLoaded', function() {
         leaderAvatar.addEventListener('click', function() {
             leaderPhotoModal.style.display = 'flex';
         });
+        var leaderAvatarBottom = document.getElementById('leaderAvatarBottom');
+        if (leaderAvatarBottom) {
+            leaderAvatarBottom.addEventListener('click', function() {
+                leaderPhotoModal.style.display = 'flex';
+            });
+        }
         closeLeaderPhotoModal.addEventListener('click', function() {
             leaderPhotoModal.style.display = 'none';
         });
@@ -76,6 +82,156 @@ document.addEventListener('DOMContentLoaded', function() {
             if (e.target === leaderPhotoModal) {
                 leaderPhotoModal.style.display = 'none';
             }
+        });
+    }
+
+    // Modal de foto Max Club Femenino
+    var femAvatar = document.getElementById('femAvatar');
+    var femPhotoModal = document.getElementById('femPhotoModal');
+    var closeFemPhotoModal = document.getElementById('closeFemPhotoModal');
+    if (femAvatar && femPhotoModal && closeFemPhotoModal) {
+        femAvatar.addEventListener('click', function() {
+            femPhotoModal.style.display = 'flex';
+        });
+        closeFemPhotoModal.addEventListener('click', function() {
+            femPhotoModal.style.display = 'none';
+        });
+        femPhotoModal.addEventListener('click', function(e) {
+            if (e.target === femPhotoModal) {
+                femPhotoModal.style.display = 'none';
+            }
+        });
+    }
+
+    // Modal carrusel Max Club Ateneo
+    var ateneoAvatar = document.getElementById('ateneoAvatar');
+    var ateneoPhotoModal = document.getElementById('ateneoPhotoModal');
+    var closeAteneoPhotoModal = document.getElementById('closeAteneoPhotoModal');
+    var ateneoPrev = document.getElementById('ateneoPrev');
+    var ateneoNext = document.getElementById('ateneoNext');
+    var ateneoCarouselImg = document.getElementById('ateneoCarouselImg');
+    var ateneoCarouselCaption = document.getElementById('ateneoCarouselCaption');
+    var ateneoImages = [
+        {src: 'assets/activos/ateneo.webp', caption: 'Max Club Ateneo - Fachada'},
+        {src: 'assets/activos/ateneomax.jpg', caption: 'Max Club Ateneo - Interior'},
+        {src: 'assets/activos/ateneo dentro.jpg', caption: 'Max Club Ateneo - Interior 2'},
+        {src: 'assets/activos/ateneo afuera.jpg', caption: 'Max Club Ateneo - Exterior'}
+    ];
+
+    // Modal carrusel Max SuplementosFit
+    var suplementosAvatar = document.getElementById('suplementosAvatar');
+    var suplementosPhotoModal = document.getElementById('suplementosPhotoModal');
+    var closeSuplementosPhotoModal = document.getElementById('closeSuplementosPhotoModal');
+    var suplementosPrev = document.getElementById('suplementosPrev');
+    var suplementosNext = document.getElementById('suplementosNext');
+    var suplementosCarouselImg = document.getElementById('suplementosCarouselImg');
+    var suplementosCarouselCaption = document.getElementById('suplementosCarouselCaption');
+    var suplementosImages = [
+        {src: 'assets/activos/suple.jpg', caption: 'Max SuplementosFit - Mostrador'},
+        {src: 'assets/activos/suple1.jpg', caption: 'Max SuplementosFit - Interior'},
+        {src: 'assets/activos/suple2.jpg', caption: 'Max SuplementosFit - Productos'}
+    ];
+
+    // Modal carrusel Carnicería Bossinga
+    var carniAvatar = document.getElementById('carniAvatar');
+    var carniPhotoModal = document.getElementById('carniPhotoModal');
+    var closeCarniPhotoModal = document.getElementById('closeCarniPhotoModal');
+    var carniPrev = document.getElementById('carniPrev');
+    var carniNext = document.getElementById('carniNext');
+    var carniCarouselImg = document.getElementById('carniCarouselImg');
+    var carniCarouselCaption = document.getElementById('carniCarouselCaption');
+    var carniImages = [
+        {src: 'assets/activos/carni.jpg', caption: 'Carnicería Boutique Bossinga - Mostrador'},
+        {src: 'assets/activos/carnicarli.jpg', caption: 'Carnicería Boutique Bossinga - Interior'}
+    ];
+    var carniIndex = 0;
+    function updateCarniCarousel() {
+        carniCarouselImg.src = carniImages[carniIndex].src;
+        carniCarouselCaption.textContent = carniImages[carniIndex].caption;
+    }
+    if (carniAvatar && carniPhotoModal && closeCarniPhotoModal && carniPrev && carniNext && carniCarouselImg && carniCarouselCaption) {
+        carniAvatar.addEventListener('click', function() {
+            carniPhotoModal.style.display = 'flex';
+            carniIndex = 0;
+            updateCarniCarousel();
+        });
+        closeCarniPhotoModal.addEventListener('click', function() {
+            carniPhotoModal.style.display = 'none';
+        });
+        carniPhotoModal.addEventListener('click', function(e) {
+            if (e.target === carniPhotoModal) {
+                carniPhotoModal.style.display = 'none';
+            }
+        });
+        carniPrev.addEventListener('click', function(e) {
+            e.stopPropagation();
+            carniIndex = (carniIndex - 1 + carniImages.length) % carniImages.length;
+            updateCarniCarousel();
+        });
+        carniNext.addEventListener('click', function(e) {
+            e.stopPropagation();
+            carniIndex = (carniIndex + 1) % carniImages.length;
+            updateCarniCarousel();
+        });
+    }
+    var suplementosIndex = 0;
+    function updateSuplementosCarousel() {
+        suplementosCarouselImg.src = suplementosImages[suplementosIndex].src;
+        suplementosCarouselCaption.textContent = suplementosImages[suplementosIndex].caption;
+    }
+    if (suplementosAvatar && suplementosPhotoModal && closeSuplementosPhotoModal && suplementosPrev && suplementosNext && suplementosCarouselImg && suplementosCarouselCaption) {
+        suplementosAvatar.addEventListener('click', function() {
+            suplementosPhotoModal.style.display = 'flex';
+            suplementosIndex = 0;
+            updateSuplementosCarousel();
+        });
+        closeSuplementosPhotoModal.addEventListener('click', function() {
+            suplementosPhotoModal.style.display = 'none';
+        });
+        suplementosPhotoModal.addEventListener('click', function(e) {
+            if (e.target === suplementosPhotoModal) {
+                suplementosPhotoModal.style.display = 'none';
+            }
+        });
+        suplementosPrev.addEventListener('click', function(e) {
+            e.stopPropagation();
+            suplementosIndex = (suplementosIndex - 1 + suplementosImages.length) % suplementosImages.length;
+            updateSuplementosCarousel();
+        });
+        suplementosNext.addEventListener('click', function(e) {
+            e.stopPropagation();
+            suplementosIndex = (suplementosIndex + 1) % suplementosImages.length;
+            updateSuplementosCarousel();
+        });
+    }
+    var ateneoIndex = 0;
+    function updateAteneoCarousel() {
+        ateneoCarouselImg.src = ateneoImages[ateneoIndex].src;
+        ateneoCarouselCaption.textContent = ateneoImages[ateneoIndex].caption;
+    }
+    if (ateneoAvatar && ateneoPhotoModal && closeAteneoPhotoModal && ateneoPrev && ateneoNext && ateneoCarouselImg && ateneoCarouselCaption) {
+        ateneoAvatar.addEventListener('click', function() {
+            ateneoPhotoModal.style.display = 'flex';
+            ateneoIndex = 0;
+            updateAteneoCarousel();
+        });
+        closeAteneoPhotoModal.addEventListener('click', function() {
+            ateneoPhotoModal.style.display = 'none';
+        });
+        ateneoPhotoModal.addEventListener('click', function(e) {
+            if (e.target === ateneoPhotoModal) {
+                ateneoPhotoModal.style.display = 'none';
+            }
+        });
+        ateneoPrev.addEventListener('click', function(e) {
+            e.stopPropagation();
+            ateneoIndex = (ateneoIndex - 1 + ateneoImages.length) % ateneoImages.length;
+            updateAteneoCarousel();
+        });
+        ateneoNext.addEventListener('click', function(e) {
+            e.stopPropagation();
+            ateneoIndex = (ateneoIndex + 1) % ateneoImages.length;
+            updateAteneoCarousel();
         });
     }
 });
