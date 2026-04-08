@@ -601,7 +601,14 @@
             </div>
             <div class="leadership-story-block glass reveal">
                 <div class="leadership-story-summary">
-                    <div class="leader-avatar">MS</div>
+                    <div class="leader-avatar" style="cursor:pointer;" id="leaderAvatar">
+                        <img src="assets/activos/max.jpg.jpg" alt="Max Sodano" style="width:64px;height:64px;object-fit:cover;border-radius:50%;border:2px solid #79ecff;box-shadow:0 2px 12px #00ffc688;" />
+                    </div>
+                                <!-- Modal de imagen expandida -->
+                                <div id="leaderPhotoModal" style="display:none;position:fixed;z-index:99999;top:0;left:0;width:100vw;height:100vh;background:rgba(10,10,12,0.92);align-items:center;justify-content:center;flex-direction:column;">
+                                    <button id="closeLeaderPhotoModal" aria-label="Cerrar" style="position:absolute;top:32px;right:38px;background:none;border:none;color:#fff;font-size:2.2rem;cursor:pointer;z-index:2;">&times;</button>
+                                    <img src="assets/activos/max.jpg.jpg" alt="Max Sodano" style="max-width:92vw;max-height:82vh;border-radius:18px;box-shadow:0 8px 32px #00ffc688;" />
+                                </div>
                     <h3>Max Sodano</h3>
                     <p class="leader-role">Founder & Expansion Lead</p>
                     <p>Arranqué con una sola sede, validando un modelo simple pero sólido: volumen de socios, consumo interno y crecimiento progresivo sin depender de factores externos.<br><br>

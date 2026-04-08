@@ -60,6 +60,24 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // Modal de foto de Max Sodano
+    var leaderAvatar = document.getElementById('leaderAvatar');
+    var leaderPhotoModal = document.getElementById('leaderPhotoModal');
+    var closeLeaderPhotoModal = document.getElementById('closeLeaderPhotoModal');
+    if (leaderAvatar && leaderPhotoModal && closeLeaderPhotoModal) {
+        leaderAvatar.addEventListener('click', function() {
+            leaderPhotoModal.style.display = 'flex';
+        });
+        closeLeaderPhotoModal.addEventListener('click', function() {
+            leaderPhotoModal.style.display = 'none';
+        });
+        leaderPhotoModal.addEventListener('click', function(e) {
+            if (e.target === leaderPhotoModal) {
+                leaderPhotoModal.style.display = 'none';
+            }
+        });
+    }
 });
 const arsFormatter = new Intl.NumberFormat("es-AR", {
     style: "currency",
