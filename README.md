@@ -9,7 +9,7 @@
 
 ## Resumen
 
-Max Group Fitness Capital es una landing premium de captación inversora para un ecosistema fitness en expansión. La app está construida como un sitio estático en HTML, CSS y JavaScript vanilla, publicado en GitHub Pages desde la rama main.
+Max Group Fitness Capital es una landing premium de captación inversora para un ecosistema fitness en expansión. La app está construida como un sitio estático en HTML, CSS y JavaScript vanilla, con una publicación principal en GitHub Pages y una rama version-pro preparada para despliegue por GitHub Actions.
 
 La experiencia combina:
 
@@ -190,16 +190,27 @@ La página incluye estas secciones principales:
 
 ## Publicación
 
-El proyecto está pensado para publicarse directo desde GitHub Pages usando la rama main.
+El repositorio ahora tiene dos esquemas posibles de publicación:
 
-Configuración recomendada en GitHub:
+- main como versión base si se usa Deploy from a branch
+- version-pro como versión premium si se usa GitHub Actions
+
+### Publicar version-pro
+
+Se agregó el workflow [.github/workflows/deploy-version-pro-pages.yml](.github/workflows/deploy-version-pro-pages.yml) para desplegar automáticamente cuando haces push a la rama version-pro.
+
+Configuración recomendada en GitHub para usar esta versión:
 
 1. Abrir el repositorio.
 2. Ir a Settings.
 3. Entrar en Pages.
-4. En Build and deployment seleccionar Deploy from a branch.
-5. Elegir la rama main.
-6. Elegir la carpeta root.
+4. En Build and deployment seleccionar GitHub Actions.
+5. Confirmar que la rama version-pro tiene el workflow subido.
+6. Hacer push a version-pro para disparar el despliegue.
+
+### Importante
+
+GitHub Pages solo publica un sitio por repositorio. Si activas GitHub Actions para version-pro, esa publicación pasa a ser la que se ve en el dominio del repositorio. Si quieres mostrar main y version-pro al mismo tiempo en dos URLs distintas, necesitas un segundo repositorio.
 
 ## Desarrollo local
 
