@@ -361,11 +361,11 @@ function updateCurrencyBoundText(currency = activeCurrency) {
     }
 
     if (minimumHighlightValue) {
-        minimumHighlightValue.textContent = `Ingreso mínimo: ${formatMinimumHint(safeCurrency)} con holding mínimo de 90 días.`;
+        minimumHighlightValue.textContent = `Ingreso mínimo: ${formatMinimumHint(safeCurrency)} con permanencia mínima de 12 meses.`;
     }
 
     if (amountHint) {
-        amountHint.textContent = `Monto mínimo validado: ${formatMinimumHint(safeCurrency)}. El simulador proyecta 4% mensual y 12% trimestral.`;
+        amountHint.textContent = `Monto mínimo validado: ${formatMinimumHint(safeCurrency)}. Referencia comparativa: plazo fijo ${(FIXED_INCOME_QUARTERLY_RATE * 100).toFixed(1)}% trimestral vs Max Group 12% trimestral.`;
     }
 
     if (contactModalMinimumBadge) {
@@ -1025,9 +1025,9 @@ function initializeDashboardLiveFeed() {
         ["updating occupancy capture", "84%"],
         ["routing capital to expansion", "queued"],
         ["refreshing unit contribution", "stable"],
-        ["monitoring monthly yield", "+4.0%"],
+        ["monitoring quarterly yield", "+12.0%"],
         ["checking supplements velocity", "rising"],
-        ["validating holding threshold", "90 días"],
+        ["validating holding threshold", "12 meses"],
         ["recomputing blended growth", "+31%"],
         ["syncing investor dashboard", "online"]
     ];
@@ -1556,7 +1556,6 @@ function initializeCalculator() {
     const monthlyResult = document.getElementById("monthlyResult");
     const quarterResult = document.getElementById("quarterResult");
     const totalResult = document.getElementById("totalResult");
-    const semiannualResult = document.getElementById("semiannualResult");
     const annualResult = document.getElementById("annualResult");
     const annualGainResult = document.getElementById("annualGainResult");
     const growthSummary = document.getElementById("growthSummary");
@@ -1571,7 +1570,7 @@ function initializeCalculator() {
     const roundAvailabilityBar = document.getElementById("roundAvailabilityBar");
     const roundAvailabilityValue = document.getElementById("roundAvailabilityValue");
 
-    if (!amountInput || !currencySelect || !investedResult || !monthlyResult || !quarterResult || !totalResult || !semiannualResult || !annualResult || !annualGainResult || !growthSummary || !maxGroupBar || !fixedIncomeBar || !maxGroupBarLabel || !fixedIncomeBarLabel || !capitalInputGrowthBar || !capitalOutputGrowthBar || !capitalInputGrowthLabel || !capitalOutputGrowthLabel) {
+    if (!amountInput || !currencySelect || !investedResult || !monthlyResult || !quarterResult || !totalResult || !annualResult || !annualGainResult || !growthSummary || !maxGroupBar || !fixedIncomeBar || !maxGroupBarLabel || !fixedIncomeBarLabel || !capitalInputGrowthBar || !capitalOutputGrowthBar || !capitalInputGrowthLabel || !capitalOutputGrowthLabel) {
         return;
     }
 
@@ -1592,7 +1591,6 @@ function initializeCalculator() {
         const monthly = amount * 0.04;
         const quarter = amount * 0.12;
         const total = amount + quarter;
-        const semiannualTotal = amount * 1.24;
         const annualTotal = amount * 1.48;
         const annualGain = annualTotal - amount;
         const inputRoundShare = Math.min((amount / roundAvailableArs) * 100, 100);
@@ -1616,10 +1614,6 @@ function initializeCalculator() {
         });
         animateValue(totalResult, total, {
             duration: 980,
-            formatter: (value) => formatCurrencyValue(value, activeCurrency)
-        });
-        animateValue(semiannualResult, semiannualTotal, {
-            duration: 1080,
             formatter: (value) => formatCurrencyValue(value, activeCurrency)
         });
         animateValue(annualResult, annualTotal, {
@@ -1823,7 +1817,7 @@ function initializeContactModal() {
         // Permitir edición libre, solo validar y formatear al salir o enviar
         const rawValue = amountInput.value;
         const amount = parseAmountValue(rawValue);
-        const months = Number(termSelect.value || 3);
+        const months = Number(termSelect.value || 12);
         const { gain, total } = calculateProjectedReturn(amount, months);
         const isValidAmount = amount >= MINIMUM_INVESTMENT;
 
@@ -1992,7 +1986,7 @@ function initializeContactModal() {
         const phone = document.getElementById("modalPhone")?.value.trim() || "No informado";
         const email = document.getElementById("modalEmail")?.value.trim() || "No informado";
         const amount = parseInputAmountToArs(amountInput.value, activeCurrency);
-        const months = Number(termSelect.value || 3);
+        const months = Number(termSelect.value || 12);
         const { gain, total } = calculateProjectedReturn(amount, months);
         const amountLabel = formatCurrencyValue(amount, activeCurrency);
         const gainLabel = formatCurrencyValue(Math.round(gain), activeCurrency);
